@@ -1,12 +1,10 @@
-const path = require('path')
 const express = require('express')
+const mainRouter = require('./mainRoutes')
 const app = express()
-const mainRouter = express.Router()
 
-mainRouter.get('/', function (req, res) {
-  res.send('Hello Express')
-})
+const port = 3000
 
 app.use(mainRouter)
-app.listen(3000)
-console.log('Blast it Chewie 💫')
+app.listen(port)
+
+console.log('Blast it Chewie 💫 Express server running on port', port)
