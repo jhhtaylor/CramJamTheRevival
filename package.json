@@ -1,0 +1,27 @@
+{
+  "name": "CramJam",
+  "version": "0.1.0",
+  "description": "An online study meeting service for students",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/witseie-elen4010/2021-001-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/witseie-elen4010/2021-001-project/issues"
+  },
+  "homepage": "https://github.com/witseie-elen4010/2021-001-project#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
