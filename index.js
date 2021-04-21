@@ -1,5 +1,5 @@
 const express = require('express')
-const mainRouter = require('./mainRoutes')
+const mainRouter = require('./src/routes/mainRoutes')
 const app = express()
 
 const port = 3000
