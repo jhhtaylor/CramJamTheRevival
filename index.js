@@ -1,5 +1,6 @@
 const express = require('express')
 const mainRouter = require('./src/routes/mainRoutes')
+const db = require('./src/db')
 const app = express()
 
 const port = 3000
