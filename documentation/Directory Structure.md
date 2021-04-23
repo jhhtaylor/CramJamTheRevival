@@ -12,6 +12,8 @@
     - db
     - middleware
     - controllers
+- utils
+    - testUtils
 
 package.json
 
