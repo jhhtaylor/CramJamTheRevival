@@ -1,0 +1,25 @@
+<%- include ('../partials/header') %> 
+<h1>Profile Page</h1>
+<div>
+    <h4>Create new Profile</h4>
+    <form action="/students" method="POST">
+        <input type = "email" name="email" placeholder="Email">
+        <input type = "text" name="firstName" placeholder="First Name">
+        <input type = "text" name="lastName" placeholder="Last Name">
+        <input type = "password" name="password" placeholder="">
+        <button>Create!</button>
+    </form>
+</div>
+<hr>
+
+<h2>Profile list:</h2>
+<hr>
+<% students.forEach(student => { %>
+    <div>
+        <h3><%= student.firstName %> <%= student.lastName %></h3>
+        <h5>Email: <%= student.email %></h5>
+    </div>
+    <hr>
+<% }); %>
+
+<%- include ('../partials/footer') %> 

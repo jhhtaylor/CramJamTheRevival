@@ -2,7 +2,7 @@
 ## Naming
 ### Functions:
 ```javascript
-function MyFunction(p1, p2){
+function myFunction(p1, p2){
     return p1*p2;
 } 
 ```
@@ -13,7 +13,7 @@ const MY_CONSTANT = 3.14;
 ```
 ### Classes:
 ```javascript
-//MyClass.js
+//myClass.js
 class MyClass{
     constructor(m1, m2){
         this.m1 = m1;
