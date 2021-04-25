@@ -7,8 +7,9 @@ const list = [
 ]
 // Public
 module.exports = {
-  add: function (student) {
-    list.push(student)
+  add: function (name) {
+    const newGroup = { name: name, members: [] }
+    list.push(newGroup)
   },
   list: function () {
     return list
