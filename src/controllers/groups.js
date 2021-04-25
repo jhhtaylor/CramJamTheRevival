@@ -16,8 +16,15 @@ module.exports = {
     const newGroup = { name: name, members: [] }
     list.push(newGroup)
   },
+
   list: function () {
     return list
+  },
+
+  deleteMember: function (groupName, studentName) {
+    const groupIndex = list.findIndex(item => item.name === groupName)
+    const studentIndex = list[groupIndex].members.indexOf(studentName)
+    list[groupIndex].members.splice(studentIndex, 1)
   }
 
 }

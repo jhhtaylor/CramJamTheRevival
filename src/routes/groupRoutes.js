@@ -15,4 +15,9 @@ router.post('/create', function (req, res) {
   res.redirect(req.baseUrl)
 })
 
+router.post('/edit', function (req, res) {
+  groups.deleteMember(req.body.groupName, req.body.studentName)
+  res.redirect(req.baseUrl)
+})
+
 module.exports = router
