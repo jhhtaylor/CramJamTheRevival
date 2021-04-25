@@ -5,8 +5,8 @@ const { Schema } = mongoose
 const groupSchema = new Schema({
   name: { type: String, required: true },
   links: { type: String },
-  members: [{ type: Schema.Types.ObjectId, ref: 'Profiles' }],
-  meetings: [{ type: Schema.Types.ObjectId, ref: 'Meetings' }],
+  members: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
+  meetings: [{ type: Schema.Types.ObjectId, ref: 'Meeting' }],
   tags: [{ type: String }]
 })
 

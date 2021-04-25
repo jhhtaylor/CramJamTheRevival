@@ -43,8 +43,11 @@ async function generateStudents (firstNames, lastNames, numStudents) {
 }
 
 async function generateGroups (groupNames, numGroups) {
-  const insertGroups = []
   const people = await StudentProfile.find({}) // finds all profiles in the database
+
+  // Deletes all the current data in there to start fresh
+  await GroupSchema.deleteMany({})
+  console.log('Dropped Groups Collection 🔮')
 
   // generate a random set of user group data
   for (let i = 0; i < numGroups; i++) {
@@ -59,18 +62,19 @@ async function generateGroups (groupNames, numGroups) {
       addedTags.push(tag)
     }
 
-    const newGroup = {
+    const newGroup = new GroupSchema({
       name: `${first} ${last} ${i}`,
       members: addedMembers,
       tags: addedTags
+    })
+    // Inserts a group into a mongodb collection
+    const savedGroup = await newGroup.save()
+    // Adds group to members profile
+    for (const member of addedMembers) {
+      await StudentProfile.findByIdAndUpdate(member._id, { $push: { groups: savedGroup._id } })
     }
-    insertGroups.push(newGroup)
   }
-  // Deletes all the current data in there to start fresh
-  await GroupSchema.deleteMany({})
-  console.log('Dropped Groups Collection 🔮')
-  // Inserts many groups into a mongodb collection
-  await GroupSchema.insertMany(insertGroups)
+
   console.log('Inserted New Groups 💎')
 }
 
@@ -97,7 +101,7 @@ async function generateMeetings (meetingNames) {
       location: { type: 'Point', cooridinates: coord }
     })
     const savedMeeting = await newMeeting.save() // saves meeting
-    GroupSchema.findByIdAndUpdate(group._id, { $push: { meetings: savedMeeting._id } }) // adds meeting to this group
+    await GroupSchema.findByIdAndUpdate(group._id, { $push: { meetings: savedMeeting._id } }) // adds meeting to this group
     index++
   }
   console.log('Inserted New Meetings 💎')

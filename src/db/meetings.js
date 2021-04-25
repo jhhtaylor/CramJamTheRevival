@@ -6,7 +6,7 @@ const meetingSchema = new Schema({
   name: { type: String, required: true },
   description: { type: String },
   group: { type: Schema.ObjectId, ref: 'Group', required: true },
-  attendees: [{ type: Schema.Types.ObjectId, ref: 'Profiles' }],
+  attendees: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
   location: { // formatted accoring to https://mongoosejs.com/docs/geojson.html
     type: {
       type: String,
