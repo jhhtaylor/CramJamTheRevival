@@ -7,14 +7,12 @@ const router = express.Router()
 router.get('/', function (req, res) {
   res.render('groups/groups', { groups: groups.list() })
 })
-
-router.post('/', function (req, res) {
-  groups.add(req.body.name)
-  res.redirect('/groups')
+router.get('/:id', function (req, res) {
+  res.render('groups/' + req.params.id)
 })
-
-router.get('/create', function (req, res) {
-  res.render('groups/createGroup')
+router.post('/create', function (req, res) {
+  groups.add(req.body.name)
+  res.redirect(req.baseUrl)
 })
 
 module.exports = router

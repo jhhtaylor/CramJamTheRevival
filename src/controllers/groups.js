@@ -3,7 +3,12 @@ const list = [
   {
     name: 'Study Group 1',
     members: ['Tori', 'Blake', 'Duncan']
+  },
+  {
+    name: 'Study Group 2',
+    members: ['Jon', 'Josh', 'Jess']
   }
+
 ]
 // Public
 module.exports = {
@@ -14,4 +19,5 @@ module.exports = {
   list: function () {
     return list
   }
+
 }
