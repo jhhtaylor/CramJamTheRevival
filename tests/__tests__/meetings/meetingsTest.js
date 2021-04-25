@@ -1,5 +1,6 @@
 const meetings = require('../../../src/controllers/meetings')
 
+//will change once there is access to database
 describe('Meeting controller functionality', () => {
     test('A meeting can be added', async () => {
        const prevLength = meetings.list().length 
