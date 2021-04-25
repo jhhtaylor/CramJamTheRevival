@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 
 // loading routers
@@ -8,11 +9,11 @@ const db = require('./src/db')
 
 const app = express()
 
-const bodyParser = require('body-parser')
-
-app.use(bodyParser.urlencoded({ extended: true }))
-
 app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
+
+app.use(express.urlencoded({ extended: true }))
+
 const port = 3000
 
 app.use('/', mainRouter)

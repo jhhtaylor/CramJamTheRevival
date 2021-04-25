@@ -1,22 +1,20 @@
 
 const path = require('path')
 const express = require('express')
-const groups = require('../../public/js/groups')
+const groups = require('../controllers/groups')
 const router = express.Router()
 
 router.get('/', function (req, res) {
-  res.render('groups', { groups: groups.list() })
+  res.render('groups/groups', { groups: groups.list() })
 })
 
 router.post('/', function (req, res) {
-  const name = req.body.name
-  const newGroup = { name: name, members: [] }
-  groups.add(newGroup)
+  groups.add(req.body.name)
   res.redirect('/groups')
 })
 
 router.get('/create', function (req, res) {
-  res.render('createGroup.ejs')
+  res.render('groups/createGroup')
 })
 
 module.exports = router
