@@ -5,18 +5,14 @@ const meetings = require('../controllers/meetings')
 const router = express.Router()
 
 router.get('/', function (req, res) {
-  res.render('meetings', { groups: groups.list() })
+  res.render('meetings/meetings', {  meetings: meetings.list() })
 })
 
 router.post('/', function (req, res) {
-  const name = req.body.name
-  const newGroup = { name: name, members: [] }
-  groups.add(newGroup)
+  const newMeeting = { GroupName:req.body.GroupName, StartTime: req.body.StartTime, EndTime: req.body.EndTime}
+  meetings.add(newMeeting)
   res.redirect('/meetings')
 })
 
-router.get('/create', function (req, res) {
-  res.render('meetings/createMeeting.ejs')
-})
 
 module.exports = router

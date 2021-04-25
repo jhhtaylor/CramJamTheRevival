@@ -1,0 +1,20 @@
+<%- include ('../partials/header') %> 
+<h1>Meetings Page</h1>
+    <div>
+        <h4>Create new meeting</h4>
+        <form action="/meetings" method="POST">
+            <input type = "text" name="GroupName" placeholder="Group Name">
+            <input type = "text" name="StartTime" placeholder="Start Time">
+            <input type = "text" name="EndTime" placeholder="End Time">
+            <button>Create!</button>
+        </form>
+    </div>
+
+<% meetings.forEach(meeting => { %>
+    <div>
+        <h3><%= meeting.GroupName %></h4>
+        <h4>Time: <%= meeting.StartTime%> to <%= meeting.EndTime%></h3>
+    </div>
+<% }); %>
+
+<%- include ('../partials/footer') %> 
