@@ -4,7 +4,8 @@ const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost/cramjam', {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 })
   .then(() => {
     console.log('Database connected ✨')
