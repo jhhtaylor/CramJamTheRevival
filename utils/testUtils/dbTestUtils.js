@@ -35,3 +35,7 @@ module.exports.checkNotEmpty = (received) => {
 module.exports.checkStringEquals = (received, expected) => {
   expect(received).toEqual(expected)
 }
+
+module.exports.checkArraysEqual = (received, expected) => {
+  expect(received).toEqual(expected)
+}
