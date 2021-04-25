@@ -4,29 +4,19 @@ const express = require('express')
 const groups = require('../../public/js/groups')
 const router = express.Router()
 
-const groups = [
-  {
-    name: 'Study Group 1',
-    members: ['Tori', 'Duncan', 'Blake']
-  },
-
-  {
-    name: 'Study Group 2',
-    members: ['Jon', 'Josh', 'Jess Spatula']
-  }
-]
-
 router.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'views', 'class', 'index.html'))
+  res.render('groups', { groups: groups.list() })
 })
-router.get('/create', function (req, res) {
-  res.sendFile(path.join(__dirname, 'views', 'class', 'create.html'))
+
+router.post('/', function (req, res) {
+  const name = req.body.name
+  const newGroup = { name: name, members: [] }
+  groups.add(newGroup)
+  res.redirect('/groups')
 })
-router.get('/delete', function (req, res) {
-  res.sendFile(path.join(__dirname, 'views', 'class', 'delete.html'))
-})
-router.post('/edit', function (req, res) {
-  res.sendFile(path.join(__dirname, 'views', 'class', 'edit.html'))
+
+router.get('/new', function (req, res) {
+  res.render('newGroup.ejs')
 })
 
 module.exports = router

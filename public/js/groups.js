@@ -1,17 +1,16 @@
 // Private
-const groups = []
+const list = [
+  {
+    name: 'Study Group 1',
+    members: ['Tori', 'Blake', 'Duncan']
+  }
+]
 // Public
 module.exports = {
   add: function (student) {
-    groups.push(student)
+    list.push(student)
   },
-  edit: function (student, index) {
-    groups[index] = student
-  },
-  get: function (index) {
-    return groups[index]
-  },
-  delete: function (index) {
-    groups.splice(index, 1) // remove one element starting from index
+  list: function () {
+    return list
   }
 }
