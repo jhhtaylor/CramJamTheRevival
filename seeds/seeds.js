@@ -9,21 +9,14 @@ const groupNames = ['Dilly', 'Dally', 'Late', 'Submission', 'Jam', 'Group']
 const meetingNames = ['Study', 'Chat', 'Braai', 'Lunch', 'Coffee']
 const tags = ['Fun', 'Rocks', 'Math', 'Interactive']
 const coords = [[23.3645, 34.0575], [28.0473, 26.2041]] // plett, joburg coords
-let collections = []
-db.once('open', function () {
-  db.db.listCollections().toArray(function (err, names) {
-    if (err) console.log(err)
-    else collections = names
-  })
 
-  generateStudents(studentFirstNames, studentLastNames, 10)
-    .then(() => generateGroups(groupNames, 5))
-    .then(() => generateMeetings(meetingNames))
-    .then(() => db.close())
-    .catch(err => {
-      console.error('Error:', err)
-    })
-})
+generateStudents(studentFirstNames, studentLastNames, 10)
+  .then(() => generateGroups(groupNames, 5))
+  .then(() => generateMeetings(meetingNames))
+  .then(() => db.close())
+  .catch(err => {
+    console.error('Error:', err)
+  })
 
 async function generateStudents (firstNames, lastNames, numStudents) {
   const insertStudents = []
@@ -42,10 +35,8 @@ async function generateStudents (firstNames, lastNames, numStudents) {
     insertStudents.push(newStudent)
   }
   // Deletes all the current data in there to start fresh
-  if (collections.indexOf('studentProfiles') !== -1) {
-    await StudentProfile.collection.drop()
-    console.log('Dropped Students Collection 🔮')
-  }
+  await StudentProfile.deleteMany({})
+  console.log('Dropped Students Collection 🔮')
   // Inserts many students into a mongodb collection
   await StudentProfile.insertMany(insertStudents)
   console.log('Inserted New Students 💎')
@@ -76,21 +67,17 @@ async function generateGroups (groupNames, numGroups) {
     insertGroups.push(newGroup)
   }
   // Deletes all the current data in there to start fresh
-  if (collections.indexOf('groups') !== -1) {
-    await GroupSchema.collection.drop()
-    console.log('Dropped Groups Collection 🔮')
-  }
+  await GroupSchema.deleteMany({})
+  console.log('Dropped Groups Collection 🔮')
   // Inserts many groups into a mongodb collection
   await GroupSchema.insertMany(insertGroups)
   console.log('Inserted New Groups 💎')
 }
 
 async function generateMeetings (meetingNames) {
-// Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
-  if (collections.indexOf('meetings') !== -1) {
-    await MeetingSchema.collection.drop()
-    console.log('Dropped Meetings Collection 🔮')
-  }
+  // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
+  await MeetingSchema.deleteMany({})
+  console.log('Dropped Meetings Collection 🔮')
 
   const groups = await GroupSchema.find({}) // finds all groups in the database
 
