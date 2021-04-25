@@ -5,7 +5,7 @@ const meetings = [{
     EndTime: "1:00"
 }]
 
-module.exports.add = (newMeeting)=>{
+module.exports.add = (newMeeting) => {
     meetings.push(newMeeting)
 }
 

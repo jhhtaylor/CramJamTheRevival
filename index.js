@@ -3,7 +3,6 @@ const express = require('express')
 
 // loading routers
 const mainRouter = require('./src/routes/mainRoutes')
-const groupRouter = require('./src/routes/groupRoutes')
 const meetingRouter = require('./src/routes/meetingRoutes')
 
 const db = require('./src/db')
@@ -18,7 +17,7 @@ app.use(express.urlencoded({ extended: true }))
 const port = 3000
 
 app.use('/', mainRouter)
-app.use('/groups', groupRouter)
+
 app.use('/meetings', meetingRouter)
 
 
