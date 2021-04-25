@@ -1,4 +1,3 @@
-
 const express = require('express')
 const mainRouter = express.Router()
 const meetings = require('../controllers/meetings')

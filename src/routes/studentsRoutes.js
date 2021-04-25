@@ -14,6 +14,4 @@ router.post('/', function (req, res) {
   res.redirect('/students')
 })
 
-
-
 module.exports = router
