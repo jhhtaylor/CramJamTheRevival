@@ -9,6 +9,6 @@ module.exports.add = (newMeeting) => {
     meetings.push(newMeeting)
 }
 
-module.exports.list = ()=>{
+module.exports.list = () => {
     return meetings
 }
