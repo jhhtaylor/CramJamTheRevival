@@ -1,6 +1,7 @@
 const groups = require('../../src/controllers/groups')
 
-test('creates a new group', () => {
-  const name = 'Study Group 3'
-  const newGroup = { name: name, members: [] }
+describe('Groups Test Suite', () => {
+  test('should create a new study group', () => {
+    // test goes here
+  })
 })
