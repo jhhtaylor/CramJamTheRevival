@@ -1,4 +1,4 @@
-const groups = require('../../../src/controllers/group')
+const groups = require('../../../src/controllers/groups')
 
 // will change once there is access to database
 describe('Group controller functionality', () => {
