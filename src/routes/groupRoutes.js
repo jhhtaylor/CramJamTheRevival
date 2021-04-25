@@ -15,8 +15,8 @@ router.post('/', function (req, res) {
   res.redirect('/groups')
 })
 
-router.get('/new', function (req, res) {
-  res.render('newGroup.ejs')
+router.get('/create', function (req, res) {
+  res.render('createGroup.ejs')
 })
 
 module.exports = router
