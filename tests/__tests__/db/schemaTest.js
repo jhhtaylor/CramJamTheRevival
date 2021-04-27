@@ -19,6 +19,7 @@ describe('Profile test suite', () => {
     checkStringEquals(newProfile.email, newSavedProfile.email)
     checkStringEquals(newProfile.firstName, newSavedProfile.firstName)
     checkStringEquals(newProfile.lastName, newSavedProfile.lastName)
+    await StudentProfile.deleteMany({})
   })
 
   test('should retrieve profile from the database', async () => {
@@ -29,11 +30,12 @@ describe('Profile test suite', () => {
       groups: []
     })
     const newSavedProfile = await newProfile.save()
-    const checkProfile = await StudentProfile.findOne({ email: newProfile.email })
+    const checkProfile = await StudentProfile.findOne({ email: newSavedProfile.email })
     checkNotEmpty(checkProfile)
     checkStringEquals(newSavedProfile.email, checkProfile.email)
     checkStringEquals(newSavedProfile.firstName, checkProfile.firstName)
     checkStringEquals(newSavedProfile.lastName, checkProfile.lastName)
+    await StudentProfile.deleteMany({})
   })
 
   test('should update profile in the database', async () => {
@@ -45,9 +47,10 @@ describe('Profile test suite', () => {
     })
     const newEmail = 'updatedUser@gmail.com'
     const newSavedProfile = await newProfile.save()
-    const checkProfile = await StudentProfile.findOneAndUpdate({ email: newProfile.email }, { $set: { email: newEmail } }, { new: true })
+    const checkProfile = await StudentProfile.findOneAndUpdate({ email: newSavedProfile.email }, { $set: { email: newEmail } }, { new: true })
     checkNotEmpty(checkProfile)
     checkStringEquals(checkProfile.email, newEmail)
+    await StudentProfile.deleteMany({})
   })
 })
 

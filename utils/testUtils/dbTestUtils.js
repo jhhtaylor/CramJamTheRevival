@@ -15,6 +15,7 @@ module.exports.dbConnect = async () => {
   }
 
   await mongoose.connect(uri, mongooseOpts)
+  await mongoose.connection.db.dropCollection('studentprofiles')
 }
 
 // Disconnect function for memory mongodb
