@@ -3,7 +3,7 @@ const mainRouter = express.Router()
 const meetings = require('../controllers/meetings')
 
 mainRouter.get('/', function (req, res) {
-  res.send('Hello Express')
+  res.render('index')
 })
 
 module.exports = mainRouter

@@ -16,6 +16,10 @@ router.post('/', function (req, res) {
 
 router.route('/register')
   .get(students.renderRegisterStudent)
-  .post(students.registerStudent)
+  .post(async (req, res) => {
+    const { email, firstName, lastName, password, username } = req.body
+    const student = { email, firstName, lastName, password, username }
+    students.registerStudent(student)
+  })
 
 module.exports = router

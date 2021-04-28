@@ -30,7 +30,8 @@ async function generateStudents (firstNames, lastNames, numStudents) {
       firstName: firstName,
       lastName: lastName,
       password: '',
-      groups: []
+      groups: [],
+      username: `${firstName}${lastName}${i}`
     }
     insertStudents.push(newStudent)
   }

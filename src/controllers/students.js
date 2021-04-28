@@ -19,8 +19,9 @@ module.exports.renderRegisterStudent = (req, res) => {
   res.render('students/register')
 }
 
-module.exports.registerStudent = async (req, res) => {
-  const { email, firstName, lastName, password } = req.body
-  const newStudent = new StudentProfile({ email, firstName, lastName })
-  StudentProfile.register(newStudent, password)
+module.exports.registerStudent = async (student) => {
+  const { email, firstName, lastName, password, username } = student
+  const newStudent = new StudentProfile({ email, firstName, lastName, username })
+  const savedStudent = await StudentProfile.register(newStudent, password)
+  return savedStudent
 }
