@@ -24,6 +24,5 @@ module.exports.createGroup = async (req, res, next) => {
 module.exports.deleteGroup = async (req, res) => {
   const { id } = req.params
   await GroupSchema.findByIdAndDelete(id)
-  req.flash('success', 'Successfully deleted group')
-  res.redirect('/group')
+  res.redirect('/groups')
 }
