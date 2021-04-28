@@ -1,4 +1,3 @@
-
 const path = require('path')
 const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
@@ -13,6 +12,6 @@ router.get('/new', groups.renderNewForm)
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
-  .delete(catchAsync(groups.deleteGroup))
+  .post(catchAsync(groups.deleteGroup))
 
 module.exports = router
