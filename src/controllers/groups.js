@@ -20,6 +20,14 @@ module.exports.createGroup = async (req, res, next) => {
   // req.flash('success', 'Successfully made a new group!')
   res.redirect('/groups/')
 }
+module.exports.showGroup = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.id)
+  if (!group) {
+    // req.flash('error', 'Cannot find that group!')
+    return res.redirect('/groups')
+  }
+  res.render('groups/show', { group })
+}
 
 module.exports.deleteGroup = async (req, res) => {
   const { id } = req.params

@@ -11,4 +11,8 @@ router.route('/')
 
 router.get('/new', groups.renderNewForm)
 
+router.route('/:id')
+  .get(catchAsync(groups.showGroup))
+  .delete(catchAsync(groups.deleteGroup))
+
 module.exports = router
