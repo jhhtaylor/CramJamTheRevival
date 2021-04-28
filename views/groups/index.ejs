@@ -1,0 +1,15 @@
+<%- include ('../partials/header') %> 
+<div class="container">
+    <h1>All Groups</h1>
+
+    <% for (let group of groups){%>
+    <div class="card mb-3">
+        <h4><%= group.name %></h4>
+        <% for (var i = 0; i < group.members.length; i++) { %>
+            <li> <%= group.members[i]%> </li>
+        <% } %>
+    </div>
+    <% }%>
+</div>
+
+<%- include ('../partials/footer') %> 

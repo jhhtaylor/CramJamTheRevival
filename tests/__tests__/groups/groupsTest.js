@@ -1,7 +1,7 @@
 const groups = require('../../../src/controllers/groups')
 
 // will change once there is access to database
-describe('Group controller functionality', () => {
+/*describe('Group controller functionality', () => {
   test('A group can be added', async () => {
     const prevLength = groups.list().length
     const newGroup = {
@@ -24,5 +24,5 @@ describe('Group controller functionality', () => {
     // groups.deleteMember('New Test Group', 'Tori')
     expect(newLength - prevLength).toBe(1)
     expect(groups.list()[3].name).toBe('New')
-  }) */
-})
+  })
+}) */
