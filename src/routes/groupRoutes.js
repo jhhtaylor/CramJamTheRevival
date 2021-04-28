@@ -14,4 +14,7 @@ router.route('/:id')
   .get(catchAsync(groups.showGroup))
   .post(catchAsync(groups.deleteGroup))
 
+router.route('/:id/edit/:member')
+  .post(catchAsync(groups.deleteGroupMember))
+
 module.exports = router

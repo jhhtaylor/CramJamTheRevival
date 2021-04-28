@@ -34,3 +34,11 @@ module.exports.deleteGroup = async (req, res) => {
   await GroupSchema.findByIdAndDelete(id)
   res.redirect('/groups')
 }
+
+module.exports.deleteGroupMember = async (req, res) => {
+  const id = req.params.id
+  const member = req.params.member
+  await GroupSchema.updateOne({ _id: id },
+    { $pull: { members: member } })
+  res.redirect('/groups')
+}
