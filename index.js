@@ -8,15 +8,27 @@ const groupRouter = require('./src/routes/groupRoutes')
 const studentRouter = require('./src/routes/studentsRoutes')
 
 const db = require('./src/db')
+const { settings } = require('./utils/sessionSettings')
+const { StudentProfile } = require('./src/db/studentProfiles')
 
 const app = express()
 const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
+const session = require('express-session')
+const passport = require('passport')
+const LocalPassport = require('passport-local')
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use(session(settings)) // creating session tokens
+app.use(passport.initialize()) // initialise passort
+app.use(passport.session()) // add passport login between sessions
+
+passport.use(new LocalPassport(StudentProfile.authenticate())) // use a local storage strategy
+passport.serializeUser(StudentProfile.serializeUser()) // function added by passport-local-mongoose
+passport.deserializeUser(StudentProfile.deserializeUser()) // function added by passport-local-mongoose
 
 const port = 3000
 
