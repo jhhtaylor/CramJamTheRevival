@@ -4,13 +4,13 @@
     <div class="card mb-3">
         <h4><%= group.name %></h4>
         <% for (var i = 0; i < group.members.length; i++) { %>
-            <li> <%= group.members[i]%> <form class="d-inline" action="/groups/<%=group._id%>/edit/<%=group.members[i]%>?_method=POST" method="POST">
+            <li> <%= group.members[i]%> <form class="d-inline" action="/groups/<%=group._id%>/edit/<%=group.members[i]%>?_method=DELETE" method="POST">
                 <button>Remove</button>
             </form></li>
         <% } %>
         
     </div>
-    <form class="d-inline" action="/groups/<%=group._id%>?_method=POST" method="POST">
+    <form class="d-inline" action="/groups/<%=group._id%>?_method=DELETE" method="POST">
         <button>Delete Group</button>
     </form>
 

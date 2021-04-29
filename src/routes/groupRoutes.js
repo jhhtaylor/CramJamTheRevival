@@ -12,9 +12,9 @@ router.get('/new', groups.renderNewForm)
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
-  .post(catchAsync(groups.deleteGroup))
+  .delete(catchAsync(groups.deleteGroup))
 
 router.route('/:id/edit/:member')
-  .post(catchAsync(groups.deleteGroupMember))
+  .delete(catchAsync(groups.deleteGroupMember))
 
 module.exports = router
