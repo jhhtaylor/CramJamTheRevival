@@ -6,9 +6,10 @@ const router = express.Router()
 
 router.route('/')
   .get(catchAsync(groups.index))
-  .post(catchAsync(groups.createGroup))
 
-router.get('/new', groups.renderNewForm)
+router.route('/new')
+  .get(groups.renderNewForm)
+  .post(catchAsync(groups.createGroup))
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
