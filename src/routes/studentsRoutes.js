@@ -20,6 +20,7 @@ router.route('/register')
     const { email, firstName, lastName, password, username } = req.body
     const student = { email, firstName, lastName, password, username }
     students.registerStudent(student)
+    res.redirect('/')
   })
 
 module.exports = router
