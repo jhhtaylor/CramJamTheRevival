@@ -1,31 +1,44 @@
-// Private
-const list = [
-  {
-    name: 'Study Group 1',
-    members: ['Tori', 'Blake', 'Duncan']
-  },
-  {
-    name: 'Study Group 2',
-    members: ['Jon', 'Josh', 'Jess']
-  }
-
-]
+const { GroupSchema } = require('../db/groups')
 // Public
 
-module.exports = {
-  add: function (name) {
-    const newGroup = { name: name, members: [] }
-    list.push(newGroup)
-  },
+module.exports.index = async (req, res) => {
+  const groups = await GroupSchema.find({})
+  res.render('groups/index', { groups })
+}
 
-  list: function () {
-    return list
-  },
+module.exports.renderNewForm = (req, res) => {
+  res.render('groups/new')
+}
 
-  deleteMember: function (groupName, studentName) {
-    const groupIndex = list.findIndex(item => item.name === groupName)
-    const studentIndex = list[groupIndex].members.indexOf(studentName)
-    list[groupIndex].members.splice(studentIndex, 1)
+module.exports.createGroup = async (req, res, next) => {
+  const group = new GroupSchema({
+    name: req.body.name
+  })
+  // group.members = [req.user._id]
+  await group.save()
+  console.log(group)
+  // req.flash('success', 'Successfully made a new group!')
+  res.redirect('/groups/')
+}
+module.exports.showGroup = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.id)
+  if (!group) {
+    // req.flash('error', 'Cannot find that group!')
+    return res.redirect('/groups')
   }
+  res.render('groups/show', { group })
+}
 
+module.exports.deleteGroup = async (req, res) => {
+  const { id } = req.params
+  await GroupSchema.findByIdAndDelete(id)
+  res.redirect('/groups')
+}
+
+module.exports.deleteGroupMember = async (req, res) => {
+  const id = req.params.id
+  const member = req.params.member
+  await GroupSchema.updateOne({ _id: id },
+    { $pull: { members: member } })
+  res.redirect('/groups')
 }

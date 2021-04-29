@@ -4,6 +4,8 @@
 <form action="/groups/edit" method="POST">
     <input type = "text" name="groupName" placeholder="Group Name">
     <input type = "text" name="studentName" placeholder="Student Name">
-    <button>Delete Student</button>
+    <form action="/groups/<%=group._id%>?_method=DELETE" method="POST">
+        <button class="btn btn-sm btn-danger">Delete</button>
+    </form>
 </form>
 <%- include ('../partials/footer') %> 
