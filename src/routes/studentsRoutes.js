@@ -1,7 +1,9 @@
 
 const path = require('path')
 const express = require('express')
+const passport = require('passport')
 const students = require('../controllers/students')
+const catchAsync = require('../../utils/catchAsync')
 const router = express.Router()
 
 router.get('/', function (req, res) {
@@ -16,11 +18,13 @@ router.post('/', function (req, res) {
 
 router.route('/register')
   .get(students.renderRegisterStudent)
-  .post(async (req, res) => {
-    const { email, firstName, lastName, password, username } = req.body
-    const student = { email, firstName, lastName, password, username }
-    students.registerStudent(student)
-    res.redirect('/')
-  })
+  .post(catchAsync(students.registerStudent))
+
+router.route('/login')
+  .get(students.renderLogin)
+  .post(passport.authenticate('local', { failureRedirect: '/students/login', failureFlash: true }), catchAsync(students.loginStudent))
+
+router.route('/logout')
+  .get(students.logoutStudent)
 
 module.exports = router
