@@ -1,9 +1,8 @@
 const students = require('../../../src/controllers/students')
 const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
-const { createApp } = require('../../../utils/testUtils/expressTestUtils')
+const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
-const app = createApp()
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
@@ -35,7 +34,9 @@ describe('Student controller functionality', () => {
       username: `${first}${last}`,
       password: pw
     }
-    await students.registerStudent(newStudent) // registering a student requires a password, but not passed in on the object
+    const res = { redirect (url) { return url } }
+    const req = { body: newStudent }
+    await students.registerStudent(req, res)
     const retrieved = await StudentProfile.findOne({ email: newStudent.email })
     checkNotEmpty(retrieved)
     checkStringEquals(retrieved.email, newStudent.email)
@@ -43,10 +44,5 @@ describe('Student controller functionality', () => {
     checkStringEquals(retrieved.lastName, newStudent.lastName)
     checkStringEquals(retrieved.username, newStudent.username)
     StudentProfile.deleteMany({})
-  })
-
-  test('A student can view the registration page through the route', async () => {
-    const response = await supertest(app).get('/students/register')
-    expect(response.status).toBe(200)
   })
 })
