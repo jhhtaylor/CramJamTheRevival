@@ -19,6 +19,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
 
+// app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'public')))

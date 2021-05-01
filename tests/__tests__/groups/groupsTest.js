@@ -1,5 +1,5 @@
 const groups = require('../../../src/controllers/groups')
-const GroupSchema = require('../../../src/db/groups')
+const { GroupSchema } = require('../../../src/db/groups')
 const { dbConnect, dbDisconnect } = require('../../../utils/testUtils/dbTestUtils')
 
 beforeAll(async () => { dbConnect() })
@@ -9,8 +9,10 @@ afterAll(async () => { dbDisconnect() })
 describe('Group controller functionality', () => {
   test('A group can be added to the database', async () => {
     const testName = 'New Test Group'
-    groups.createGroup(testName)
-    const expectedGroup = await GroupSchema.find({})
+    const req = { body: { name: testName } }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const expectedGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(expectedGroup.name)
   })
 })
