@@ -39,7 +39,9 @@
     "supertest": "^6.1.3"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coverageDirectory": "./tests/coverage",
+    "collectCoverage": true
   },
   "standard": {
     "env": [
