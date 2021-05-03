@@ -1,5 +1,5 @@
 # Project CramJam
-[![Coverage Status](https://coveralls.io/repos/github/witseie-elen4010/2021-001-project/badge.svg?branch=duncan/travis-ci-testing&t=l7nzHP)](https://coveralls.io/github/witseie-elen4010/2021-001-project?branch=duncan/travis-ci-testing)
+[![Coverage Status](https://coveralls.io/repos/github/witseie-elen4010/2021-001-project/badge.svg?branch=master&t=l7nzHP)](https://coveralls.io/github/witseie-elen4010/2021-001-project?branch=master)
 [![Build Status](https://www.travis-ci.com/witseie-elen4010/2021-001-project.svg?token=vQS41SKpq3nkq6xz142w&branch=master)](https://www.travis-ci.com/witseie-elen4010/2021-001-project)
 ---
 
