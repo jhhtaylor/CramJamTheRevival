@@ -1,3 +1,5 @@
+if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+
 const path = require('path')
 const express = require('express')
 
@@ -34,7 +36,7 @@ passport.use(new LocalPassport(StudentProfile.authenticate())) // use a local st
 passport.serializeUser(StudentProfile.serializeUser()) // function added by passport-local-mongoose
 passport.deserializeUser(StudentProfile.deserializeUser()) // function added by passport-local-mongoose
 
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.use((req, res, next) => {
   res.locals.success = req.flash('success')
