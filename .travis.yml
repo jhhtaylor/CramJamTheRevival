@@ -20,4 +20,3 @@ deploy:
   cleanup: false
   on:
     branch: master
-    tags: true
