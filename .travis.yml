@@ -18,5 +18,4 @@ script:
 deploy:
   provider: azure_web_apps
   cleanup: false
-  on:
-    branch: master
+  verbose: true
