@@ -16,7 +16,6 @@ module.exports.createGroup = async (req, res, next) => {
   })
   // group.members = [req.user._id]
   await group.save()
-  console.log(group)
   // req.flash('success', 'Successfully made a new group!')
   res.redirect('/groups/')
 }
