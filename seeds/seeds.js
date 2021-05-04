@@ -20,6 +20,12 @@ generateStudents(studentFirstNames, studentLastNames, 10)
 
 async function generateStudents (firstNames, lastNames, numStudents) {
   const insertStudents = []
+  const location = 'Wits'
+  const coordinates = [28.0305, 26.1929] // longitude latitude for wits
+  const geodata = {
+    type: 'Point',
+    coords: coordinates
+  }
 
   // generate a random set of user profile data
   for (let i = 0; i < numStudents; i++) {
@@ -31,7 +37,9 @@ async function generateStudents (firstNames, lastNames, numStudents) {
       lastName: lastName,
       password: '',
       groups: [],
-      username: `${firstName}${lastName}${i}`
+      username: `${firstName}${lastName}${i}`,
+      location,
+      geodata
     }
     insertStudents.push(newStudent)
   }
