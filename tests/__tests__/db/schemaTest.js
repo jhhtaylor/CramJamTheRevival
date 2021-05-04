@@ -29,6 +29,8 @@ describe('Profile test suite', () => {
     checkStringEquals(newProfile.email, newSavedProfile.email)
     checkStringEquals(newProfile.firstName, newSavedProfile.firstName)
     checkStringEquals(newProfile.lastName, newSavedProfile.lastName)
+    checkStringEquals(newProfile.location, newSavedProfile.location)
+    checkArraysEqual(newProfile.geodata.coordinates, newSavedProfile.geodata.coordinates)
     await StudentProfile.deleteMany({})
   })
 
@@ -54,6 +56,7 @@ describe('Profile test suite', () => {
     checkStringEquals(newSavedProfile.email, checkProfile.email)
     checkStringEquals(newSavedProfile.firstName, checkProfile.firstName)
     checkStringEquals(newSavedProfile.lastName, checkProfile.lastName)
+    checkStringEquals(newSavedProfile.location, checkProfile.location)
     await StudentProfile.deleteMany({})
   })
 
