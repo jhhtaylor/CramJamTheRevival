@@ -1,0 +1,27 @@
+<%- include('../partials/header') %> 
+<%- include('../partials/flash') %> 
+<h2>All Polls</h2>
+
+<% for(let poll of polls) { %>
+  <div class="card mb-3 ">
+    <div class="card-body">
+        <h5 class="card-title"> 
+          <%= poll.name %>
+          <% if(poll.members.includes(signedInUser._id)) { %> 
+          <form action="/polls/<% poll._id %> " method="get">
+            <button class="btn btn-primary">View</button>
+          </form>
+          <% } %> 
+        </h5>
+    </div>
+  </div>
+<% } %>  
+
+<a class="btn btn-primary" href="/"> Home </a>
+<% if(signedInUser) { %> 
+<form action="/polls/" method="post">
+  <button class="btn btn-primary">New Poll</button>
+</form>
+<% } %> 
+
+<%- include('../partials/footer') %> 

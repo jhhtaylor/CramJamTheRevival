@@ -8,6 +8,7 @@ const mainRouter = require('./src/routes/mainRoutes')
 const meetingRouter = require('./src/routes/meetingRoutes')
 const groupRouter = require('./src/routes/groupRoutes')
 const studentRouter = require('./src/routes/studentsRoutes')
+const pollsRouter = require('./src/routes/poll')
 
 const db = require('./src/db')
 const { settings } = require('./utils/sessionSettings')
@@ -48,6 +49,7 @@ app.use('/', mainRouter)
 app.use('/students', studentRouter)
 app.use('/groups', groupRouter)
 app.use('/meetings', meetingRouter)
+app.use('/polls', pollsRouter)
 
 app.listen(port)
 
