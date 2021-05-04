@@ -26,7 +26,7 @@ module.exports.registerStudent = async (req, res) => {
   // hardcoded geolocation data which will become part of the form at some point
   const geodata = {
     type: 'Point',
-    coords: coordinates
+    coordinates
   }
   const newStudent = new StudentProfile({ email, firstName, lastName, username, location, geodata })
   const savedStudent = await StudentProfile.register(newStudent, password)
