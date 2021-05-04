@@ -8,12 +8,22 @@ afterAll(async () => { dbDisconnect() })
 
 describe('Profile test suite', () => {
   test('should save new profile to database', async () => {
+    const location = 'Wits'
+    const coordinates = [28.0305, -26.1929] // longitude latitude for wits
+    // hardcoded geolocation data which will become part of the form at some point
+    const geodata = {
+      type: 'Point',
+      coordinates
+    }
     const newProfile = new StudentProfile({
       email: 'newUser@gmail.com',
       firstName: 'Steve',
       lastName: 'Mojang',
-      groups: []
+      groups: [],
+      location,
+      geodata
     })
+
     const newSavedProfile = await newProfile.save()
     checkNotEmpty(newProfile)
     checkStringEquals(newProfile.email, newSavedProfile.email)
@@ -23,11 +33,20 @@ describe('Profile test suite', () => {
   })
 
   test('should retrieve profile from the database', async () => {
+    const location = 'Wits'
+    const coordinates = [28.0305, -26.1929] // longitude latitude for wits
+    // hardcoded geolocation data which will become part of the form at some point
+    const geodata = {
+      type: 'Point',
+      coordinates
+    }
     const newProfile = new StudentProfile({
       email: 'retrieveUser@gmail.com',
       firstName: 'Jess',
       lastName: 'Spatula',
-      groups: []
+      groups: [],
+      location,
+      geodata
     })
     const newSavedProfile = await newProfile.save()
     const checkProfile = await StudentProfile.findOne({ email: newSavedProfile.email })
@@ -39,11 +58,20 @@ describe('Profile test suite', () => {
   })
 
   test('should update profile in the database', async () => {
+    const location = 'Wits'
+    const coordinates = [28.0305, -26.1929] // longitude latitude for wits
+    // hardcoded geolocation data which will become part of the form at some point
+    const geodata = {
+      type: 'Point',
+      coordinates
+    }
     const newProfile = new StudentProfile({
       email: 'oldUser@gmail.com',
       firstName: 'Jess',
       lastName: 'Spatula',
-      groups: []
+      groups: [],
+      location,
+      geodata
     })
     const newEmail = 'updatedUser@gmail.com'
     const newSavedProfile = await newProfile.save()
