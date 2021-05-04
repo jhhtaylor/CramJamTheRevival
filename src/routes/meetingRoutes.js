@@ -8,6 +8,7 @@ router.get('/', function (req, res) {
   res.render('meetings/meetings', { meetings: meetings.list() })
 })
 
+// TODO: Refactor to make more restful and make use of the determineMeetingLocation function
 router.post('/', function (req, res) {
   const newMeeting = { GroupName: req.body.GroupName, StartTime: req.body.StartTime, EndTime: req.body.EndTime }
   meetings.add(newMeeting)
