@@ -2,6 +2,7 @@ const { StudentProfile } = require('../src/db/studentProfiles')
 const { GroupSchema } = require('../src/db/groups')
 const { MeetingSchema } = require('../src/db/meetings')
 const { db } = require('../src/db')
+const { getGeoData } = require('./locationHelper')
 
 const studentFirstNames = ['Dave', 'Steve', 'Will', 'Jess', 'Emily', 'Rebecca']
 const studentLastNames = ['Stevens', 'Williams', 'Denham', 'Tobias', 'Taylor', 'Bench']
@@ -20,15 +21,12 @@ generateStudents(studentFirstNames, studentLastNames, 10)
 
 async function generateStudents (firstNames, lastNames, numStudents) {
   const insertStudents = []
-  const location = 'Wits'
-  const coordinates = [28.0305, 26.1929] // longitude latitude for wits
-  const geodata = {
-    type: 'Point',
-    coords: coordinates
-  }
 
   // generate a random set of user profile data
   for (let i = 0; i < numStudents; i++) {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
     const newStudent = {

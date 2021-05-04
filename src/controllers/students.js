@@ -22,7 +22,7 @@ module.exports.renderRegisterStudent = (req, res) => {
 module.exports.registerStudent = async (req, res) => {
   const { email, firstName, lastName, password, username } = req.body
   const location = 'Wits'
-  const coordinates = [28.0305, 26.1929] // longitude latitude for wits
+  const coordinates = [28.0305, -26.1929] // longitude latitude for wits
   // hardcoded geolocation data which will become part of the form at some point
   const geodata = {
     type: 'Point',
