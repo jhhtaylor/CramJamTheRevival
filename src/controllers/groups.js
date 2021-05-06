@@ -1,8 +1,10 @@
 const { GroupSchema } = require('../db/groups')
+const { StudentProfile } = require('../db/studentProfiles')
 // Public
 
 module.exports.index = async (req, res) => {
-  const groups = await GroupSchema.find({})
+  const userGroups = req.user.groups
+  const groups = await GroupSchema.find({ _id: { $in: userGroups } })
   res.render('groups/index', { groups })
 }
 
@@ -12,11 +14,15 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createGroup = async (req, res, next) => {
   const group = new GroupSchema({
-    name: req.body.name
+    name: req.body.name,
+    members: [req.user._id]
   })
   // group.members = [req.user._id]
   await group.save()
-  // req.flash('success', 'Successfully made a new group!')
+  const user = await StudentProfile.findById(req.user._id)
+  user.groups.push(group._id)
+  await user.save()
+  req.flash('success', 'Created new group!')
   res.redirect('/groups/')
 }
 module.exports.showGroup = async (req, res) => {
