@@ -1,21 +1,22 @@
 const path = require('path')
 const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
+const { isLoggedIn } = require('../middleware/middleware')
 const groups = require('../controllers/groups')
 const router = express.Router()
 
 router.route('/')
-  .get(catchAsync(groups.index))
+  .get(isLoggedIn, catchAsync(groups.index))
 
 router.route('/new')
   .get(groups.renderNewForm)
-  .post(catchAsync(groups.createGroup))
+  .post(isLoggedIn, catchAsync(groups.createGroup))
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
-  .delete(catchAsync(groups.deleteGroup))
+  .delete(isLoggedIn, catchAsync(groups.deleteGroup))
 
 router.route('/:id/edit/:member')
-  .delete(catchAsync(groups.deleteGroupMember))
+  .delete(isLoggedIn, catchAsync(groups.deleteGroupMember))
 
 module.exports = router
