@@ -22,7 +22,7 @@ module.exports.createGroup = async (req, res, next) => {
   const user = await StudentProfile.findById(req.user._id)
   user.groups.push(group._id)
   await user.save()
-  req.flash('success', 'Created new group!')
+  // req.flash('success', 'Created new group!')
   res.redirect('/groups/')
 }
 module.exports.showGroup = async (req, res) => {
@@ -36,11 +36,29 @@ module.exports.showGroup = async (req, res) => {
 
 module.exports.deleteGroup = async (req, res) => {
   const { id } = req.params
+  const group = await GroupSchema.findById(id)
+  const members = group.members
   await GroupSchema.findByIdAndDelete(id)
+  await StudentProfile.updateMany({ _id: { $in: members } },
+    { $pull: { groups: id } })
   res.redirect('/groups')
 }
 
 module.exports.deleteGroupMember = async (req, res) => {
+  /* const groupId = req.params.id
+  const memberId = req.params.member
+  console.log(groupId)
+  const group = await GroupSchema.findById(groupId)
+  console.log(group._id)
+  if (group.members.length === 1) {
+    await GroupSchema.remove({ _id: groupId })
+  } else {
+    await GroupSchema.updateOne({ _id: groupId },
+      { $pull: { members: memberId } })
+  }
+  await StudentProfile.updateOne({ _id: memberId },
+    { $pull: { groups: groupId } })
+  res.redirect('/groups') */
   const id = req.params.id
   const member = req.params.member
   await GroupSchema.updateOne({ _id: id },
