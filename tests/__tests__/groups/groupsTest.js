@@ -7,15 +7,15 @@ const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
 const request = supertest.agent(app)
 
-beforeAll(async () => {
-  dbConnect()
-  await StudentProfile.deleteMany({})
-  await GroupSchema.deleteMany({})
-})
+beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
 
 // will change once there is access to database
 describe('Group controller functionality', () => {
+  beforeAll(async () => {
+    await StudentProfile.deleteMany({})
+    await GroupSchema.deleteMany({})
+  })
   test('A group can be added to the database', async () => {
     const testName = 'New Test Group'
     const req = { body: { name: testName } }
