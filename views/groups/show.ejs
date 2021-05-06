@@ -3,12 +3,20 @@
     
     <div class="card mb-3">
         <h4><%= group.name %></h4>
+        <h5>Group members</h5>
         <% for (var i = 0; i < group.members.length; i++) { %>
             <li> <%= group.members[i]%> <form class="d-inline" action="/groups/<%=group._id%>/edit/<%=group.members[i]%>?_method=DELETE" method="POST">
                 <button>Remove</button>
             </form></li>
         <% } %>
-        
+        <h5>Pending invites</h5>
+        <% for (var i = 0; i < group.invites.length; i++) { %>
+            <li> <%= group.invites[i]%> </li>
+        <% } %>
+
+        <div>
+            <a class="btn btn-primary" href="/groups/<%=group._id%>/explore"> Invite new members </a>
+        </div>
     </div>
     <form class="d-inline" action="/groups/<%=group._id%>?_method=DELETE" method="POST">
         <button>Delete Group</button>

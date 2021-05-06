@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
 const groups = require('../controllers/groups')
+const { route } = require('./studentsRoutes')
 const router = express.Router()
 
 router.route('/')
@@ -17,5 +18,11 @@ router.route('/:id')
 
 router.route('/:id/edit/:member')
   .delete(catchAsync(groups.deleteGroupMember))
+
+router.route('/:id/explore')
+  .get(catchAsync(groups.explore))
+
+router.route('/:id/invite/:member')
+  .post(catchAsync(groups.inviteGroupMember))
 
 module.exports = router
