@@ -45,11 +45,9 @@ module.exports.deleteGroup = async (req, res) => {
 }
 
 module.exports.deleteGroupMember = async (req, res) => {
-  /* const groupId = req.params.id
+  const groupId = req.params.id
   const memberId = req.params.member
-  console.log(groupId)
   const group = await GroupSchema.findById(groupId)
-  console.log(group._id)
   if (group.members.length === 1) {
     await GroupSchema.remove({ _id: groupId })
   } else {
@@ -58,10 +56,5 @@ module.exports.deleteGroupMember = async (req, res) => {
   }
   await StudentProfile.updateOne({ _id: memberId },
     { $pull: { groups: groupId } })
-  res.redirect('/groups') */
-  const id = req.params.id
-  const member = req.params.member
-  await GroupSchema.updateOne({ _id: id },
-    { $pull: { members: member } })
   res.redirect('/groups')
 }
