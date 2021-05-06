@@ -1,4 +1,6 @@
+const { getGeoData } = require('../../../seeds/locationHelper')
 const meetings = require('../../../src/controllers/meetings')
+const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
 
 // will change once there is access to database
 describe('Meeting controller functionality', () => {
@@ -12,5 +14,16 @@ describe('Meeting controller functionality', () => {
     meetings.add(newMeeting)
     const newLength = meetings.list().length
     expect(newLength - prevLength).toBe(1)
+  })
+
+  test('Selects one of the locations for the meeting location', () => {
+    const students = []
+    for (let i = 0; i < 4; i++) {
+      const newStudent = getGeoData()
+      students.push(newStudent)
+    }
+    const meetingLocation = meetings.determineMeetingLocation(students)
+    checkNotEmpty(meetingLocation)
+    expect(students).toContainEqual(meetingLocation)
   })
 })
