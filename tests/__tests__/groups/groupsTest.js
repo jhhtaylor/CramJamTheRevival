@@ -9,13 +9,12 @@ const request = supertest.agent(app)
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
-
+beforeEach(async () => {
+  await StudentProfile.deleteMany({})
+  await GroupSchema.deleteMany({})
+})
 // will change once there is access to database
 describe('Group controller functionality', () => {
-  beforeAll(async () => {
-    await StudentProfile.deleteMany({})
-    await GroupSchema.deleteMany({})
-  })
   test('A group can be added to the database', async () => {
     const testName = 'New Test Group'
     const req = { body: { name: testName } }
