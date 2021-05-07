@@ -47,7 +47,6 @@ module.exports.addGroupMember = async (req, res) => {
   const { id,member } = req.params
   const addStudent = await StudentProfile.findOne({}); //find first user in database
   const group = await GroupSchema.findByIdAndUpdate(id, {$push:{members:addStudent._id}});
-  console.log("does work?",member);
 
   res.redirect(`/groups/${id}`);
 }
