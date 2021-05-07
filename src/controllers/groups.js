@@ -1,4 +1,5 @@
 const { GroupSchema } = require('../db/groups')
+const { StudentProfile } = require('../db/studentProfiles')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -40,4 +41,13 @@ module.exports.deleteGroupMember = async (req, res) => {
   await GroupSchema.updateOne({ _id: id },
     { $pull: { members: member } })
   res.redirect('/groups')
+}
+
+module.exports.addGroupMember = async (req, res) => {
+  const { id,member } = req.params
+  const addStudent = await StudentProfile.findOne({}); //find first user in database
+  const group = await GroupSchema.findByIdAndUpdate(id, {$push:{members:addStudent._id}});
+  console.log("does work?",member);
+
+  res.redirect(`/groups/${id}`);
 }
