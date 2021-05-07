@@ -59,5 +59,5 @@ module.exports.inviteGroupMember = async (req, res) => {
     { $push: { invites: memberId } })
   await StudentProfile.updateOne({ _id: memberId },
     { $push: { invites: groupId } })
-  res.redirect('/groups')
+  res.redirect(`/groups/${groupId}`)
 }
