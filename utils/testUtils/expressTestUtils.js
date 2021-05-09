@@ -4,6 +4,7 @@ const mainRouter = require('../../src/routes/mainRoutes')
 const meetingRouter = require('../../src/routes/meetingRoutes')
 const groupRouter = require('../../src/routes/groupRoutes')
 const studentRouter = require('../../src/routes/studentsRoutes')
+const pollsRouter = require('../../src/routes/poll')
 
 const { settings } = require('../sessionSettings')
 const { StudentProfile } = require('../../src/db/studentProfiles')
@@ -39,5 +40,6 @@ app.use('/', mainRouter)
 app.use('/students', studentRouter)
 app.use('/groups', groupRouter)
 app.use('/meetings', meetingRouter)
+app.use('/polls', pollsRouter)
 
 module.exports.app = app

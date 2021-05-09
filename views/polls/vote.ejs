@@ -1,5 +1,18 @@
 <%- include('../partials/header') %> 
 <%- include('../partials/flash') %> 
-<h2></h2>
+<h2>Vote to <%= poll.action %> <%= poll.affected %> </h2>
+
+<% if(!poll.voted.includes(signedInUser._id)) { %> 
+<form action="/polls/<%= poll._id %>/yes" method="POST">
+  <button class="btn btn-success">Yes</button>
+</form>
+<form action="/polls/<%= poll._id %>/no" method="POST">
+  <button class="btn btn-danger">No</button>
+</form>
+<% } else { %> 
+<h3>Yes: <%= poll.votes.yes %> </h3>
+<h3>No: <%= poll.votes.no %> </h3>
+<h4>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %></h4>
+<% } %> 
 
 <%- include('../partials/footer') %> 
