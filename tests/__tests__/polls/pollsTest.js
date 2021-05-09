@@ -1,7 +1,7 @@
 const poll = require('../../../src/controllers/poll')
 const { Poll } = require('../../../src/db/poll')
 const { StudentProfile } = require('../../../src/db/studentProfiles')
-const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
+const { dbConnect, dbDisconnect } = require('../../../utils/testUtils/dbTestUtils')
 const { getGeoData } = require('../../../seeds/locationHelper')
 const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
@@ -94,7 +94,7 @@ describe('Poll controller functionality', () => {
     expect(response.status).toBe(200)
     done()
   })
-  
+
   test('Can view a poll', async (done) => {
     const data = getGeoData()
     const location = data.location
@@ -148,7 +148,7 @@ describe('Poll controller functionality', () => {
     expect(checkPoll.members).toContainEqual(savedStudent._id)
   })
 
-  test('Can create poll through route', async() => {
+  test('Can create poll through route', async () => {
 
   })
 })

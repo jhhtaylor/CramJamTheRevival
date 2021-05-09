@@ -1,4 +1,3 @@
-const path = require('path')
 const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
 const poll = require('../controllers/poll')
