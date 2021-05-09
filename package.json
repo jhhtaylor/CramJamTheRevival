@@ -41,7 +41,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "testTimeout": 20000,
     "coverageDirectory": "./tests/coverage",
     "collectCoverage": true
   },
@@ -49,10 +48,5 @@
     "env": [
       "jest"
     ]
-  },
-  "config": {
-    "mongodbMemoryServer": {
-      "version": "4.4.1"
-    }
   }
 }
