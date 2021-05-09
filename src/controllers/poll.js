@@ -2,9 +2,9 @@ const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
 
 module.exports.showPoll = async (req, res) => {
-  const { pollid } = req.body
-  const poll = await Poll.findById(pollid)
-  res.render('polls/vote', { poll })
+  const { poll } = req.params
+  const found = await Poll.findById(poll)
+  res.render('polls/vote', { poll: found })
 }
 
 module.exports.showAllPolls = async (req, res) => {
@@ -13,20 +13,45 @@ module.exports.showAllPolls = async (req, res) => {
 }
 
 module.exports.votePoll = async (req, res) => {
+  const { poll, type } = req.params
+  const votePoll = await Poll.findById(poll)
+  await this.vote(votePoll, type)
+  votePoll.voted.push(req.user._id)
+  await votePoll.save()
+  const members = [...votePoll.members]
+  const voted = [...votePoll.voted]
+  if (members.sort() === voted.sort()) {
+    votePoll.active = false
+    await votePoll.save()
+  }
 
+  res.redirect('/polls')
+}
+
+module.exports.vote = async (poll, type) => {
+  if (type === 'yes') {
+    poll.votes.yes += 1
+    await poll.save()
+  } else {
+    poll.votes.no += 1
+    await poll.save()
+  }
 }
 
 module.exports.createPoll = async (req, res) => {
   const members = []
   members.push(req.user._id)
   const newMembers = await StudentProfile.find({})
+  const member = newMembers[0]
   newMembers.forEach(elem => {
     if (Math.random() > 0.5) { members.push(elem._id) }
   })
+  const action = newMembers.includes(member) ? 'Remove' : 'Add'
   const newPoll = new Poll({
     members,
     name: `New poll from: ${req.user.username}`,
-    action: 'Add'
+    action,
+    affected: member._id
   })
   await newPoll.save()
   req.flash('success', 'Successfuly created new poll')

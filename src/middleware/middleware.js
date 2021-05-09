@@ -1,4 +1,4 @@
-const Poll = require('../db/poll')
+const { Poll } = require('../db/poll')
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
@@ -9,10 +9,10 @@ module.exports.isLoggedIn = (req, res, next) => {
   next()
 }
 
-module.exports.isPartOfVote = (req, res, next) => {
-  const { pollid } = req.params
-  const poll = Poll.findOneById(pollid)
-  if (!poll.members.contains(req.user._id)) {
+module.exports.isPartOfVote = async (req, res, next) => {
+  const { poll } = req.params
+  const check = await Poll.findById(poll)
+  if (!check.members.includes(req.user._id)) {
     req.flash('error', 'You are not part of this vote')
     req.session.returnTo = req.originalUrl
     return res.redirect('/polls')

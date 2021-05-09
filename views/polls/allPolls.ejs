@@ -7,8 +7,8 @@
     <div class="card-body">
         <h5 class="card-title"> 
           <%= poll.name %>
-          <% if(poll.members.includes(signedInUser._id)) { %> 
-          <form action="/polls/<% poll._id %> " method="get">
+          <% if(poll.members.includes(signedInUser._id) && poll.active) { %> 
+          <form action="/polls/<%= poll._id %> " method="get">
             <button class="btn btn-primary">View</button>
           </form>
           <% } %> 
