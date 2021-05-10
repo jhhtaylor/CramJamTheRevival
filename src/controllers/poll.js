@@ -19,8 +19,10 @@ module.exports.votePoll = async (req, res) => {
   votePoll.voted.push(req.user._id)
   await votePoll.save()
   const members = [...votePoll.members]
+  members.sort()
   const voted = [...votePoll.voted]
-  if (members.sort() === voted.sort()) {
+  voted.sort()
+  if (members === voted) {
     votePoll.active = false
     await votePoll.save()
   }
