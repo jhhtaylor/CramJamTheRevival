@@ -13,7 +13,7 @@ router.route('/new')
   .post(catchAsync(groups.createGroup))
 
 router.route('/:id/new/:member')
-  .post(groups.addGroupMember) // new add member route
+  .post(catchAsync(groups.addGroupMember)) // new add member route
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))

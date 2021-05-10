@@ -79,6 +79,37 @@ describe('Group controller functionality', () => {
     done()
   })
 
+  test('A hard-coded user can be added to a group', async (done) => {
+    // generate a test user profile
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
+
+    // generate a test group
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: []
+    })
+    await newGroup.save()
+
+    const req = { params: { member: testStudent._id, id: newGroup._id } } // One can validate in controllers/groups.js that (req, res) are correct
+    const res = { redirect: function (url) { return url } }
+    await groups.addGroupMember(req, res) // test actual function
+    const expectedMember = await GroupSchema.findById(newGroup._id)
+    expect(expectedMember.members).toContainEqual(testStudent._id)
+    done()
+  })
+
   test('A student can be invited to a group', async (done) => {
     // create group
     const testName = 'New Test Group'
