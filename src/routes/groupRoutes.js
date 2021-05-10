@@ -15,7 +15,7 @@ router.route('/new')
   .post(isLoggedIn, catchAsync(groups.createGroup))
 
 router.route('/:id/new/:member')
-  .post(catchAsync(groups.addGroupMember)) // new add member route
+  .post(isLoggedIn, catchAsync(groups.addGroupMember)) // new add member route
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
