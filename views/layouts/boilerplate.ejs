@@ -11,6 +11,21 @@
             padding-top: 120px;
         }
 
+        html,
+        body {
+            height: 100%;
+        }
+
+        #wrap {
+            min-height: 100%;
+        }
+
+        #main {
+            overflow: auto;
+            padding-bottom: 100px;
+            /* this needs to be bigger than footer height*/
+        }
+
         footer {
             background-color: rgb(235, 235, 235);
         }
@@ -27,24 +42,28 @@
         }
 
         .footer {
-            position: absolute;
+            position: relative;
             bottom: 0;
             width: 100%;
             height: 60px;
+            margin-top: -60px;
             /* Set the fixed height of the footer here */
             line-height: 60px;
             /* Vertically center the text there */
             background-color: #f5f5f5;
+            clear:both;
         }
     </style>
 </head>
-<%- include('../partials/navbar')%>
+
 
     <body>
-
+        <%- include('../partials/navbar')%>
         <%- include('../partials/flash')%>
-            <section padding-top="80px" class="container">
-                <%- body -%>
+            <section padding-top="80px" id="wrap">
+                <div id="main" class="container clear-top">
+                    <%- body -%>
+                </div>
             </section>
             <footer class="footer">
                 <div class="container">
