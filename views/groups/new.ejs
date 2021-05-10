@@ -2,7 +2,10 @@
 <h1>Create a New Group</h1>
 
 <form action="/groups/new" method="POST">
-    <input type = "text" name="name" placeholder="Group Name">
-    <button>Create Group!</button>
+    <div>
+        <label for="name" class="form-label">Group name: </label>
+        <input type="name" class="form-control" id="name" name="name" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Group</button>
 </form>
 
