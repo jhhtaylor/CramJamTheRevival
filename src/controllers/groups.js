@@ -44,9 +44,9 @@ module.exports.deleteGroupMember = async (req, res) => {
 }
 
 module.exports.addGroupMember = async (req, res) => {
-  const { id,member } = req.params
-  const addStudent = await StudentProfile.findOne({}); //find first user in database
-  const group = await GroupSchema.findByIdAndUpdate(id, {$push:{members:addStudent._id}});
+  const { id, member } = req.params
+  const addStudent = await StudentProfile.findOne({}) // find first user in database
+  const group = await GroupSchema.findByIdAndUpdate(id, { $push: { members: addStudent._id } })
 
-  res.redirect(`/groups/${id}`);
+  res.redirect(`/groups/${id}`)
 }
