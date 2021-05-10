@@ -22,7 +22,7 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  if (members === voted) {
+  if (members === voted) { // checking sorted arrays
     votePoll.active = false
     await votePoll.save()
   }
