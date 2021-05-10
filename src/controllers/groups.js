@@ -7,6 +7,15 @@ module.exports.index = async (req, res) => {
   res.render('groups/index', { groups })
 }
 
+// temp function to view members to add to a group
+module.exports.explore = async (req, res) => {
+  const groupId = req.params.id
+  // only display people who are not already in the group
+  const students = await StudentProfile.find({})
+  const group = await GroupSchema.findById(groupId)
+  res.render('groups/explore', { students: students, group: group })
+}
+
 module.exports.renderNewForm = (req, res) => {
   res.render('groups/new')
 }
@@ -22,6 +31,7 @@ module.exports.createGroup = async (req, res, next) => {
 }
 module.exports.showGroup = async (req, res) => {
   const group = await GroupSchema.findById(req.params.id)
+
   if (!group) {
     // req.flash('error', 'Cannot find that group!')
     return res.redirect('/groups')
@@ -30,7 +40,7 @@ module.exports.showGroup = async (req, res) => {
 }
 
 module.exports.deleteGroup = async (req, res) => {
-  const { id } = req.params
+  const id = req.params.id
   await GroupSchema.findByIdAndDelete(id)
   res.redirect('/groups')
 }
@@ -40,13 +50,21 @@ module.exports.deleteGroupMember = async (req, res) => {
   const member = req.params.member
   await GroupSchema.updateOne({ _id: id },
     { $pull: { members: member } })
-  res.redirect('/groups')
+  res.redirect(`/groups/${id}`)
 }
 
+module.exports.inviteGroupMember = async (req, res) => {
+  const groupId = req.params.id
+  const memberId = req.params.member
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { invites: memberId } })
+  await StudentProfile.updateOne({ _id: memberId },
+    { $push: { invites: groupId } })
+  res.redirect(`/groups/${groupId}`)
+}
 module.exports.addGroupMember = async (req, res) => {
   const { id, member } = req.params
   const addStudent = await StudentProfile.findOne({}) // find first user in database
   const group = await GroupSchema.findByIdAndUpdate(id, { $push: { members: addStudent._id } })
-
   res.redirect(`/groups/${id}`)
 }

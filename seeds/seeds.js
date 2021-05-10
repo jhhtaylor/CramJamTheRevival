@@ -36,6 +36,7 @@ async function generateStudents (firstNames, lastNames, numStudents) {
       password: '',
       groups: [],
       username: `${firstName}${lastName}${i}`,
+      invites: [],
       location,
       geodata
     }
@@ -72,6 +73,7 @@ async function generateGroups (groupNames, numGroups) {
     const newGroup = new GroupSchema({
       name: `${first} ${last} ${i}`,
       members: addedMembers,
+      invites: [],
       tags: addedTags
     })
     // Inserts a group into a mongodb collection
