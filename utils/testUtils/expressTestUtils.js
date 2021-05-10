@@ -8,6 +8,7 @@ const studentRouter = require('../../src/routes/studentsRoutes')
 const { settings } = require('../sessionSettings')
 const { StudentProfile } = require('../../src/db/studentProfiles')
 
+const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require('connect-flash')
@@ -16,6 +17,7 @@ const LocalPassport = require('passport-local')
 const publicDir = path.join(__dirname, '../../public/');
 
 const app = express()
+app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '../../views'))
 app.use(express.static(publicDir))
