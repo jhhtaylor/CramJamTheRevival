@@ -114,4 +114,38 @@ describe('Group controller functionality', () => {
     expect(testGroup._id).toEqual(expectedStudent.invites[0])
     done()
   })
+
+  test('A student can view the groups page', async (done) => {
+    const response = await request.get('/groups')
+    expect(response.status).toBe(200)
+    done()
+  })
+
+  test('A student can view a specific group page', async (done) => {
+    // create group
+    const testName = 'New Test Group'
+    const req = { body: { name: testName } }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    const response = await request.get(`/groups/${testGroup._id}`)
+    expect(response.status).toBe(200)
+    done()
+  })
+
+  test('A student can view an explore page page', async (done) => {
+    // create group
+    const testName = 'New Test Group'
+    const req = { body: { name: testName } }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    const response = await request.get(`/groups/${testGroup._id}/explore`)
+    expect(response.status).toBe(200)
+    done()
+  })
 })
