@@ -1,4 +1,4 @@
-<%- include('../partials/header')%> 
+<% layout('layouts/boilerplate') -%>
 <h1>Groups Page</h1>
 
 <% groups.forEach(group => { %>
@@ -7,4 +7,3 @@
     </div>
     <button>Edit</button>
 <% }); %>
-<%- include('../partials/footer')%> 

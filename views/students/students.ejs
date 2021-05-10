@@ -1,4 +1,4 @@
-<%- include('../partials/header')%> 
+<% layout('layouts/boilerplate') -%>
 <h1>Profile Page</h1>
 <div>
     <h4>Create new Profile</h4>
@@ -18,8 +18,8 @@
     <div>
         <h3><%= student.firstName %> <%= student.lastName %></h3>
         <h5>Email: <%= student.email %></h5>
+        
     </div>
     <hr>
 <% }); %>
 
-<%- include('../partials/footer')%> 
