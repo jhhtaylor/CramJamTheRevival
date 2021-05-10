@@ -1,0 +1,19 @@
+<% layout('layouts/boilerplate') -%>
+<h3>Notifications</h3>
+<% if (signedInUser.invites[0] === undefined){%>
+    <div class="card mb-3">
+        <h5>No new invites</h5>
+    </div>
+<% } else {%>
+        <div class="card mb-3">
+            <% for (let invite of signedInUser.invites){%>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card-body">
+                        <h5 class="card-title">Invited to join <%= invite %></h5>
+                    </div>
+                </div>
+            </div>
+            <% }%>
+        </div>
+<% }%>
