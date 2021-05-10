@@ -16,38 +16,6 @@ beforeEach(async () => {
 // will change once there is access to database
 describe('Group controller functionality', () => {
   test('A group can be added to the database', async () => {
-    const testName = 'New Test Group'
-    const req = { body: { name: testName } }
-    const res = { redirect (url) { return url } }
-    await groups.createGroup(req, res)
-    const expectedGroup = await GroupSchema.findOne({})
-    expect(testName).toEqual(expectedGroup.name)
-  })
-
-  test('A student can delete a group through the delete request', async (done) => {
-    const data = {
-      name: 'New Group Test Name'
-    }
-
-    const req = { body: { name: data.name } }
-    const res = { redirect (url) { return url } }
-    await groups.createGroup(req, res)
-
-    const expectedGroup = await GroupSchema.findOne({ name: data.name })
-
-    expect(data.name).toEqual(expectedGroup.name)
-
-    const response = await request
-      .delete(`/groups/${expectedGroup._id}`)
-    expect(response.status).toBe(302) // 302 is redirect
-    const group = await GroupSchema.findOne({ name: data.name })
-
-    expect(group).toEqual(null)
-    done()
-  })
-
-  test('A student can delete a group member through the delete request', async (done) => {
-    // generate a random set of user profile data
     const data = getGeoData()
     const location = data.location
     const geodata = data.geodata
@@ -62,21 +30,107 @@ describe('Group controller functionality', () => {
       geodata
     })
 
-    const member = await newStudent.save()
+    const testUser = await newStudent.save()
 
-    const newGroup = new GroupSchema({
-      name: 'New Test Group',
-      members: [member._id]
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testUser
+    }
+
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const expectedGroup = await GroupSchema.findOne({})
+    expect(expectedGroup.name).toEqual(testName)
+    expect(expectedGroup.members[0]).toEqual(testUser._id)
+  })
+
+  test('A group can be deleted', async () => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
     })
-    await newGroup.save()
-    const group = await GroupSchema.findById(newGroup._id)
-    expect(group.members[0]).toEqual(member._id)
-    const response = await request
-      .delete(`/groups/${group._id}/edit/${group.members[0]}`)
-    expect(response.status).toBe(302) // 302 is redirect
-    const groupUpdated = await GroupSchema.findById(newGroup._id)
-    expect(groupUpdated.members[0]).toEqual(undefined)
-    done()
+
+    const testUser = await newStudent.save()
+
+    const testName = 'New Test Group'
+    const req1 = {
+      body: { name: testName },
+      user: testUser
+    }
+    const res1 = { redirect (url) { return url } }
+    await groups.createGroup(req1, res1)
+    const expectedGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(expectedGroup.name)
+
+    const req2 = {
+      body: { name: testName },
+      user: testUser,
+      params: {
+        id: expectedGroup._id
+      }
+
+    }
+    const res2 = { redirect (url) { return url } }
+    await groups.deleteGroup(req2, res2)
+    const updatedGroup = await GroupSchema.findById(expectedGroup._id)
+    expect(updatedGroup).toEqual(null)
+    const updatedUser = await StudentProfile.findById(testUser._id)
+    expect(updatedUser.groups[0]).toEqual(undefined)
+  })
+
+  test('The last group member removed from a group deletes the group', async () => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+
+    const testUser = await newStudent.save()
+
+    const testName = 'New Test Group'
+    const req1 = {
+      body: { name: testName },
+      user: testUser
+    }
+
+    const res1 = { redirect (url) { return url } }
+    await groups.createGroup(req1, res1)
+    const expectedGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(expectedGroup.name)
+
+    const req2 = {
+      body: { name: testName },
+      user: testUser,
+      params: {
+        id: expectedGroup._id,
+        member: testUser._id
+      }
+
+    }
+    const res2 = { redirect (url) { return url } }
+    await groups.deleteGroupMember(req2, res2)
+    const updatedGroup = await GroupSchema.findById(expectedGroup._id)
+    expect(updatedGroup).toEqual(null)
+    const updatedUser = await StudentProfile.findById(testUser._id)
+    expect(updatedUser.groups[0]).toEqual(undefined)
   })
 
   test('A hard-coded user can be added to a group', async (done) => {
@@ -111,14 +165,6 @@ describe('Group controller functionality', () => {
   })
 
   test('A student can be invited to a group', async (done) => {
-    // create group
-    const testName = 'New Test Group'
-    const req = { body: { name: testName } }
-    const res = { redirect (url) { return url } }
-    await groups.createGroup(req, res)
-    const testGroup = await GroupSchema.findOne({})
-    expect(testName).toEqual(testGroup.name)
-
     // create student
     const data = getGeoData()
     const location = data.location
@@ -133,9 +179,22 @@ describe('Group controller functionality', () => {
       geodata
     })
     const testStudent = await newStudent.save()
+    // create group
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
 
     // create request to invite student to group
-    const request = { params: { id: testGroup._id, member: testStudent._id } }
+    const request = {
+      params: { id: testGroup._id, member: testStudent._id },
+      user: testStudent
+    }
     const response = { redirect (url) { return url } }
     await groups.inviteGroupMember(request, response)
 
@@ -146,16 +205,33 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('A student can view the groups page', async (done) => {
+  test('A student can only view the groups page if logged in', async (done) => {
     const response = await request.get('/groups')
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(302) // redirect since user is not logged in
     done()
   })
 
   test('A student can view a specific group page', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
     // create group
     const testName = 'New Test Group'
-    const req = { body: { name: testName } }
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
     const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
@@ -167,9 +243,26 @@ describe('Group controller functionality', () => {
   })
 
   test('A student can view an explore page page', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
     // create group
     const testName = 'New Test Group'
-    const req = { body: { name: testName } }
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
     const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
