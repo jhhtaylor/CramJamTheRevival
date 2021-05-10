@@ -22,7 +22,6 @@ router.route('/:id')
 router.route('/:id/edit/:member')
   .delete(catchAsync(groups.deleteGroupMember))
 
-// temp route to view members to add to a group
 router.route('/:id/explore')
   .get(catchAsync(groups.explore))
 
