@@ -1,32 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">CramJam</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Profiles
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="/students">View</a>
-              <a class="dropdown-item" href="/students/login">Login</a>
-              <a class="dropdown-item" href="/students/register">Register</a>
-            </div>
-          </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Groups
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="/groups/new">Create</a>
-            <a class="dropdown-item" href="/groups">View</a>
-          </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/meetings">Meetings</a>
-        </li>
+<header class="p-3 mb-3 border-bottom navbar-custom fixed-top">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start ">
+      <a href="/" class="d-flex align-items-center col-lg-1 mb-2 mb-lg-0 link-dark text-decoration-none"> 
+        <img src="assets/Icon.PNG" alt="" height="80">
+      </a>
+
+      <ul class="nav col-12 col-md-auto me-md-auto justify-content-center">
+        <li><a href="/" class="nav-link px-2 navbar-text">Home</a></li>
+        <li><a href="/groups" class="nav-link px-2 navbar-text">Groups</a></li>
+        <li><a href="/meetings" class="nav-link px-2 navbar-text">Meetings</a></li>
       </ul>
+
+      <%- include('../partials/profile') %>
     </div>
-  </nav>
+  </div>
+</header>
