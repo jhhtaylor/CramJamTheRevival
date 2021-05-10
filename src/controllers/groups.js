@@ -49,7 +49,7 @@ module.exports.deleteGroupMember = async (req, res) => {
   const member = req.params.member
   await GroupSchema.updateOne({ _id: id },
     { $pull: { members: member } })
-  res.redirect('/groups')
+  res.redirect(`/groups/${id}`)
 }
 
 module.exports.inviteGroupMember = async (req, res) => {
@@ -60,4 +60,10 @@ module.exports.inviteGroupMember = async (req, res) => {
   await StudentProfile.updateOne({ _id: memberId },
     { $push: { invites: groupId } })
   res.redirect(`/groups/${groupId}`)
+}
+module.exports.addGroupMember = async (req, res) => {
+  const { id, member } = req.params
+  const addStudent = await StudentProfile.findOne({}) // find first user in database
+  const group = await GroupSchema.findByIdAndUpdate(id, { $push: { members: addStudent._id } })
+  res.redirect(`/groups/${id}`)
 }

@@ -11,6 +11,9 @@ router.route('/')
 router.route('/new')
   .get(groups.renderNewForm)
   .post(catchAsync(groups.createGroup))
+  
+router.route('/:id/new/:member')
+  .post(groups.addGroupMember); //new add member route
 
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
