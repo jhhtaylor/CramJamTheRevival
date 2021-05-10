@@ -23,14 +23,16 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createGroup = async (req, res, next) => {
   const group = new GroupSchema({
-    name: req.body.name,
-    members: [req.user._id]
+    name: req.body.name
   })
-  // group.members = [req.user._id]
   await group.save()
-  const user = await StudentProfile.findById(req.user._id)
-  user.groups.push(group._id)
-  await user.save()
+  if (req.user._id !== undefined) {
+    group.members.push(req.user._id)
+    await group.save()
+    const user = await StudentProfile.findById(req.user._id)
+    user.groups.push(group._id)
+    await user.save()
+  }
   // req.flash('success', 'Created new group!')
   res.redirect('/groups/')
 }
@@ -45,7 +47,9 @@ module.exports.showGroup = async (req, res) => {
 }
 
 module.exports.deleteGroup = async (req, res) => {
-  const id = req.params.id
+  const { id } = req.params
+  const group = await GroupSchema.findById(id)
+  const members = group.members
   await GroupSchema.findByIdAndDelete(id)
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { groups: id } })
@@ -56,16 +60,16 @@ module.exports.deleteGroupMember = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.params.member
   const group = await GroupSchema.findById(groupId)
+  await StudentProfile.updateOne({ _id: memberId },
+    { $pull: { groups: groupId } })
   if (group.members.length === 1) {
     await GroupSchema.remove({ _id: groupId })
+    res.redirect('/groups/')
   } else {
     await GroupSchema.updateOne({ _id: groupId },
       { $pull: { members: memberId } })
+    res.redirect(`/groups/${groupId}`)
   }
-  await StudentProfile.updateOne({ _id: memberId },
-    { $pull: { groups: groupId } })
-  res.redirect('/groups')
-  res.redirect(`/groups/${id}`)
 }
 
 module.exports.inviteGroupMember = async (req, res) => {

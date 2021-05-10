@@ -1,7 +1,6 @@
-<%- include('../partials/header')%> 
+<% layout('layouts/boilerplate') -%>
 
 <hr>
-
 <h2>Invite:</h2>
 <hr>
 <% students.forEach(student => { %>
@@ -14,5 +13,3 @@
     </div>
     <hr>
 <% }); %>
-
-<%- include('../partials/footer')%> 

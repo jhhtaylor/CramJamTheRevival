@@ -41,8 +41,8 @@ describe('Group controller functionality', () => {
     const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
-    expect(testName).toEqual(expectedGroup.name)
-    expect(testUser._id).toEqual(expectedGroup.members[0])
+    expect(expectedGroup.name).toEqual(testName)
+    expect(expectedGroup.members[0]).toEqual(testUser._id)
   })
 
   test('A group can be deleted', async () => {
@@ -165,14 +165,6 @@ describe('Group controller functionality', () => {
   })
 
   test('A student can be invited to a group', async (done) => {
-    // create group
-    const testName = 'New Test Group'
-    const req = { body: { name: testName } }
-    const res = { redirect (url) { return url } }
-    await groups.createGroup(req, res)
-    const testGroup = await GroupSchema.findOne({})
-    expect(testName).toEqual(testGroup.name)
-
     // create student
     const data = getGeoData()
     const location = data.location
@@ -187,9 +179,22 @@ describe('Group controller functionality', () => {
       geodata
     })
     const testStudent = await newStudent.save()
+    // create group
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
 
     // create request to invite student to group
-    const request = { params: { id: testGroup._id, member: testStudent._id } }
+    const request = {
+      params: { id: testGroup._id, member: testStudent._id },
+      user: testStudent
+    }
     const response = { redirect (url) { return url } }
     await groups.inviteGroupMember(request, response)
 
@@ -200,16 +205,33 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('A student can view the groups page', async (done) => {
+  test('A student can only view the groups page if logged in', async (done) => {
     const response = await request.get('/groups')
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(302) // redirect since user is not logged in
     done()
   })
 
   test('A student can view a specific group page', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
     // create group
     const testName = 'New Test Group'
-    const req = { body: { name: testName } }
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
     const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
@@ -221,9 +243,26 @@ describe('Group controller functionality', () => {
   })
 
   test('A student can view an explore page page', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
     // create group
     const testName = 'New Test Group'
-    const req = { body: { name: testName } }
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
     const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
