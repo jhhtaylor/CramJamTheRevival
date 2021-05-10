@@ -7,11 +7,12 @@ module.exports.index = async (req, res) => {
   res.render('groups/index', { groups })
 }
 
+// temp function to view members to add to a group
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
   // only display people who are not already in the group
   const students = await StudentProfile.find({})
-  const group = await GroupSchema.findById(req.params.id)
+  const group = await GroupSchema.findById(groupId)
   res.render('groups/explore', { students: students, group: group })
 }
 

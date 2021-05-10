@@ -78,4 +78,40 @@ describe('Group controller functionality', () => {
     expect(groupUpdated.members[0]).toEqual(undefined)
     done()
   })
+
+  test('A student can be invited to a group', async (done) => {
+    // create group
+    const testName = 'New Test Group'
+    const req = { body: { name: testName } }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
+
+    // create request to invite student to group
+    const request = { params: { id: testGroup._id, member: testStudent._id } }
+    const response = { redirect (url) { return url } }
+    await groups.inviteGroupMember(request, response)
+
+    const expectedGroup = await GroupSchema.findOne({})
+    const expectedStudent = await StudentProfile.findOne({})
+    expect(testStudent._id).toEqual(expectedGroup.invites[0])
+    expect(testGroup._id).toEqual(expectedStudent.invites[0])
+    done()
+  })
 })
