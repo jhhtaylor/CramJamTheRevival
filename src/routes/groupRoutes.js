@@ -4,6 +4,7 @@ const catchAsync = require('../../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/middleware')
 const groups = require('../controllers/groups')
 const { route } = require('./studentsRoutes')
+const poll = require('../controllers/poll')
 const router = express.Router()
 
 router.route('/')
@@ -19,6 +20,9 @@ router.route('/:id/new/:member')
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
   .delete(isLoggedIn, catchAsync(groups.deleteGroup))
+
+// router.route('/:id/poll/:poll/:member')
+//   .post(catchAsync(poll.votePoll))
 
 router.route('/:id/edit/:member')
   .delete(isLoggedIn, catchAsync(groups.deleteGroupMember))

@@ -4,6 +4,7 @@ const mainRouter = require('../../src/routes/mainRoutes')
 const meetingRouter = require('../../src/routes/meetingRoutes')
 const groupRouter = require('../../src/routes/groupRoutes')
 const studentRouter = require('../../src/routes/studentsRoutes')
+const pollsRouter = require('../../src/routes/poll')
 
 const { settings } = require('../sessionSettings')
 const { StudentProfile } = require('../../src/db/studentProfiles')
@@ -14,7 +15,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
-const publicDir = path.join(__dirname, '../../public/');
+const publicDir = path.join(__dirname, '../../public/')
 
 const app = express()
 app.engine('ejs', ejsMate)
@@ -42,5 +43,6 @@ app.use('/', mainRouter)
 app.use('/students', studentRouter, express.static(publicDir))
 app.use('/groups', groupRouter, express.static(publicDir))
 app.use('/meetings', meetingRouter, express.static(publicDir))
+app.use('/polls', pollsRouter, express.static(publicDir))
 
 module.exports.app = app
