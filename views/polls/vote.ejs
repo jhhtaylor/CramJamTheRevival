@@ -1,5 +1,4 @@
-<%- include('../partials/header') %> 
-<%- include('../partials/flash') %> 
+<% layout('layouts/boilerplate') -%>
 <h2>Vote to <%= poll.action %> <%= poll.affected %> </h2>
 
 <% if(!poll.voted.includes(signedInUser._id)) { %> 
@@ -14,5 +13,3 @@
 <h3>No: <%= poll.votes.no %> </h3>
 <h4>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %></h4>
 <% } %> 
-
-<%- include('../partials/footer') %> 

@@ -1,5 +1,4 @@
-<%- include('../partials/header') %> 
-<%- include('../partials/flash') %> 
+<% layout('layouts/boilerplate') -%>
 <h2>All Polls</h2>
 
 <% for(let poll of polls) { %>
@@ -23,5 +22,3 @@
   <button class="btn btn-primary">New Poll</button>
 </form>
 <% } %> 
-
-<%- include('../partials/footer') %> 
