@@ -1,18 +1,6 @@
-<%- include('partials/header')%> 
-<h1>Landing Page!</h1>
-<%- include('partials/flash')%> 
-<%- include('partials/navbar')%>
+<% layout('layouts/boilerplate') -%>
 
+<h1>Landing Page!</h1>
 <p>Welcome to CramJam</p>
 <div>
-    <a class="btn btn-primary" href="/groups/new"> Create a Group </a>
-    <a class="btn btn-primary" href="/groups"> View All Groups</a>
-    <% if(!signedInUser) { %> 
-    <a class="btn btn-primary" href="/students/register">Register</a>
-    <a class="btn btn-primary" href="/students/login">Login</a>
-    <% } else { %> 
-        <p>Hello: <%= signedInUser.username %> </p>
-        <a class="btn btn-primary" href="/students/logout">Logout</a>
-        <a class="btn btn-primary" href="/polls"> View All Polls</a>
-    <% } %> 
 </div>
