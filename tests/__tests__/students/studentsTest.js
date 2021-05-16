@@ -3,6 +3,7 @@ const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
 const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
+const { getGeoData } = require('../../../seeds/locationHelper')
 const request = supertest.agent(app)
 
 beforeAll(async () => { dbConnect() })
@@ -126,5 +127,34 @@ describe('Student controller functionality', () => {
     expect(loginResponse.header.location).toContain('/students/login') // they failed to login
     await StudentProfile.deleteMany({})
     done()
+  })
+
+  test('A student can vote', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const std = new StudentProfile({
+      email: 'testing@testuser.testing.test',
+      firstName: 'TestUserFirst',
+      lastName: 'TestUserLast',
+      groups: [],
+      username: 'Test',
+      password: 'test',
+      location,
+      geodata,
+      rating: []
+    })
+    const rating = 5
+    const student = await std.save()
+    const req = { params: { id: student._id }, body: { rating } }
+    const res = {
+      redirect: async function () {
+        const checkStudent = await StudentProfile.findById(student._id)
+        expect(checkStudent.rating).toContain(rating)
+        await StudentProfile.deleteMany({})
+        done()
+      }
+    }
+    students.rateStudent(req, res)
   })
 })

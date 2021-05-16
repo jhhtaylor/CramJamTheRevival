@@ -7,7 +7,14 @@
         <% for (var i = 0; i < group.members.length; i++) { %>
             <li> <%= group.members[i]%> <form class="d-inline" action="/groups/<%=group._id%>/edit/<%=group.members[i]%>?_method=DELETE" method="POST">
                 <button>Remove</button>
-            </form></li>
+            </form>
+                <% if(signedInUser != group.members[i]) { %>
+                <form action="/students/vote/<%=group.members[i]%>/" method="POST" class="w-25 p-3 d-inline-flex">
+                    <input type="number" name="rating" id="rating" class="form-control" max="5" min="0">
+                    <button class="btn btn-primary">Rate</button>
+                </form>
+                <% } %> 
+            </li>
         <% } %>
         <h5>Pending invites</h5>
         <% for (var i = 0; i < group.invites.length; i++) { %>

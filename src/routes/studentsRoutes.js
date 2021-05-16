@@ -16,6 +16,9 @@ router.post('/', function (req, res) {
   res.redirect('/students')
 })
 
+router.route('/vote/:id/')
+  .post(catchAsync(students.rateStudent))
+
 router.route('/register')
   .get(students.renderRegisterStudent)
   .post(catchAsync(students.registerStudent))
