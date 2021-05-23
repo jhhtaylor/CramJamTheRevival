@@ -51,3 +51,12 @@ module.exports.logoutStudent = (req, res) => {
   req.flash('success', 'Successfully Logged Out!')
   res.redirect('/')
 }
+
+module.exports.rateStudent = async (req, res) => {
+  const { id } = req.params
+  const { rating } = req.body
+  const raterID = req.user._id
+  const studentRating = { rated: parseInt(rating), rater: raterID }
+  await StudentProfile.findByIdAndUpdate(id, { $push: { rating: studentRating } })
+  res.redirect('/groups')
+}
