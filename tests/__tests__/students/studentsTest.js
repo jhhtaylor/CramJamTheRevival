@@ -4,6 +4,8 @@ const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('.
 const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
 const { getGeoData } = require('../../../seeds/locationHelper')
+const { checkout } = require('../../../src/routes/mainRoutes')
+const Mongoose = require('mongoose')
 const request = supertest.agent(app)
 
 beforeAll(async () => { dbConnect() })
@@ -146,11 +148,15 @@ describe('Student controller functionality', () => {
     })
     const rating = 5
     const student = await std.save()
-    const req = { params: { id: student._id }, body: { rating } }
+    const user = { _id: Mongoose.Types.ObjectId() }
+    const req = { params: { id: student._id }, body: { rating }, user }
     const res = {
       redirect: async function () {
         const checkStudent = await StudentProfile.findById(student._id)
-        expect(checkStudent.rating).toContain(rating)
+        const ratings = checkStudent.rating.map(e => {
+          return e.rated
+        })
+        expect(ratings).toContain(rating)
         await StudentProfile.deleteMany({})
         done()
       }

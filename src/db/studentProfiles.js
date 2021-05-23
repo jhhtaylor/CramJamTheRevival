@@ -21,7 +21,7 @@ const studentProfileSchema = new Schema({
       required: true
     }
   },
-  rating: [{ type: Number }]
+  rating: [{ rated: { type: Number }, rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' } }]
 })
 
 studentProfileSchema.virtual('averageRating').get(function () {
