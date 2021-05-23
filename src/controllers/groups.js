@@ -37,7 +37,7 @@ module.exports.createGroup = async (req, res, next) => {
   res.redirect('/groups/')
 }
 module.exports.showGroup = async (req, res) => {
-  const group = await GroupSchema.findById(req.params.id)
+  const group = await GroupSchema.findById(req.params.id).populate('members')
 
   if (!group) {
     // req.flash('error', 'Cannot find that group!')
