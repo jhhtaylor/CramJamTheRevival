@@ -5,6 +5,7 @@ const meetingRouter = require('../../src/routes/meetingRoutes')
 const groupRouter = require('../../src/routes/groupRoutes')
 const studentRouter = require('../../src/routes/studentsRoutes')
 const pollsRouter = require('../../src/routes/poll')
+const notificationsRouter = require('../../src/routes/notifications')
 
 const { settings } = require('../sessionSettings')
 const { StudentProfile } = require('../../src/db/studentProfiles')
@@ -44,5 +45,6 @@ app.use('/students', studentRouter, express.static(publicDir))
 app.use('/groups', groupRouter, express.static(publicDir))
 app.use('/meetings', meetingRouter, express.static(publicDir))
 app.use('/polls', pollsRouter, express.static(publicDir))
+app.use('/notification', notificationsRouter, express.static(publicDir))
 
 module.exports.app = app
