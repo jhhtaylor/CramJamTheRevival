@@ -1,20 +1,46 @@
 <% layout('layouts/boilerplate') -%>
 
-<h1>Register</h1>
-<div class="container">
-  <div class="row">
-    <div class="md-3"></div>
-    <form action="/students/login" method="POST">
-      <div>
-        <label for="username" class="form-label">Username: </label>
-        <input type="text" class="form-control" id="username" name="username" required>
+  <div class="container py-5 ml-5 cont">
+    <div class="row">
+      <div class="col-md-7 col-lg-6 ml-auto align-items-center">
+        <form action="/students/login" method="POST">
+          <!-- username -->
+          <div class="input-group col-lg-6 mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-white px-4 border-md border-right-0">
+                <i class="fa fa-user py-2 mb-1 text-muted"></i>
+              </span>
+            </div>
+            <input id="userName" type="text" name="username" placeholder="Username"
+              class="form-control bg-white border-left-0 border-md">
+          </div>
+          <!-- Password -->
+          <div class="input-group col-lg-12 mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-white px-4 border-md border-right-0">
+                <i class="fa fa-lock py-2 mb-1 text-muted"></i>
+              </span>
+            </div>
+            <input id="password" type="password" name="password" placeholder="Password"
+              class="form-control bg-white border-left-0 border-md">
+          </div>
+          <br>
+          <!-- Submit Button -->
+          <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
+            <button class="btn btn-primary btn-block py-2 mb-1 " type="submit">
+              <span class="font-weight-bold">Login</span>
+            </button>
+          </div>
+        </form>
+         <!-- No account -->
+         <div class="text-center w-100">
+          <p class="text-muted font-weight-bold">Don't have an account? <a href="/students/register"
+              class="text-primary ml-2">Create Account</a></p>
+        </div>
       </div>
-      <div>
-        <label for="password" class="form-label">Password: </label>
-        <input type="password" class="form-control" id="password" name="password"  required>
+      <div class="col-md-5 pr-lg-5 mb-5 mb-md-0 align-items-center">
+        <h1>Login</h1>
+        <img src="assets/more_happy_students.jpg" alt="" class="img-fluid mb-2 d-none d-md-block">
       </div>
-      <br>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    </div>
   </div>
-</div>
