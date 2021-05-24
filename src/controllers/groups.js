@@ -5,7 +5,8 @@ const { StudentProfile } = require('../db/studentProfiles')
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
   const groups = await GroupSchema.find({ _id: { $in: userGroups } })
-  res.render('groups/index', { groups })
+  const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } })
+  res.render('groups/index', { groups, randomGroup })
 }
 
 // temp function to view members to add to a group
