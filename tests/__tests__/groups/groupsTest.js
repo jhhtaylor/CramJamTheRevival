@@ -38,7 +38,7 @@ describe('Group controller functionality', () => {
       user: testUser
     }
 
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testName)
@@ -67,7 +67,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testUser
     }
-    const res1 = { redirect(url) { return url } }
+    const res1 = { redirect (url) { return url } }
     await groups.createGroup(req1, res1)
     const expectedGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(expectedGroup.name)
@@ -80,7 +80,7 @@ describe('Group controller functionality', () => {
       }
 
     }
-    const res2 = { redirect(url) { return url } }
+    const res2 = { redirect (url) { return url } }
     await groups.deleteGroup(req2, res2)
     const updatedGroup = await GroupSchema.findById(expectedGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -111,7 +111,7 @@ describe('Group controller functionality', () => {
       user: testUser
     }
 
-    const res1 = { redirect(url) { return url } }
+    const res1 = { redirect (url) { return url } }
     await groups.createGroup(req1, res1)
     const expectedGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(expectedGroup.name)
@@ -125,7 +125,7 @@ describe('Group controller functionality', () => {
       }
 
     }
-    const res2 = { redirect(url) { return url } }
+    const res2 = { redirect (url) { return url } }
     await groups.deleteGroupMember(req2, res2)
     const updatedGroup = await GroupSchema.findById(expectedGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -156,9 +156,7 @@ describe('Group controller functionality', () => {
     })
     await newGroup.save()
 
-    const req = { params: { member: testStudent._id, id: newGroup._id } } // One can validate in controllers/groups.js that (req, res) are correct
-    const res = { redirect: function (url) { return url } }
-    await groups.addGroupMember(req, res) // test actual function
+    await groups.addGroupMember(newGroup._id, testStudent._id) // test actual function
     const expectedMember = await GroupSchema.findById(newGroup._id)
     expect(expectedMember.members).toContainEqual(testStudent._id)
     done()
@@ -185,7 +183,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
@@ -195,7 +193,7 @@ describe('Group controller functionality', () => {
       params: { id: testGroup._id, member: testStudent._id },
       user: testStudent
     }
-    const response = { redirect(url) { return url } }
+    const response = { redirect (url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -232,7 +230,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
@@ -263,13 +261,154 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
 
     const response = await request.get(`/groups/${testGroup._id}/explore`)
     expect(response.status).toBe(200)
+    done()
+  })
+
+  test('A student can accept an invite to a group', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
+    // create group
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    // create request to invite student to group
+    const request = {
+      params: { id: testGroup._id, member: testStudent._id },
+      user: testStudent
+    }
+    const response = { redirect (url) { return url } }
+    await groups.inviteGroupMember(request, response)
+
+    const expectedGroup = await GroupSchema.findOne({})
+    const expectedStudent = await StudentProfile.findOne({})
+    expect(testStudent._id).toEqual(expectedGroup.invites[0])
+    expect(testGroup._id).toEqual(expectedStudent.invites[0])
+
+    await groups.acceptInvite(request, response)
+    const expectedGroupUpdated = await GroupSchema.findOne({})
+    const expectedStudentUpdated = await StudentProfile.findOne({})
+    expect(expectedGroupUpdated.invites[0]).toEqual(undefined)
+    expect(expectedStudentUpdated.invites[0]).toEqual(undefined)
+    expect(expectedGroupUpdated.members.length).toEqual(2) // the test user should be in the group twice because they invited themself
+    expect(expectedStudentUpdated.groups.length).toEqual(2) // the test user should be in the group twice because they invited themself
+    done()
+  })
+  test('A invite is deleted from both the group and the students invite list', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
+    // create group
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    // create request to invite student to group
+    const request = {
+      params: { id: testGroup._id, member: testStudent._id },
+      user: testStudent
+    }
+    const response = { redirect (url) { return url } }
+    await groups.inviteGroupMember(request, response)
+
+    const expectedGroup = await GroupSchema.findOne({})
+    const expectedStudent = await StudentProfile.findOne({})
+    expect(testStudent._id).toEqual(expectedGroup.invites[0])
+    expect(testGroup._id).toEqual(expectedStudent.invites[0])
+
+    await groups.removeInvite(testGroup._id, testStudent._id)
+    const expectedGroupUpdated = await GroupSchema.findOne({})
+    const expectedStudentUpdated = await StudentProfile.findOne({})
+    expect(expectedGroupUpdated.invites[0]).toEqual(undefined)
+    expect(expectedStudentUpdated.invites[0]).toEqual(undefined)
+
+    done()
+  })
+  test('A student can decline an invite to a group', async (done) => {
+    // create student
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test.member@test.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const testStudent = await newStudent.save()
+    // create group
+    const testName = 'New Test Group'
+    const req = {
+      body: { name: testName },
+      user: testStudent
+    }
+    const res = { redirect (url) { return url } }
+    await groups.createGroup(req, res)
+    const testGroup = await GroupSchema.findOne({})
+    expect(testName).toEqual(testGroup.name)
+
+    // create request to invite student to group
+    const request = {
+      params: { id: testGroup._id, member: testStudent._id },
+      user: testStudent
+    }
+    const response = { redirect (url) { return url } }
+    await groups.inviteGroupMember(request, response)
+    const expectedGroup = await GroupSchema.findOne({})
+    const expectedStudent = await StudentProfile.findOne({})
+    expect(testStudent._id).toEqual(expectedGroup.invites[0])
+    expect(testGroup._id).toEqual(expectedStudent.invites[0])
+    await groups.declineInvite(request, response)
+    const expectedGroupUpdated = await GroupSchema.findOne({})
+    const expectedStudentUpdated = await StudentProfile.findOne({})
+    expect(expectedGroupUpdated.invites[0]).toEqual(undefined)
+    expect(expectedStudentUpdated.invites[0]).toEqual(undefined)
+    expect(expectedGroupUpdated.members.length).toEqual(1) // the test user should be the only member in the group since they made it
+    expect(expectedStudentUpdated.groups.length).toEqual(1) // the test user should be the only member in the group since they made it
     done()
   })
 })
