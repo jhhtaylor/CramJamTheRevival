@@ -14,9 +14,6 @@ router.route('/new')
   .get(groups.renderNewForm)
   .post(isLoggedIn, catchAsync(groups.createGroup))
 
-router.route('/:id/new/:member')
-  .post(isLoggedIn, catchAsync(groups.addGroupMember)) // new add member route
-
 router.route('/:id')
   .get(catchAsync(groups.showGroup))
   .delete(isLoggedIn, catchAsync(groups.deleteGroup))
@@ -32,5 +29,11 @@ router.route('/:id/explore')
 
 router.route('/:id/invite/:member')
   .post(catchAsync(groups.inviteGroupMember))
+
+router.route('/:id/acceptInvite')
+  .post(isLoggedIn, catchAsync(groups.acceptInvite))
+
+router.route('/:id/declineInvite')
+  .post(isLoggedIn, catchAsync(groups.declineInvite))
 
 module.exports = router
