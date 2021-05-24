@@ -1,15 +1,23 @@
 <% layout('layouts/boilerplate') -%>
 
-<hr>
-<h2>Invite:</h2>
-<hr>
-<% students.forEach(student => { %>
-    <div>
-        <h3><%= student.firstName %> <%= student.lastName %></h3>
-        <h5>Email: <%= student.email %></h5>
-        <form action="/groups/<%=group._id%>/invite/<%=student._id%>" method="POST">
-            <button>Invite to group</button>
-        </form>
-    </div>
     <hr>
-<% }); %>
+    <h2>Invite:</h2>
+    <hr>
+    <% students.forEach(student=> { %>
+        <div>
+            <h3>
+                <%= student.firstName %>
+                    <%= student.lastName %>
+            </h3>
+            <h5>Email: <%= student.email %>
+            </h5>
+            <form action="/groups/<%=group._id%>/invite/<%=student._id%>" method="POST">
+                <button>Invite to group</button>
+            </form>
+            <form action="/groups/<%=group._id%>/new/<%=student._id%>" method="POST">
+                <!-- <input type = "text" name="member" placeholder="User Name"> -->
+                <button>Add</button>
+            </form>
+        </div>
+        <hr>
+        <% }); %>

@@ -19,6 +19,9 @@ module.exports.explore = async (req, res) => {
   const students = await StudentProfile.find({})
   res.render('students/students', { students })
 }
+module.exports.showNotifications = (req, res) => {
+  res.render('notifications')
+}
 module.exports.renderRegisterStudent = (req, res) => {
   res.render('students/register')
 }
@@ -50,4 +53,13 @@ module.exports.logoutStudent = (req, res) => {
   req.logout()
   req.flash('success', 'Successfully Logged Out!')
   res.redirect('/')
+}
+
+module.exports.rateStudent = async (req, res) => {
+  const { id } = req.params
+  const { rating } = req.body
+  const raterID = req.user._id
+  const studentRating = { rated: parseInt(rating), rater: raterID }
+  await StudentProfile.findByIdAndUpdate(id, { $push: { rating: studentRating } })
+  res.redirect('/groups')
 }

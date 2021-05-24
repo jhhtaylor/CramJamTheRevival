@@ -20,7 +20,17 @@ const studentProfileSchema = new Schema({
       type: [Number],
       required: true
     }
+  },
+  rating: [{ rated: { type: Number }, rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' } }]
+})
+
+studentProfileSchema.virtual('averageRating').get(function () {
+  let avg = 0
+  for (const rate of this.rating) {
+    avg += rate
   }
+  avg /= this.rating.length
+  return avg
 })
 
 studentProfileSchema.plugin(localMongoose)

@@ -38,7 +38,7 @@ describe('Group controller functionality', () => {
       user: testUser
     }
 
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testName)
@@ -67,7 +67,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testUser
     }
-    const res1 = { redirect (url) { return url } }
+    const res1 = { redirect(url) { return url } }
     await groups.createGroup(req1, res1)
     const expectedGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(expectedGroup.name)
@@ -80,7 +80,7 @@ describe('Group controller functionality', () => {
       }
 
     }
-    const res2 = { redirect (url) { return url } }
+    const res2 = { redirect(url) { return url } }
     await groups.deleteGroup(req2, res2)
     const updatedGroup = await GroupSchema.findById(expectedGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -111,7 +111,7 @@ describe('Group controller functionality', () => {
       user: testUser
     }
 
-    const res1 = { redirect (url) { return url } }
+    const res1 = { redirect(url) { return url } }
     await groups.createGroup(req1, res1)
     const expectedGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(expectedGroup.name)
@@ -125,7 +125,7 @@ describe('Group controller functionality', () => {
       }
 
     }
-    const res2 = { redirect (url) { return url } }
+    const res2 = { redirect(url) { return url } }
     await groups.deleteGroupMember(req2, res2)
     const updatedGroup = await GroupSchema.findById(expectedGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -133,7 +133,7 @@ describe('Group controller functionality', () => {
     expect(updatedUser.groups[0]).toEqual(undefined)
   })
 
-  test('A hard-coded user can be added to a group', async (done) => {
+  test('A user can be added to a group', async (done) => {
     // generate a test user profile
     const data = getGeoData()
     const location = data.location
@@ -185,7 +185,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
@@ -195,7 +195,7 @@ describe('Group controller functionality', () => {
       params: { id: testGroup._id, member: testStudent._id },
       user: testStudent
     }
-    const response = { redirect (url) { return url } }
+    const response = { redirect(url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -232,7 +232,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
@@ -263,7 +263,7 @@ describe('Group controller functionality', () => {
       body: { name: testName },
       user: testStudent
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const testGroup = await GroupSchema.findOne({})
     expect(testName).toEqual(testGroup.name)
