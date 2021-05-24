@@ -5,8 +5,4 @@ mainRouter.get('/', function (req, res) {
   res.render('index')
 })
 
-mainRouter.get('/notifications', function (req, res) {
-  res.render('notifications')
-})
-
 module.exports = mainRouter

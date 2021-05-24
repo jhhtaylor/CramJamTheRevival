@@ -6,11 +6,11 @@
     </div>
 <% } else {%>
         <div class="card mb-3">
-            <% for (let invite of signedInUser.invites){%>
+            <% for (let invite of groupInvites){%>
             <div class="row">
                 <div class="col-md-5">
                     <div class="card-body">
-                        <h5 class="card-title">Invited to join <%= invite %></h5>
+                        <h5 class="card-title">Invited to join <%= invite.name %></h5>
                     </div>
                 </div>
             </div>
