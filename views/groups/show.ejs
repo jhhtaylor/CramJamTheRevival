@@ -8,7 +8,7 @@
             <h5>Group members</h5>
             <% for (var i=0; i < group.members.length; i++) { %>
                 <li>
-                    <%= group.members[i]%>
+                    <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
                         <form class="d-inline"
                             action="/groups/<%=group._id%>/edit/<%=group.members[i]._id%>?_method=DELETE" method="POST">
                             <button>Remove</button>

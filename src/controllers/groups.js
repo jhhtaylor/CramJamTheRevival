@@ -81,13 +81,31 @@ module.exports.inviteGroupMember = async (req, res) => {
     { $push: { invites: groupId } })
   res.redirect(`/groups/${groupId}`)
 }
-module.exports.addGroupMember = async (req, res) => {
-
-  const groupId = req.params.id
-  const memberId = req.params.member
+module.exports.addGroupMember = async (groupId, memberId) => {
   await GroupSchema.updateOne({ _id: groupId },
     { $push: { members: memberId } })
   await StudentProfile.updateOne({ _id: memberId },
     { $push: { groups: groupId } })
+}
+
+module.exports.removeInvite = async (groupId, memberId) => {
+  await GroupSchema.updateOne({ _id: groupId },
+    { $pull: { invites: memberId } })
+  await StudentProfile.updateOne({ _id: memberId },
+    { $pull: { invites: groupId } })
+}
+
+module.exports.acceptInvite = async (req, res) => {
+  const groupId = req.params.id
+  const memberId = req.user._id
+  this.addGroupMember(groupId, memberId)
+  this.removeInvite(groupId, memberId)
+  res.redirect(`/groups/${groupId}`)
+}
+
+module.exports.declineInvite = async (req, res) => {
+  const groupId = req.params.id
+  const memberId = req.user._id
+  this.removeInvite(groupId, memberId)
   res.redirect(`/groups/${groupId}`)
 }
