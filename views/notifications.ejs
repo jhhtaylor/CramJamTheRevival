@@ -5,8 +5,8 @@
         <h5>No new invites</h5>
     </div>
 <% } else {%>
+    <% for (let invite of groupInvites){%>
         <div class="card mb-3">
-            <% for (let invite of groupInvites){%>
             <div class="row">
                 <div class="col-md-5">
                     <div class="card-body">
@@ -14,6 +14,6 @@
                     </div>
                 </div>
             </div>
-            <% }%>
         </div>
+        <% }%>
 <% }%>
