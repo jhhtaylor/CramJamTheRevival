@@ -9,6 +9,7 @@ const meetingRouter = require('./src/routes/meetingRoutes')
 const groupRouter = require('./src/routes/groupRoutes')
 const studentRouter = require('./src/routes/studentsRoutes')
 const pollsRouter = require('./src/routes/poll')
+const notificationsRouter = require('./src/routes/notifications')
 
 const db = require('./src/db')
 const { settings } = require('./utils/sessionSettings')
@@ -51,6 +52,7 @@ app.use('/students', studentRouter, express.static(publicDir))
 app.use('/groups', groupRouter, express.static(publicDir))
 app.use('/meetings', meetingRouter)
 app.use('/polls', pollsRouter, express.static(publicDir))
+app.use('/notifications', notificationsRouter, express.static(publicDir))
 
 app.listen(port)
 

@@ -19,6 +19,9 @@ module.exports.explore = async (req, res) => {
   const students = await StudentProfile.find({})
   res.render('students/students', { students })
 }
+module.exports.showNotifications = (req, res) => {
+  res.render('notifications')
+}
 module.exports.renderRegisterStudent = (req, res) => {
   res.render('students/register')
 }
