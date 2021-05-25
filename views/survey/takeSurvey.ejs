@@ -1,0 +1,136 @@
+<% layout('layouts/boilerplate') -%>
+  <h1>COVID Screening Survey</h1>
+  <form action="/survey/<%= signedInUser._id %> " method="post">
+    <h3>Symptoms</h3>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Are you suffering from fever / high temperature or have temperature fluctuations?</h5>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="fever" id="feverY" value="yes">
+          <label class="form-check-label" for="feverY">Yes</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="fever" id="feverN" value="no">
+          <label class="form-check-label" for="feverN">No</label>
+        </div>
+      </div>
+    </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you have a dry cough?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="dryCough" id="dryCoughY" value="yes">
+            <label class="form-check-label" for="dryCoughY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="dryCough" id="dryCoughN" value="no">
+            <label class="form-check-label" for="dryCoughN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you have a sore throat?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="soreThroat" id="soreThroatY" value="yes">
+            <label class="form-check-label" for="soreThroatY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="soreThroat" id="soreThroatN" value="no">
+            <label class="form-check-label" for="soreThroatN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you have redness of eyes?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="redEyes" id="redEyesY" value="yes">
+            <label class="form-check-label" for="soreThroatY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="redEyes" id="redEyesN" value="no">
+            <label class="form-check-label" for="redEyesN">No</label>
+          </div>
+        </div>
+    </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you experience shortness of breath / difficulty in breathing?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="shortBreath" id="shortBreathY" value="yes">
+            <label class="form-check-label" for="shortBreathY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="shortBreath" id="shortBreathN" value="no">
+            <label class="form-check-label" for="shortBreathN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Have you got unusual body aches / muscle pain?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bodyAches" id="bodyAchesY" value="yes">
+            <label class="form-check-label" for="bodyAchesY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="bodyAches" id="bodyAchesN" value="no">
+            <label class="form-check-label" for="bodyAchesN">No</label>
+          </div>
+        </div>
+    </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you experience a loss of smell / taste?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="lossSmell" id="lossSmellY" value="yes">
+            <label class="form-check-label" for="lossSmellY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="lossSmell" id="lossSmellN" value="no">
+            <label class="form-check-label" for="lossSmellN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Are you nausea and/or do you experience unusual vomiting?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="nausea" id="nauseaY" value="yes">
+            <label class="form-check-label" for="nauseaY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="nausea" id="nauseaN" value="no">
+            <label class="form-check-label" for="nauseaN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Have you got diarrhea?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="diarrhea" id="diarrheaY" value="yes">
+            <label class="form-check-label" for="diarrheaY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="diarrhea" id="diarrheaN" value="no">
+            <label class="form-check-label" for="diarrheaN">No</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Do you suffer from fatigue / physical weakness / tiredness?</h5>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="fatigue" id="fatigueY" value="yes">
+            <label class="form-check-label" for="fatigueY">Yes</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="fatigue" id="fatigueN" value="no">
+            <label class="form-check-label" for="fatigueN">No</label>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary">Submit</button>
+  </form>
