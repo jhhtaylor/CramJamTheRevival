@@ -1,3 +1,4 @@
+const { ActivityLog } = require('../db/activityLog')
 const { Poll } = require('../db/poll')
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -17,5 +18,22 @@ module.exports.isPartOfVote = async (req, res, next) => {
     req.session.returnTo = req.originalUrl
     return res.redirect('/polls')
   }
+  next()
+}
+
+module.exports.logActivity = async (req, res, next) => {
+  const user = { _id: null, username: 'not logged in' }
+  if (req.user) {
+    user._id = req.user._id
+    user.username = req.user.username
+  }
+  const newLog = new ActivityLog({
+    userid: user._id,
+    username: user.username,
+    route: `${req.baseUrl}${req.path}`,
+    method: req.method,
+    date: new Date()
+  })
+  await newLog.save()
   next()
 }
