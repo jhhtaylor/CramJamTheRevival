@@ -16,7 +16,7 @@ describe('Meeting controller functionality', () => {
     expect(newLength - prevLength).toBe(1)
   })
 
-  test('Selects one of the locations for the meeting location', () => {
+  test('Selects the central location for the meeting location', () => {
     const students = []
     for (let i = 0; i < 4; i++) {
       const newStudent = getGeoData()
