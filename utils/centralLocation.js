@@ -1,4 +1,4 @@
-function findCentalLocation (coordArray) {
+function findCentralLocation (coordArray) {
   let distanceSum = 0
   let minDistanceSum = Infinity
   let pointID = 0
@@ -15,4 +15,5 @@ function findCentalLocation (coordArray) {
     }
   }
   console.log(coordArray[pointID].location + ' is the most central location.')
+  return coordArray[pointID].location
 }
