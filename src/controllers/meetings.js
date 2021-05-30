@@ -20,6 +20,8 @@ module.exports.determineMeetingLocation = (students) => {
     return locationData
   })
 
+  // Calculate which of the students registered addresses is the most central
+  // Does not offer other meeting locations yet
   let distanceSum = 0
   let minDistanceSum = Infinity
   let pointID = 0

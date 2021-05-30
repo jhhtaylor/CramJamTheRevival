@@ -1,5 +1,4 @@
 const { getGeoData } = require('../../../seeds/locationHelper')
-const { getCentral } = require('../../../seeds/locationHelper')
 const meetings = require('../../../src/controllers/meetings')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
 
