@@ -3,6 +3,7 @@ const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/middleware')
 const links = require('../controllers/links')
+
 // const { route } = require('./studentsRoutes')
 // const poll = require('../controllers/poll')
 const router = express.Router()
@@ -13,9 +14,9 @@ router.route('/')
 router.post('/', function (req, res) {
   const { name, url } = req.body
   const newLink = { name: name, url: url }
-  links.push(newLink)
+  links.linkItems.push(newLink)
 
-  res.redirect('/')
+  res.redirect('/links')
 })
 
 router.get('/new', function (req, res) {
