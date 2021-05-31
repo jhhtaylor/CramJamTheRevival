@@ -4,8 +4,6 @@ const catchAsync = require('../../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/middleware')
 const links = require('../controllers/links')
 
-// const { route } = require('./studentsRoutes')
-// const poll = require('../controllers/poll')
 const router = express.Router()
 
 router.route('/')
