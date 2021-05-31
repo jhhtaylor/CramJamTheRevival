@@ -1,5 +1,5 @@
 <% layout('layouts/boilerplate') -%>
-<h2>Vote to <%= poll.action %> <%= poll.affected %> </h2>
+<h2>Vote to <%= poll.action %> <%= affected.username %> to <%= group.name %></h2>
 
 <% if(!poll.voted.includes(signedInUser._id)) { %> 
 <form action="/polls/<%= poll._id %>/yes" method="POST">

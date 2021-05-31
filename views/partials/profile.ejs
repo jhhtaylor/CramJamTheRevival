@@ -12,7 +12,7 @@
           <li>
             <hr class="dropdown-divider">
           </li>
-          <li><a class="dropdown-item" href="/notifications">Notifications <% if(signedInUser.invites.length > 0) {%><span class="badge notification-link"><%= signedInUser.invites.length %> </span><%} %></a></li>
+          <li><a class="dropdown-item" href="/notifications">Notifications <% if(signedInUser.invites.length + signedInUser.polls.length > 0) {%><span class="badge notification-link"><%= signedInUser.invites.length + signedInUser.polls.length %> </span><%} %></a></li>
           <li><a class="dropdown-item" href="/groups">Groups</a></li>
           <li><a class="dropdown-item" href="/students">Profile</a></li>
           <li><a class="dropdown-item" href="/survey">Covid Survey</a></li>
@@ -23,7 +23,7 @@
           <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
         </ul>
         <% if(signedInUser.invites.length > 0) {%>
-          <span class="badge notification"> <%= signedInUser.invites.length %></span>
+          <span class="badge notification"> <%= signedInUser.invites.length + signedInUser.polls.length %></span>
         <% } %>
       </div>
     </li>

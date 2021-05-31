@@ -1,11 +1,12 @@
 const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
+const { Poll } = require('../db/poll')
 // Public
 
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
-  const groups = await GroupSchema.find({ _id: { $in: userGroups } })
-  const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } })
+  const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
+  const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } }).populate('members')
   res.render('groups/index', { groups, randomGroup })
 }
 
@@ -38,13 +39,15 @@ module.exports.createGroup = async (req, res, next) => {
   res.redirect('/groups/')
 }
 module.exports.showGroup = async (req, res) => {
-  const group = await GroupSchema.findById(req.params.id).populate('members')
+  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites'])
+  const polls = group.polls
+  const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
 
   if (!group) {
     // req.flash('error', 'Cannot find that group!')
     return res.redirect('/groups')
   }
-  res.render('groups/show', { group })
+  res.render('groups/show', { group, groupPolls })
 }
 
 module.exports.deleteGroup = async (req, res) => {
@@ -57,29 +60,44 @@ module.exports.deleteGroup = async (req, res) => {
   res.redirect('/groups')
 }
 
-module.exports.deleteGroupMember = async (req, res) => {
-  const groupId = req.params.id
-  const memberId = req.params.member
+module.exports.deleteMember = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId)
   await StudentProfile.updateOne({ _id: memberId },
     { $pull: { groups: groupId } })
   if (group.members.length === 1) {
-    await GroupSchema.remove({ _id: groupId })
-    res.redirect('/groups/')
+    await GroupSchema.deleteOne({ _id: groupId })
+    return true
   } else {
     await GroupSchema.updateOne({ _id: groupId },
       { $pull: { members: memberId } })
-    res.redirect(`/groups/${groupId}`)
+    return false
   }
+}
+
+module.exports.deleteGroupMember = async (req, res) => {
+  const groupId = req.params.id
+  const memberId = req.params.member
+  const empty = await this.deleteMember(groupId, memberId)
+  if (!empty) {
+    console.log('not empty')
+    res.redirect('/groups')
+  } else {
+    console.log('empty')
+    res.redirect('/groups')
+  }
+}
+
+module.exports.invite = async (groupId, memberId) => {
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { invites: memberId } })
+  await StudentProfile.updateOne({ _id: memberId },
+    { $push: { invites: groupId } })
 }
 
 module.exports.inviteGroupMember = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.params.member
-  await GroupSchema.updateOne({ _id: groupId },
-    { $push: { invites: memberId } })
-  await StudentProfile.updateOne({ _id: memberId },
-    { $push: { invites: groupId } })
+  this.invite(groupId, memberId)
   res.redirect(`/groups/${groupId}`)
 }
 module.exports.addGroupMember = async (groupId, memberId) => {
