@@ -11,16 +11,10 @@ const router = express.Router()
 router.route('/')
   .get(isLoggedIn, catchAsync(links.index))
 
-router.post('/', function (req, res) {
-  const { name, url } = req.body
-  const newLink = { name: name, url: url }
-  links.linkItems.push(newLink)
+router.route('/')
+  .post(isLoggedIn, catchAsync(links.createLink))
 
-  res.redirect('/links')
-})
-
-router.get('/new', function (req, res) {
-  res.render('links/new.ejs')
-})
+router.route('/new')
+  .get(isLoggedIn, catchAsync(links.renderNewForm))
 
 module.exports = router

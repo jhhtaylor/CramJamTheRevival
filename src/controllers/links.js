@@ -29,4 +29,14 @@ module.exports.index = async (req, res) => {
   // const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } })
   res.render('links/index', { linkItems: this.linkItems })
 }
+module.exports.createLink = async (req, res) => {
+  const { name, url } = req.body
+  const newLink = { name: name, url: url }
+  this.linkItems.push(newLink)
 
+  res.redirect('/links')
+}
+
+module.exports.renderNewForm = async (req, res) => {
+  res.render('links/new.ejs')
+}
