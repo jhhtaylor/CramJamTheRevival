@@ -1,22 +1,36 @@
 <% if(signedInUser) { %>
-<div class="dropdown text-end">
-    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
-    </a>
-    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-      <li class="dropdown-item"><strong>Hi <%= signedInUser.username%>!</strong></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="/groups">Groups</a></li>
-      <li><a class="dropdown-item" href="/students">Profile</a></li>
-      <li><a class="dropdown-item" href="/survey">Covid Survey</a></li>
-      <li><a class="dropdown-item" href="#">Settings</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
-    </ul>
-</div>
-<% } else { %> 
+  <ul class="nav ">
+    <li class="nav-item">
+      <div class="dropdown text-end  <% if(signedInUser.invites.length > 0) {%> profile <%} %>">
+        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
+        </a>
+    
+        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+          <li class="dropdown-item"><strong>Hi <%= signedInUser.username%>!</strong></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="/notifications">Notifications <% if(signedInUser.invites.length > 0) {%><span class="badge notification-link"><%= signedInUser.invites.length %> </span><%} %></a></li>
+          <li><a class="dropdown-item" href="/groups">Groups</a></li>
+          <li><a class="dropdown-item" href="/students">Profile</a></li>
+          <li><a class="dropdown-item" href="/survey">Covid Survey</a></li>
+          <li><a class="dropdown-item" href="#">Settings</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
+        </ul>
+        <% if(signedInUser.invites.length > 0) {%>
+          <span class="badge notification"> <%= signedInUser.invites.length %></span>
+        <% } %>
+      </div>
+    </li>
+  </ul>
+  <% } else { %>
     <ul class="nav">
-        <li class="nav-item"><a href="/students/login" class="nav-link navbar-text px-2">Login</a></li>
-        <li class="nav-item"><a href="/students/register" class="nav-link navbar-text px-2">Sign up</a></li>
+      <li class="nav-item"><a href="/students/login" class="nav-link navbar-text px-2">Login</a></li>
+      <li class="nav-item"><a href="/students/register" class="nav-link navbar-text px-2">Sign up</a></li>
     </ul>
-<% } %>
+    <% } %>
