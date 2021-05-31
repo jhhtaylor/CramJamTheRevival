@@ -10,7 +10,7 @@
                 <li>
                     <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
                         <form class="d-inline"
-                            action="/groups/<%=group._id%>/edit/<%=group.members[i]._id%>?_method=DELETE" method="POST">
+                            action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>" method="POST" method="POST">
                             <button>Remove</button>
                         </form>
                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>

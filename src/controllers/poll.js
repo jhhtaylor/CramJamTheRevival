@@ -1,6 +1,7 @@
 const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
 const { GroupSchema } = require('../db/groups')
+const group = require('./groups')
 
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
@@ -29,7 +30,7 @@ module.exports.votePoll = async (req, res) => {
     votePoll.active = false
     await votePoll.save()
   }
-
+  this.updatePoll(votePoll._id)
   res.redirect('back')
 }
 
@@ -64,4 +65,27 @@ module.exports.createPoll = async (req, res) => {
 
   req.flash('success', 'Successfuly created new poll')
   res.redirect('/polls')
+}
+
+module.exports.updatePoll = async (pollId) => {
+  const poll = await Poll.findById(pollId)
+  const group = await GroupSchema.findById(poll.group)
+
+  if (poll.votes.yes === group.members.length) {
+    switch (poll.action) {
+      case 'Add':
+        group.addGroupMember(group._id, poll.affected)
+        break
+
+      case 'Invite':
+        group.inviteGroupMember(group._id, poll.affected)
+        break
+
+      case 'Remove':
+        group.deleteGroupMember(group._id, poll.affected)
+        break
+    }
+    await GroupSchema.updateOne({ _id: groupId },
+      { $pull: { polls: pollId } })
+  }
 }
