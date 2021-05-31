@@ -23,7 +23,7 @@
           <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
         </ul>
         <% if(signedInUser.invites.length > 0) {%>
-          <span class="badge notification"> <%= signedInUser.invites.length %></span>
+          <span class="badge notification"> <%= signedInUser.invites.length + signedInUser.polls.length %></span>
         <% } %>
       </div>
     </li>
