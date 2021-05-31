@@ -19,8 +19,22 @@ module.exports.determineMeetingLocation = (students) => {
     const locationData = { location: obj.location, geodata: obj.geodata }
     return locationData
   })
-  // TODO: Refactor to Josh's centralised algorithm
-  // hard coded naive approach is to take a random location of one of the meeting participants, this will be changed to Josh's algorith
-  const meetingLocation = locations[Math.floor(Math.random() * locations.length)]
+
+  // Calculate which of the students registered addresses is the most central
+  // Does not offer other meeting locations yet
+  let distanceSum = 0
+  let minDistanceSum = Infinity
+  let pointID = 0
+  for (let i = 0; i < locations.length; i++) {
+    distanceSum = 0
+    for (let j = 0; j < locations.length; j++) {
+      distanceSum += Math.sqrt(Math.pow(locations[i].geodata[i] - locations[j].geodata[i], 2) + Math.pow(locations[i].geodata[j] - locations[j].geodata[j], 2))
+    }
+    if (distanceSum <= minDistanceSum && distanceSum !== 0) {
+      minDistanceSum = distanceSum
+      pointID = i
+    }
+  }
+  const meetingLocation = locations[pointID]
   return meetingLocation
 }

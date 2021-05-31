@@ -10,7 +10,7 @@
       <div class="col-md-7 col-lg-6 ml-auto">
         <form action="/students/register" method="POST">
           <div class="row">
-
+            <h5>Profile</h5>
             <!-- username -->
             <div class="input-group col-lg-6 mb-4">
               <div class="input-group-prepend">
@@ -19,7 +19,7 @@
                 </span>
               </div>
               <input id="userName" type="text" name="username" placeholder="Username"
-                class="form-control bg-white border-left-0 border-md">
+                class="form-control bg-white border-left-0 border-md" required>
             </div>
 
             <!-- First Name -->
@@ -30,7 +30,7 @@
                 </span>
               </div>
               <input id="firstName" type="text" name="firstName" placeholder="First Name"
-                class="form-control bg-white border-left-0 border-md">
+                class="form-control bg-white border-left-0 border-md" required>
             </div>
 
             <!-- Last Name -->
@@ -41,7 +41,7 @@
                 </span>
               </div>
               <input id="lastName" type="text" name="lastName" placeholder="Last Name"
-                class="form-control bg-white border-left-0 border-md">
+                class="form-control bg-white border-left-0 border-md" required>
             </div>
 
             <!-- Email Address -->
@@ -52,7 +52,7 @@
                 </span>
               </div>
               <input id="email" type="email" name="email" placeholder="Email Address"
-                class="form-control bg-white border-left-0 border-md">
+                class="form-control bg-white border-left-0 border-md" required>
             </div>
 
             <!-- Phone Number -->
@@ -68,7 +68,7 @@
               </select>
               <input id="phoneNumber" type="tel" name="phone" placeholder="Phone Number"
                 class="form-control bg-white border-md border-left-0 pl-3">
-            </div>.
+            </div>
 
             <!-- Password -->
             <div class="input-group col-lg-12 mb-4">
@@ -78,7 +78,7 @@
                 </span>
               </div>
               <input id="password" type="password" name="password" placeholder="Password"
-                class="form-control bg-white border-left-0 border-md">
+                class="form-control bg-white border-left-0 border-md" required>
             </div>
 
             <!-- Password Confirmation -->
@@ -89,8 +89,84 @@
                 </span>
               </div>
               <input id="passwordConfirmation" type="password" name="passwordConfirmation"
-                placeholder="Confirm Password" class="form-control bg-white border-left-0 border-md">
+                placeholder="Confirm Password" class="form-control bg-white border-left-0 border-md" required>
             </div>
+
+            <h5>Address <span class="text-muted">(Optional)</span></h5>
+
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <input id="address1" type="text" name="addressLine1" placeholder="Address Line 1"
+                class="form-control bg-white border-left-0 border-md">
+            </div>
+
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <input id="address2" type="text" name="addressLine2" placeholder="Address Line 2"
+                class="form-control bg-white border-left-0 border-md">
+            </div>
+
+
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <input id="suburb" type="text" name="suburb" placeholder="Suburb"
+                class="form-control bg-white border-left-0 border-md">
+            </div>
+
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <input id="City" type="text" name="city" placeholder="City/Town"
+                class="form-control bg-white border-left-0 border-md">
+            </div>
+
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <select id="countryCode" name="countryCode"
+                class="custom-select form-control bg-white border-left-0 border-md text-muted">
+                <option value="">Province..</option>
+                <option value="">Eastern Cape</option>
+                <option value="">Free State</option>
+                <option value="">Gauteng</option>
+                <option value="">KwaZulu-Natal</option>
+                <option value="">Limpopo</option>
+                <option value="">Mpumalanga</option>
+                <option value="">Northern Cape</option>
+                <option value="">North West</option>
+                <option value="">Western Cape</option>
+              </select>
+
+            </div>
+            
+            <div class="input-group col-lg-6 mb-4">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white px-4 border-md border-right-0">
+                  <i class="fa fa-home py-2 mb-1 text-muted"></i>
+                </span>
+              </div>
+              <input id="postalCode" type="number" name="postalCode" placeholder="Postal Code"
+                class="form-control bg-white border-left-0 border-md">
+            </div>
+
 
             <!-- Submit Button -->
             <div class="form-group col-lg-12 mx-auto mb-2 d-grid">

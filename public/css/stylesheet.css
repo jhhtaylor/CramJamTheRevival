@@ -44,3 +44,16 @@ footer {
     background-color: #f5f5f5;
     clear:both;
 }
+
+.notification {
+    position: relative;
+    bottom: 60px;
+    right: 10%;
+}
+.notification-link, .notification{
+    background-color: rgb(23, 0, 226);
+}
+
+.profile {
+    top: 10px;
+}

@@ -10,6 +10,10 @@ const groupRouter = require('./src/routes/groupRoutes')
 const studentRouter = require('./src/routes/studentsRoutes')
 const pollsRouter = require('./src/routes/poll')
 const notificationsRouter = require('./src/routes/notifications')
+const surveyRouter = require('./src/routes/survey')
+const logRouter = require('./src/routes/activityLog')
+const { logActivity } = require('./src/middleware/middleware')
+const linkRouter = require('./src/routes/linkRoutes')
 
 const db = require('./src/db')
 const { settings } = require('./utils/sessionSettings')
@@ -47,12 +51,16 @@ app.use((req, res, next) => {
   res.locals.signedInUser = req.user
   next()
 })
+app.all('*', logActivity)
 app.use('/', mainRouter)
 app.use('/students', studentRouter, express.static(publicDir))
 app.use('/groups', groupRouter, express.static(publicDir))
 app.use('/meetings', meetingRouter)
 app.use('/polls', pollsRouter, express.static(publicDir))
+app.use('/log', logRouter, express.static(publicDir))
 app.use('/notifications', notificationsRouter, express.static(publicDir))
+app.use('/survey', surveyRouter, express.static(publicDir))
+app.use('/links', linkRouter, express.static(publicDir))
 
 app.listen(port)
 
