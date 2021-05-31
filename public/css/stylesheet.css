@@ -50,10 +50,22 @@ footer {
     bottom: 60px;
     right: 10%;
 }
+
 .notification-link, .notification{
     background-color: rgb(23, 0, 226);
 }
 
 .profile {
     top: 10px;
+}
+
+.main-image{
+background-image: url("../assets/Classroom.jpg");
+  /* Full height */
+  height: 500px;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
