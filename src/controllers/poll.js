@@ -5,7 +5,9 @@ const { GroupSchema } = require('../db/groups')
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
   const found = await Poll.findById(poll)
-  res.render('polls/vote', { poll: found })
+  const affected = await StudentProfile.findById(found.affected)
+  const group = await GroupSchema.findById(found.group)
+  res.render('polls/vote', { poll: found, affected, group })
 }
 
 module.exports.showAllPolls = async (req, res) => {
@@ -28,7 +30,7 @@ module.exports.votePoll = async (req, res) => {
     await votePoll.save()
   }
 
-  res.redirect('/polls')
+  res.redirect('back')
 }
 
 module.exports.vote = async (poll, type) => {
@@ -43,20 +45,23 @@ module.exports.vote = async (poll, type) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
-  const members = []
-  members.push(req.user._id)
-  const newMembers = await StudentProfile.find({})
-  const member = newMembers[0]
-  newMembers.forEach(elem => {
-    if (Math.random() > 0.5) { members.push(elem._id) }
-  })
+  const group = await GroupSchema.findById(groupId).populate('members')
+  const members = group.members
   const newPoll = new Poll({
     members,
     name: `New poll from: ${req.user.username}`,
+    group: groupId,
     action,
     affected: memberId
   })
   await newPoll.save()
+
+  await StudentProfile.updateMany({ _id: { $in: members } },
+    { $push: { polls: newPoll._id } })
+
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { polls: newPoll._id } })
+
   req.flash('success', 'Successfuly created new poll')
   res.redirect('/polls')
 }

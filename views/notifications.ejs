@@ -27,3 +27,32 @@
         </div>
         <% }%>
 <% }%>
+<% if (signedInUser.polls[0] === undefined){%>
+    <div class="card mb-3">
+        <h5>No new polls</h5>
+    </div>
+<% } else {%>
+    <% for (let poll of userPolls){%>
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card-body">
+                        <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %> to <%= poll.group.name %></h5>
+                        <% if(!poll.voted.includes(signedInUser._id)) { %> 
+                            <form action="/polls/<%= poll._id %>/yes" method="POST">
+                              <button class="btn btn-success">Yes</button>
+                            </form>
+                            <form action="/polls/<%= poll._id %>/no" method="POST">
+                              <button class="btn btn-danger">No</button>
+                            </form>
+                            <% } else { %> 
+                            <p>Yes: <%= poll.votes.yes %> </p>
+                            <p>No: <%= poll.votes.no %> </p>
+                            <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %></p>
+                            <% } %> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }%>
+<% }%>

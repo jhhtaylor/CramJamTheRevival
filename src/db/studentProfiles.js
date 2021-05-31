@@ -9,6 +9,7 @@ const studentProfileSchema = new Schema({
   lastName: { type: String, required: true },
   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   invites: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+  polls: [{ type: Schema.Types.ObjectId, ref: 'Poll' }],
   location: { type: String, required: true }, // string location name eg Wits
   geodata: { // actual geographic data such as longitude latitude
     type: {

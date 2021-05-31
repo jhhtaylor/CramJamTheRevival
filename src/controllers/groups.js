@@ -1,6 +1,6 @@
 const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
-const poll = require('./poll')
+const { Poll } = require('../db/poll')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -40,12 +40,14 @@ module.exports.createGroup = async (req, res, next) => {
 }
 module.exports.showGroup = async (req, res) => {
   const group = await GroupSchema.findById(req.params.id).populate('members')
+  const polls = group.polls
+  const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
 
   if (!group) {
     // req.flash('error', 'Cannot find that group!')
     return res.redirect('/groups')
   }
-  res.render('groups/show', { group })
+  res.render('groups/show', { group, groupPolls })
 }
 
 module.exports.deleteGroup = async (req, res) => {

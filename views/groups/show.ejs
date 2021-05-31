@@ -24,18 +24,41 @@
                                 <% } %>
                 </li>
                 <% } %>
-                    <h5>Pending invites</h5>
-                    <% for (var i=0; i < group.invites.length; i++) { %>
-                        <li>
-                            <%= group.invites[i]%>
-                        </li>
-                        <% } %>
+                <h5>Pending invites</h5>
+                <% for (var i=0; i < group.invites.length; i++) { %>
+                    <li>
+                        <%= group.invites[i]%>
+                    </li>
+                <% } %>
 
-                            <div>
-                                <a class="btn btn-primary" href="/groups/<%=group._id%>/explore"> Invite new members
-                                </a>
-                            </div>
+                <div>
+                    <a class="btn btn-primary" href="/groups/<%=group._id%>/explore"> Invite new members
+                    </a>
+                </div>
         </div>
+        <% for (let poll of groupPolls){%>
+            <div class="card mb-3">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="card-body">
+                            <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %> to <%= poll.group.name %></h5>
+                            <% if(!poll.voted.includes(signedInUser._id)) { %> 
+                                <form action="/polls/<%= poll._id %>/yes" method="POST">
+                                <button class="btn btn-success">Yes</button>
+                                </form>
+                                <form action="/polls/<%= poll._id %>/no" method="POST">
+                                <button class="btn btn-danger">No</button>
+                                </form>
+                                <% } else { %> 
+                                <p>Yes: <%= poll.votes.yes %> </p>
+                                <p>No: <%= poll.votes.no %> </p>
+                                <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %></p>
+                                <% } %> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }%>
         <form class="d-inline" action="/groups/<%=group._id%>?_method=DELETE" method="POST">
             <button>Delete Group</button>
         </form>
