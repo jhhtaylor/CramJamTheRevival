@@ -1,5 +1,6 @@
 const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
+const { GroupSchema } = require('../db/groups')
 
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
@@ -41,6 +42,7 @@ module.exports.vote = async (poll, type) => {
 }
 
 module.exports.createPoll = async (req, res) => {
+  const { groupId, action, memberId } = req.params
   const members = []
   members.push(req.user._id)
   const newMembers = await StudentProfile.find({})
@@ -48,12 +50,11 @@ module.exports.createPoll = async (req, res) => {
   newMembers.forEach(elem => {
     if (Math.random() > 0.5) { members.push(elem._id) }
   })
-  const action = newMembers.includes(member) ? 'Remove' : 'Add'
   const newPoll = new Poll({
     members,
     name: `New poll from: ${req.user.username}`,
     action,
-    affected: member._id
+    affected: memberId
   })
   await newPoll.save()
   req.flash('success', 'Successfuly created new poll')

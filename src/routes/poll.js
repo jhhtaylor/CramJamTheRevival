@@ -8,6 +8,8 @@ const router = express.Router()
 
 router.route('/')
   .get(catchAsync(poll.showAllPolls))
+
+router.route('/:groupId/:action/:memberId')
   .post(catchAsync(poll.createPoll))
 
 router.route('/:poll')

@@ -1,5 +1,6 @@
 const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
+const poll = require('./poll')
 // Public
 
 module.exports.index = async (req, res) => {
