@@ -57,3 +57,7 @@ footer {
 .profile {
     top: 10px;
 }
+
+#toast-container {
+    z-index: 9999999;
+}

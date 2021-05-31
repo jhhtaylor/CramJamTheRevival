@@ -1,7 +1,7 @@
 const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
 const { GroupSchema } = require('../db/groups')
-const group = require('./groups')
+const groups = require('./groups')
 
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
@@ -30,6 +30,8 @@ module.exports.votePoll = async (req, res) => {
     votePoll.active = false
     await votePoll.save()
   }
+  await StudentProfile.updateMany({ _id: { $in: members } },
+    { $pull: { polls: votePoll._id } })
   this.updatePoll(votePoll._id)
   res.redirect('back')
 }
@@ -64,28 +66,40 @@ module.exports.createPoll = async (req, res) => {
     { $push: { polls: newPoll._id } })
 
   req.flash('success', 'Successfuly created new poll')
-  res.redirect('/polls')
+  res.redirect(`/groups/${groupId}`)
 }
 
 module.exports.updatePoll = async (pollId) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
-
   if (poll.votes.yes === group.members.length) {
     switch (poll.action) {
       case 'Add':
-        group.addGroupMember(group._id, poll.affected)
+        await groups.addGroupMember(group._id, poll.affected)
+          .then(done => {
+            console.log('added successfully')
+          }).catch(err => {
+            console.log(err)
+          })
         break
 
       case 'Invite':
-        group.inviteGroupMember(group._id, poll.affected)
+        await groups.invite(group._id, poll.affected).then(done => {
+          console.log('invited successfully')
+        }).catch(err => {
+          console.log(err)
+        })
         break
 
       case 'Remove':
-        group.deleteGroupMember(group._id, poll.affected)
+        await groups.deleteMember(group._id, poll.affected).then(done => {
+          console.log('removed successfully')
+        }).catch(err => {
+          console.log(err)
+        })
         break
     }
-    await GroupSchema.updateOne({ _id: groupId },
+    await GroupSchema.updateOne({ _id: group._id },
       { $pull: { polls: pollId } })
   }
 }
