@@ -86,12 +86,29 @@ module.exports.deleteGroupMember = async (req, res) => {
     res.redirect('/groups')
   }
 }
+module.exports.isInGroup = async (groupId, memberId) => {
+  const exists = GroupSchema.find({
+    _id: groupId,
+    members: { $in: [memberId] }
+  }).count()
+  if (exists) return true
+  return false
+}
 
 module.exports.invite = async (groupId, memberId) => {
-  await GroupSchema.updateOne({ _id: groupId },
-    { $push: { invites: memberId } })
-  await StudentProfile.updateOne({ _id: memberId },
-    { $push: { invites: groupId } })
+  const exists = GroupSchema.find({
+    _id: groupId,
+    members: { $in: [memberId] }
+  }).count()
+
+  if (!exists) {
+    await GroupSchema.updateOne({ _id: groupId },
+      { $push: { invites: memberId } })
+    await StudentProfile.updateOne({ _id: memberId },
+      { $push: { invites: groupId } })
+  } else {
+    console.log('nope')
+  }
 }
 
 module.exports.inviteGroupMember = async (req, res) => {

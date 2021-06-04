@@ -48,25 +48,30 @@ module.exports.vote = async (poll, type) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
-  const group = await GroupSchema.findById(groupId).populate('members')
-  const members = group.members
-  const newPoll = new Poll({
-    members,
-    name: `New poll from: ${req.user.username}`,
-    group: groupId,
-    action,
-    affected: memberId
-  })
-  await newPoll.save()
+  const exists = await groups.isInGroup(groupId, memberId)
+  if (!exists || action === 'Remove') {
+    const group = await GroupSchema.findById(groupId).populate('members')
+    const members = group.members
+    const newPoll = new Poll({
+      members,
+      name: `New poll from: ${req.user.username}`,
+      group: groupId,
+      action,
+      affected: memberId
+    })
+    await newPoll.save()
 
-  await StudentProfile.updateMany({ _id: { $in: members } },
-    { $push: { polls: newPoll._id } })
+    await StudentProfile.updateMany({ _id: { $in: members } },
+      { $push: { polls: newPoll._id } })
 
-  await GroupSchema.updateOne({ _id: groupId },
-    { $push: { polls: newPoll._id } })
+    await GroupSchema.updateOne({ _id: groupId },
+      { $push: { polls: newPoll._id } })
 
-  req.flash('success', 'Successfuly created new poll')
-  res.redirect(`/groups/${groupId}`)
+    req.flash('success', 'Successfuly created new poll')
+    res.redirect(`/groups/${groupId}`)
+  } else {
+    console.log('Already is in group')
+  }
 }
 
 module.exports.updatePoll = async (pollId) => {
