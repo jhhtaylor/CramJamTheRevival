@@ -14,8 +14,14 @@ module.exports.index = async (req, res) => {
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
   // only display people who are not already in the group
-  const students = await StudentProfile.find({})
-  const group = await GroupSchema.findById(groupId)
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  const groupPolls = group.polls
+  const groupPollsAffected = groupPolls.map(poll => poll.affected)
+  const students = await StudentProfile.find({
+    _id: { $nin: groupPollsAffected },
+    groups: { $nin: [groupId] },
+    invites: { $nin: [groupId] }
+  })
   res.render('groups/explore', { students: students, group: group })
 }
 
@@ -87,28 +93,19 @@ module.exports.deleteGroupMember = async (req, res) => {
   }
 }
 module.exports.isInGroup = async (groupId, memberId) => {
-  const exists = GroupSchema.find({
+  const exists = await GroupSchema.count({
     _id: groupId,
     members: { $in: [memberId] }
-  }).count()
-  if (exists) return true
+  })
+  if (exists > 0) return true
   return false
 }
 
 module.exports.invite = async (groupId, memberId) => {
-  const exists = GroupSchema.find({
-    _id: groupId,
-    members: { $in: [memberId] }
-  }).count()
-
-  if (!exists) {
-    await GroupSchema.updateOne({ _id: groupId },
-      { $push: { invites: memberId } })
-    await StudentProfile.updateOne({ _id: memberId },
-      { $push: { invites: groupId } })
-  } else {
-    console.log('nope')
-  }
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { invites: memberId } })
+  await StudentProfile.updateOne({ _id: memberId },
+    { $push: { invites: groupId } })
 }
 
 module.exports.inviteGroupMember = async (req, res) => {
