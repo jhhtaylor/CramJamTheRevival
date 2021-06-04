@@ -8,6 +8,7 @@ const { getGeoData } = require('../../../seeds/locationHelper')
 const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
 const request = supertest.agent(app)
+const Mongoose = require('mongoose')
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
@@ -290,12 +291,12 @@ describe('Poll controller functionality', () => {
       members: [student._id]
     })
     await group.save()
-
+    const invitedStudent = { _id: Mongoose.Types.ObjectId() }
     const req = {
       params: {
         groupId: group._id,
         action: 'Add',
-        memberId: student._id
+        memberId: invitedStudent._id
       },
       user: student,
       flash: function () {}
@@ -307,7 +308,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.affected).toEqual(invitedStudent._id)
     expect(checkPoll.action).toEqual('Add')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
@@ -336,12 +337,12 @@ describe('Poll controller functionality', () => {
       members: [student._id]
     })
     await group.save()
-
+    const invitedStudent = { _id: Mongoose.Types.ObjectId() }
     const req = {
       params: {
         groupId: group._id,
         action: 'Invite',
-        memberId: student._id
+        memberId: invitedStudent._id
       },
       user: student,
       flash: function () {}
@@ -353,7 +354,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.affected).toEqual(invitedStudent._id)
     expect(checkPoll.action).toEqual('Invite')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)

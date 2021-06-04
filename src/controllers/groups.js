@@ -14,8 +14,14 @@ module.exports.index = async (req, res) => {
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
   // only display people who are not already in the group
-  const students = await StudentProfile.find({})
-  const group = await GroupSchema.findById(groupId)
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  const groupPolls = group.polls
+  const groupPollsAffected = groupPolls.map(poll => poll.affected)
+  const students = await StudentProfile.find({
+    _id: { $nin: groupPollsAffected },
+    groups: { $nin: [groupId] },
+    invites: { $nin: [groupId] }
+  })
   res.render('groups/explore', { students: students, group: group })
 }
 
@@ -85,6 +91,19 @@ module.exports.deleteGroupMember = async (req, res) => {
     console.log('empty')
     res.redirect('/groups')
   }
+}
+module.exports.isInGroup = async (groupId, memberId) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  const isIn = group.members.includes(memberId)
+  const isInvited = group.invites.includes(memberId)
+  // const hasRequested = group.requests.includes(memberId) // wait for requests to be implemented
+  const pollsAffected = group.polls.map(poll => poll.affected)
+  let isInAPoll = false
+  if (pollsAffected) {
+    isInAPoll = pollsAffected.includes(memberId)
+  }
+  if (isIn === true || isInvited === true || isInAPoll === true) { return true }
+  return false
 }
 
 module.exports.invite = async (groupId, memberId) => {
