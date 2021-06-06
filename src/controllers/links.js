@@ -10,9 +10,15 @@ module.exports.renderNewForm = async (req, res) => {
 }
 
 module.exports.createLink = async (req, res) => {
+  // ensure all links work
+  let url = req.body.url
+  if (!url.startsWith('https://')) {
+    url = 'https://' + url
+  }
+
   const link = new LinkSchema({
     name: req.body.name,
-    url: req.body.url
+    url: url
   })
   await link.save()
 
