@@ -13,7 +13,8 @@ async function createAdmin () {
     username: 'admin',
     invites: [],
     location: 'admin',
-    geodata: { type: 'Point', cooridantes: [0, 0] }
+    geodata: { type: 'Point', cooridantes: [0, 0] },
+    isAdmin: true
   })
 
   await StudentProfile.register(admin, 'admin')
