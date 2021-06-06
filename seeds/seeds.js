@@ -42,10 +42,22 @@ async function generateStudents (firstNames, lastNames, numStudents) {
     }
     insertStudents.push(newStudent)
   }
+  const data = getGeoData()
+  const admin = new StudentProfile({
+    email: 'admin@admin.admin',
+    firstName: 'admin',
+    lastName: 'admin',
+    groups: [],
+    username: 'admin',
+    invites: [],
+    location: 'admin',
+    geodata: data.geodata
+  })
   // Deletes all the current data in there to start fresh
   await StudentProfile.deleteMany({})
   console.log('Dropped Students Collection 🔮')
   // Inserts many students into a mongodb collection
+  await StudentProfile.register(admin, 'admin')
   await StudentProfile.insertMany(insertStudents)
   console.log('Inserted New Students 💎')
 }
