@@ -9,10 +9,11 @@ const router = express.Router()
 router.route('/')
   .get(isLoggedIn, catchAsync(links.index))
 
+router.route('/new')
+  .get(isLoggedIn, catchAsync(links.renderNewForm))
+
 router.route('/')
   .post(isLoggedIn, catchAsync(links.createLink))
 
-router.route('/new')
-  .get(isLoggedIn, catchAsync(links.renderNewForm))
 
 module.exports = router
