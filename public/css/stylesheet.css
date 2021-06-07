@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap");
 html {
   scroll-behavior: smooth; }
@@ -15,6 +16,7 @@ body {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
+  
 
 .page{
     padding-bottom: 60px;
@@ -234,7 +236,31 @@ body {
     min-height: 100%;
 } 
 
-  
+.mask{
+    object-fit: cover;
+    clip-path: circle(200px at center);
+}
+
+/* Folded corner */
+
+.ss-style-foldedcorner::before,
+.ss-style-foldedcorner::after {
+  bottom: 0;
+  width: 100px;
+  height: 100px;
+}
+
+.ss-style-foldedcorner::before {
+  right: 0;
+  background-image: -webkit-linear-gradient(top left, #37a2ea 50%, #3498db 50%);
+  background-image: linear-gradient(315deg, #3498db 50%, #37a2ea 50%);
+}
+
+.ss-style-foldedcorner::after {
+  right: 100px;
+  background-image: -webkit-linear-gradient(top left, transparent 50%, #236fa1 50%);
+  background-image: linear-gradient(315deg, #236fa1 50%, transparent 50%);
+}
 
 #main {
     overflow: auto;
