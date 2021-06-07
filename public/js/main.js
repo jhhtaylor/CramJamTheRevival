@@ -1,14 +1,17 @@
 (function () {
 	"use strict";
-    
-    window.onscroll = function () {
-		var header_navbar = document.querySelector(".navbar-area");
-		var sticky = header_navbar.offsetTop;
+    let the_rest = document.querySelector(".all");
+    let header_navbar = document.querySelector(".navbar-area");
 
+    window.onscroll = function () {
+		let sticky = header_navbar.offsetTop;
+        
 		if (window.pageYOffset > sticky) {
 			header_navbar.classList.add("sticky");
+            the_rest.style.padding = `136px 0px 0px 0px`;
 		} else {
 			header_navbar.classList.remove("sticky");
+            the_rest.style.padding = '';
 		}
     }
 
