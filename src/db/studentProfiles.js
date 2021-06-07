@@ -9,6 +9,7 @@ const studentProfileSchema = new Schema({
   lastName: { type: String, required: true },
   groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   invites: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+  polls: [{ type: Schema.Types.ObjectId, ref: 'Poll' }],
   location: { type: String, required: true }, // string location name eg Wits
   geodata: { // actual geographic data such as longitude latitude
     type: {
@@ -21,7 +22,8 @@ const studentProfileSchema = new Schema({
       required: true
     }
   },
-  rating: [{ rated: { type: Number }, rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' } }]
+  rating: [{ rated: { type: Number }, rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' } }],
+  isAdmin: { type: Boolean, default: false }
 })
 
 studentProfileSchema.virtual('averageRating').get(function () {

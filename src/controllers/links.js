@@ -1,7 +1,26 @@
+const { LinkSchema } = require('../db/links')
 
 module.exports.index = async (req, res) => {
-  // const userGroups = req.user.groups
-  // const groups = await GroupSchema.find({ _id: { $in: userGroups } })
-  // const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } })
-  res.render('links/index')
+  const links = await LinkSchema.find()
+  res.render('links/index', { linkItems: links })
+}
+
+module.exports.renderNewForm = async (req, res) => {
+  res.render('links/new.ejs')
+}
+
+module.exports.createLink = async (req, res) => {
+  // ensure all links work
+  let url = req.body.url
+  if (!url.startsWith('https://')) {
+    url = 'https://' + url
+  }
+
+  const link = new LinkSchema({
+    name: req.body.name,
+    url: url
+  })
+  await link.save()
+
+  res.redirect('/links')
 }

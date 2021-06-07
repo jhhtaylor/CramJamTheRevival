@@ -8,7 +8,8 @@ const groupSchema = new Schema({
   members: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
   meetings: [{ type: Schema.Types.ObjectId, ref: 'Meeting' }],
   tags: [{ type: String }],
-  invites: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }]
+  invites: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
+  polls: [{ type: Schema.Types.ObjectId, ref: 'Poll' }]
 })
 
 module.exports.GroupSchema = mongoose.model('Group', groupSchema)

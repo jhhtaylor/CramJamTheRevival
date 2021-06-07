@@ -9,7 +9,7 @@
     <div class="card mb-3">
         <h4><%= group.name %></h4>
         <% for (var i = 0; i < group.members.length; i++) { %>
-            <li> <%= group.members[i]%> </li>
+            <li> <%= group.members[i].username%> </li>
         <% } %>
         <div>
             <a class="btn btn-primary" href="/groups/<%=group._id%>"> Edit </a>
@@ -25,11 +25,14 @@
         <div class="card mb-3">
             <h4><%= randomGroup.name %></h4>
             <% for (var i = 0; i < randomGroup.members.length; i++) { %>
-                <li> <%= randomGroup.members[i]%> </li>
+                <li> <%= randomGroup.members[i].username%> </li>
             <% } %>
             <div>
                 <a class="btn btn-primary" href="#"> Request to join </a>
             </div>
+            <form action="/polls/<%=randomGroup._id%>/Add/<%=signedInUser._id%>" method="POST">
+                <button>Request to join</button>
+            </form>
             
         </div>
     <% } %>

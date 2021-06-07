@@ -11,13 +11,9 @@
             </h3>
             <h5>Email: <%= student.email %>
             </h5>
-            <form action="/groups/<%=group._id%>/invite/<%=student._id%>" method="POST">
+            <form action="/polls/<%=group._id%>/Invite/<%=student._id%>" method="POST">
                 <button>Invite to group</button>
             </form>
-            <!--<form action="/groups/<%=group._id%>/new/<%=student._id%>" method="POST">-->
-                <!-- <input type = "text" name="member" placeholder="User Name"> -->
-                <!--<button>Add</button>-->
-            <!--</form>-->
         </div>
         <hr>
         <% }); %>

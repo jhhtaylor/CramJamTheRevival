@@ -10,6 +10,14 @@ module.exports.isLoggedIn = (req, res, next) => {
   next()
 }
 
+module.exports.isAdmin = (req, res, next) => {
+  if (!req.isAuthenticated() || !req.user.isAdmin) {
+    req.flash('error', 'This is only available to admins')
+    return res.redirect('/')
+  }
+  next()
+}
+
 module.exports.isPartOfVote = async (req, res, next) => {
   const { poll } = req.params
   const check = await Poll.findById(poll)
