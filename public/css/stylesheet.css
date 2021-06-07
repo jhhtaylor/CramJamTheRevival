@@ -1,15 +1,236 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap");
+html {
+  scroll-behavior: smooth; }
+
 body {
-    padding-top: 120px;
+  font-family: "Poppins", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  color: #6A7C92;
+  overflow-x: hidden; }
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+/*===== NAVBAR =====*/
+.navbar-area {
+    width: 100%;
+    z-index: 99;
+    background-color: rgb(236, 128, 95);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    padding: 0; }
+
+.theme-btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 16px 48px;
+    font-size: 18px;
+    border-radius: 50px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 5;
+    transition: all .4s ease-in-out;
+    border: none;
+    background: linear-gradient(to left, rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%);
+    background-size: 200% auto;
+    overflow: hidden; }
+    .theme-btn:hover, .theme-btn:focus {
+        background-position: right center;
+        color: #fff;
+        -webkit-box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45);
+        -moz-box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45);
+        box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45); }
+    .theme-btn.border-btn {
+        padding: 14px 40px;
+        background: transparent;
+        border: 1.5px solid rgb(236, 128, 95);
+        color: #fff;
+        font-size: 18px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none; }
+  
+.header-btn .theme-btn {
+    padding: 10px 30px; }
+
+
+.navbar {
+    width: 100%;
+    padding: 20px 0;
+    position: relative;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s; }
+
+.navbar-brand {
+    padding: 0; }
+.navbar-brand img {
+    max-width: 300px; }
+  
+.navbar-nav .nav-item {
+    position: relative;
+    z-index: 1; }
+.navbar-nav > .nav-item > a:hover {
+    color: #1d2c58; }
+.navbar-nav > .nav-item > a {
+    font-size: 16px;
+    color: #ffffff;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    position: relative;
+    padding: 20px;
+    display: inline-flex;
+    align-items: center; }
+
+
+.sticky {
+    position: fixed;
+    background: rgb(236, 128, 95);
+    -webkit-box-shadow: 0px 20px 50px 0px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: 0px 20px 50px 0px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 20px 50px 0px rgba(0, 0, 0, 0.05);
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    background: rgb(236, 128, 95);
+    padding: 0px 0; }
+    
+.sticky .navbar {
+    padding: 0px 0;
 }
 
-html,
-body {
-    height: 100%;
-}
+
+.box-style {
+    padding: 40px 30px;
+    border: 1px solid #F4EEFB;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s; }
+    .box-style:hover {
+      -webkit-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+      -moz-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+      box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45); }
+      .box-style:hover .box-icon-style {
+        color: #fff;
+        border-color: transparent;
+        background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%); }
+        .box-style:hover .box-icon-style::after {
+          opacity: 1;
+          visibility: visible; }
+    .box-style .box-icon-style {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      margin-bottom: 25px;
+      background: #fff;
+      border: 2px solid rgb(236, 128, 95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(236, 128, 95);
+      font-size: 40px;
+      -webkit-transition: all 0.3s ease-out 0s;
+      -moz-transition: all 0.3s ease-out 0s;
+      -ms-transition: all 0.3s ease-out 0s;
+      -o-transition: all 0.3s ease-out 0s;
+      transition: all 0.3s ease-out 0s;
+      position: relative; }
+      .box-style .box-icon-style::after {
+        content: '';
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%);
+        -webkit-transition: all 0.3s ease-out 0s;
+        -moz-transition: all 0.3s ease-out 0s;
+        -ms-transition: all 0.3s ease-out 0s;
+        -o-transition: all 0.3s ease-out 0s;
+        transition: all 0.3s ease-out 0s;
+        z-index: -1;
+        border-radius: 50%;
+        border: 1px solid transparent; }
+    .box-style .box-content-style h4 {
+      font-size: 25px;
+      font-weight: 600;
+      margin-bottom: 20px; }
+
+/*===========================
+    05. Service CSS 
+===========================*/
+.service-section .service-box-style-2 {
+    padding: 0;
+    text-align: center; }
+.service-section .service-box-style-2 .service-thumbnail img {
+    width: 100%;
+    border-radius: 10px 10px 0 0; }
+.service-section .service-box-style-2 .box-icon-style {
+    margin-left: auto;
+    margin-right: auto;
+    width: 54px;
+    height: 54px;
+    border: 2px solid #fff;
+    font-size: 25px;
+    margin-top: -27px;
+    background: #fff;
+    position: relative;
+    z-index: 9; }
+.service-section .service-box-style-2 .box-icon-style i {
+    color: transparent;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -ms-background-clip: text;
+    -o-background-clip: text;
+    background-clip: text;
+    background-image: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%);;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s; }
+.service-section .service-box-style-2:hover .box-icon-style {
+    background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%); }
+    .service-section .service-box-style-2:hover .box-icon-style i {
+    color: #fff; }
+.service-section .service-box-style-2 .box-content-style {
+    padding: 0 30px 35px; }
+  
+
 
 #wrap {
     min-height: 100%;
-}
+} 
+
+  
 
 #main {
     overflow: auto;
@@ -17,27 +238,13 @@ body {
     /* this needs to be bigger than footer height*/
 }
 
-footer {
-    background-color: rgb(235, 235, 235);
-}
-
-/* Modify the background color */
-.navbar-custom {
-    background-color: rgb(236, 128, 95);
-}
-
-/* Modify brand and text color */
-.navbar-custom .navbar-brand,
-.navbar-custom .navbar-text {
-    color: rgb(248, 248, 248);
-}
-
 .footer {
-    position: relative;
+    background-color: rgb(235, 235, 235);
+    position: fixed;
+    z-index: 99;
     bottom: 0;
     width: 100%;
     height: 60px;
-    margin-top: -60px;
     /* Set the fixed height of the footer here */
     line-height: 60px;
     /* Vertically center the text there */
@@ -57,15 +264,4 @@ footer {
 
 .profile {
     top: 10px;
-}
-
-.main-image{
-background-image: url("../assets/Classroom.jpg");
-  /* Full height */
-  height: 500px;
-
-  /* Center and scale the image nicely */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
