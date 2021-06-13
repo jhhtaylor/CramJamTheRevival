@@ -26,7 +26,7 @@ describe('Link controller functionality', () => {
   test('A link can be added to the database', async () => {
     const testName = 'New Test Link'
     const testUrl = 'https://www.google.com/'
-
+    // can't test the new user relation functionality as cannot sign in...
     const req = {
       body: { name: testName, url: testUrl }
 
