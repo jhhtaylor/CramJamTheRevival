@@ -18,7 +18,8 @@ module.exports.createLink = async (req, res) => {
 
   const link = new LinkSchema({
     name: req.body.name,
-    url: url
+    url: url,
+    assPoopy: req.user.username
   })
   await link.save()
 

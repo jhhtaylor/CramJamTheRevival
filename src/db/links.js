@@ -4,7 +4,9 @@ const { Schema } = mongoose
 // Link Schema
 const linkSchema = new Schema({
   name: { type: String, required: true },
-  url: { type: String, required: true }
+  url: { type: String, required: true },
+  // assPoopy: { type: Schema.Types.ObjectId, ref: 'StudentProfile' }
+  assPoopy: { type: String, required: true }
 })
 
 module.exports.LinkSchema = mongoose.model('Link', linkSchema)
