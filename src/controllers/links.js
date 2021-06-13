@@ -1,7 +1,7 @@
 const { LinkSchema } = require('../db/links')
 
 module.exports.index = async (req, res) => {
-  const links = await LinkSchema.find()
+  const links = await LinkSchema.find().populate('user')
   res.render('links/index', { linkItems: links })
 }
 
@@ -19,9 +19,8 @@ module.exports.createLink = async (req, res) => {
   const link = new LinkSchema({
     name: req.body.name,
     url: url,
-    assPoopy: req.user.username
+    user: req.user
   })
   await link.save()
-
   res.redirect('/links')
 }
