@@ -1,4 +1,6 @@
-if (process.env.NODE_ENV !== 'production') { require('dotenv').config() }
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const path = require('path')
 const express = require('express')
@@ -26,6 +28,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
+const mongoSanitize = require('express-mongo-santize')
 const publicDir = path.join(__dirname, 'public')
 
 app.engine('ejs', ejsMate)
@@ -38,6 +41,7 @@ app.use(session(settings)) // creating session tokens
 app.use(flash()) // adding flash
 app.use(passport.initialize()) // initialise passort
 app.use(passport.session()) // add passport login between sessions
+app.use(mongoSanitize()) // removes special charachters from query strings like $ to prevent mongo injection
 
 passport.use(new LocalPassport(StudentProfile.authenticate())) // use a local storage strategy
 passport.serializeUser(StudentProfile.serializeUser()) // function added by passport-local-mongoose
