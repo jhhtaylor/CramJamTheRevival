@@ -170,7 +170,8 @@ body {
       position: relative; }
       .box-style .box-icon-style::after {
         content: '';
-  
+        width: 100%;
+        height: 100%;
         top: 0;
         left: 0;
         position: absolute;
@@ -229,10 +230,7 @@ body {
     color: #fff; }
 .service-section .service-box-style-2 .box-content-style {
     padding: 0 30px 35px; }
-  
-.group-card{
-    background-image: url('assets/Classroom.jpg');
-}
+
 
 .group-card .clip-bg::after {
     content: '';
@@ -315,4 +313,123 @@ body {
 
 #toast-container {
     z-index: 9999999;
+}
+
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;    
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+.remove-btn{
+    background-color: white;
+    color: red;
+    width:35px;
+    height: 35px;
+    text-align: center;
+    align-items: center;
+    border-radius: 50%;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    margin-bottom: 2px; 
+}
+
+
+.rate-btn{
+    margin-top: 5px;
+    background-color: white;
+    color: green;
+    width:35px;
+    height: 35px;
+    text-align: center;
+    align-items: center;
+    border-radius: 50%;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    margin-bottom: 2px; 
+}
+
+.rate-btn > i{
+    position: relative;
+    right:2px;
+}
+
+.rate-btn:hover, .poll-yes:hover, .poll-no:hover, .remove-btn:hover{
+    background-color: rgb(236, 128, 95);
+    color: white;
+}
+
+.poll-yes, .poll-no{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+
+
+.poll-yes{
+    color: green;
+}
+
+.poll-no{
+    color: red;
+}
+
+.explore-btn{
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    color: rgb(236, 128, 95);
+    background-color: white;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.explore-btn:hover{
+    color: white;
+    background-color: rgb(236, 128, 95);
+    border: 2px solid;
+    border-radius: 10px;
 }

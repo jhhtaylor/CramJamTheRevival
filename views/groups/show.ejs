@@ -1,80 +1,116 @@
 <% layout('layouts/boilerplate') -%>
     <div class="container">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 card mb-3">
-                    <h3>
-                        <%= group.name %>
-                    </h3>
-                    <h5>Group description goes here</h5>
-                </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
                 <div class="container">
-                    <h5>Group members (<%= group.members.length%>)</h5>
-                    <% for (var i=0; i < group.members.length; i++) { %>
-                        <li>
-                            <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
-                                <form class="d-inline" action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
-                                    method="POST" method="POST">
-                                    <button>Remove</button>
-                                </form>
-                                <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
-                                    <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
-                                        !raters.includes(signedInUser._id)) { %>
-                                        <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
-                                            class="w-25 p-3 d-inline-flex">
-                                            <input type="number" name="rating" id="rating" class="form-control" max="5"
-                                                min="0">
-                                            <button class="btn btn-primary">Rate</button>
-                                        </form>
-                                    <% } %>
-                        </li>
-                        <% } %>
-                            <% if (group.invites.length> 0) {%>
-                                <h5>Pending invites</h5>
-                                <% for (var i=0; i < group.invites.length; i++) { %>
-                                    <li>
-                                        <%= group.invites[i].username%>
-                                    </li>
-                                <% } %>
-                            <% } %>
-                    <div>
-                        <a class="header-btn theme-btn text-decoration-none mt-3"
-                            href="/groups/<%=group._id%>/explore"> Invite new
-                            members
-                        </a>
+                    <div class="row">
+                        <div class="col-lg-12 card mb-3 py-3">
+                            <h3>
+                                <%= group.name %>
+                            </h3>
+                            <h5>Group description goes here</h5>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <% for (let poll of groupPolls){%>
-            <div class="card mb-3">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="card-body">
-                            <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %>
-                            </h5>
-                            <% if(!poll.voted.includes(signedInUser._id)) { %>
-                                <form action="/polls/<%= poll._id %>/yes" method="POST">
-                                    <button class="btn btn-success">Yes</button>
-                                </form>
-                                <form action="/polls/<%= poll._id %>/no" method="POST">
-                                    <button class="btn btn-danger">No</button>
-                                </form>
-                                <% } else { %>
-                                    <p>Yes: <%= poll.votes.yes %>
-                                    </p>
-                                    <p>No: <%= poll.votes.no %>
-                                    </p>
-                                    <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %>
-                                    </p>
-                                    <% } %>
+
+                    <div class="row mb-4 mt-3">
+                        <div class="col-lg-12 card py-3">
+                            <h5>Group members (<%= group.members.length%>)</h5>
+                            <hr>
+                            <% for (var i=0; i < group.members.length; i++) { %>
+                                <li class="row">
+                                    <div class="col-lg-6">
+                                        <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                                            <form class="d-inline"
+                                                action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
+                                                method="POST" method="POST">
+                                                <button class="btn remove-btn"><i class="fas fa-times"></i></button>
+                                            </form>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
+                                            <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
+                                                !raters.includes(signedInUser._id)) { %>
+                                                <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
+                                                    class="">
+                                                    <div class="rate">
+                                                        <input type="radio" id="star5" name="rating" value="5" />
+                                                        <label for="star5" title="text">5 stars</label>
+                                                        <input type="radio" id="star4" name="rating" value="4" />
+                                                        <label for="star4" title="text">4 stars</label>
+                                                        <input type="radio" id="star3" name="rating" value="3" />
+                                                        <label for="star3" title="text">3 stars</label>
+                                                        <input type="radio" id="star2" name="rating" value="2" />
+                                                        <label for="star2" title="text">2 stars</label>
+                                                        <input type="radio" id="star1" name="rating" value="1" />
+                                                        <label for="star1" title="text">1 star</label>
+                                                    </div>
+                                                    <button class="d-inline btn rate-btn align-items-center"><i
+                                                            class="fas fa-check"></i></button>
+                                                </form>
+
+                                                <% } %>
+                                    </div>
+                                </li>
+                                <hr>
+                                <% } %>
+                                    <% if (group.invites.length> 0) {%>
+                                        <h5>Pending invites</h5>
+                                        <% for (var i=0; i < group.invites.length; i++) { %>
+                                            <li>
+                                                <%= group.invites[i].username%>
+                                            </li>
+                                            <% } %>
+                                                <% } %>
+                                                <hr>
+                                                    <div class="text-center">
+                                                        <a class="header-btn theme-btn text-decoration-none mt-3 "
+                                                            href="/groups/<%=group._id%>/explore"> Invite new
+                                                            members
+                                                        </a>
+                                                    </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <% }%>
-                <form class="d-inline" action="/groups/<%=group._id%>?_method=DELETE" method="POST">
-                    <button>Delete Group</button>
-                </form>
+            <div class="col-lg-6 col-md-12">
+                <% for (let poll of groupPolls){%>
+                    <div class="card mb-3">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-body">
+                                    <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <% if(!poll.voted.includes(signedInUser._id)) { %>
+                                    <form action="/polls/<%= poll._id %>/yes" method="POST" class="col-lg-6 text-center mb-3">
+                                        <button class="btn poll-yes"><i
+                                            class="fas fa-check"></i></button>
+                                    </form>
+                                    <form action="/polls/<%= poll._id %>/no" method="POST" class="col-lg-6 text-center  mb-3">
+                                        <button class="btn poll-no"><i
+                                            class="fas fa-times"></i></button>
+                                    </form>
+                                    <% } else { %>
+                                        <div class="col-lg-4 text-center">
+                                            <p>Yes: <%= poll.votes.yes %>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-4 text-center">
+                                            <p>No: <%= poll.votes.no %>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-4 text-center">
+                                            <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %>
+                                            </p>
+                                        </div>
+                                        <% } %>
 
+                            </div>
+                        </div>
+                    </div>
+                    <% }%>
+            </div>
+        </div>
     </div>

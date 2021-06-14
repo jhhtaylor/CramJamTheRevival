@@ -30,8 +30,17 @@
                             </div>
                         </div>
         </div>
-        <% }%>
-            <h3>Request to join one of the groups below!</h3>
+        <% }else{%>
+        <div class="container">
+            <div class="row">
+                <h3>Looks like you are not apart of any groups</h3>
+                <div class="header-btn mb-5 mt-3">
+                    <a href="/groups/new" class="theme-btn text-decoration-none">Create a group <i class="fas fa-plus text-decoration-none"></i></a>
+                </div>
+            </div>
+        </div>
+        <% } %>
+            <h3>Request to join one of the available groups below!</h3>
             <div class="row">
                 <% for (let group of randomGroups){%>
                     <div class="col-lg-4 col-md-6 group-card">
