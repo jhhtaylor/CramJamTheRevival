@@ -6,8 +6,8 @@ const { Poll } = require('../db/poll')
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
   const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
-  const randomGroup = await GroupSchema.findOne({ _id: { $nin: userGroups } }).populate('members')
-  res.render('groups/index', { groups, randomGroup })
+  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
+  res.render('groups/index', { groups, randomGroups })
 }
 
 // temp function to view members to add to a group

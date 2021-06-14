@@ -1,39 +1,55 @@
 <% layout('layouts/boilerplate') -%>
-<div class="container">
-    <h1>All Groups</h1>
-    <div>
-        <a class="btn btn-primary" href="/groups/new"> New </a>
-    </div>
-    
-    <% for (let group of groups){%>
-    <div class="card mb-3">
-        <h4><%= group.name %></h4>
-        <% for (var i = 0; i < group.members.length; i++) { %>
-            <li> <%= group.members[i].username%> </li>
-        <% } %>
-        <div>
-            <a class="btn btn-primary" href="/groups/<%=group._id%>"> Edit </a>
+    <div class="container groups-section">
+        <div class="row">
+            <% if(groups.length> 0) {%>
+                <h1>Your Groups</h1>
+                <% for (let group of groups){%>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="box-style">
+                            <div class="box-content-style">
+                                <h4>
+                                    <%= group.name %>
+                                </h4>
+                                <p>Group description goes here</p>
+                                <div class="header-btn">
+                                    <a href="/groups/<%=group._id%>" class="theme-btn text-decoration-none">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }%>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="box-style">
+                                <div class="box-content-style ">
+                                    <a href="\groups\new" class="text-decoration-none">
+                                        <div class="box-icon-style ">
+                                            <i class="fas fa-plus text-decoration-none"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
         </div>
-        
-    </div>
-
-    <% }%>
-
-    <% if(randomGroup) {%>
-    
-        <h2>Suggested Group: </h2>
-        <div class="card mb-3">
-            <h4><%= randomGroup.name %></h4>
-            <% for (var i = 0; i < randomGroup.members.length; i++) { %>
-                <li> <%= randomGroup.members[i].username%> </li>
-            <% } %>
-            <div>
-                <a class="btn btn-primary" href="#"> Request to join </a>
+        <% }%>
+            <h3>Request to join one of the groups below!</h3>
+            <div class="row">
+                <% for (let group of randomGroups){%>
+                    <div class="col-lg-4 col-md-6 group-card">
+                        <div class="box-style">
+                            <div class="box-content-style">
+                                <h4>
+                                    <%= group.name %>
+                                </h4>
+                                <h6>members: <%= group.members.length %>
+                                </h6>
+                                <p>Group description goes here</p>
+                                <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>" method="POST">
+                                    <button type="submit" class="header-btn theme-btn text-decoration-none">Send
+                                        Request</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
             </div>
-            <form action="/polls/<%=randomGroup._id%>/Add/<%=signedInUser._id%>" method="POST">
-                <button>Request to join</button>
-            </form>
-            
-        </div>
-    <% } %>
-</div>
+    </div>

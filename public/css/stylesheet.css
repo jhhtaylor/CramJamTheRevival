@@ -22,7 +22,7 @@ body {
     padding-bottom: 60px;
 }
 
-/*===== NAVBAR =====*/
+
 .navbar-area {
     width: 100%;
     z-index: 99;
@@ -73,6 +73,7 @@ body {
   
 .header-btn .theme-btn {
     padding: 10px 30px; }
+
 
 
 .navbar {
@@ -169,8 +170,7 @@ body {
       position: relative; }
       .box-style .box-icon-style::after {
         content: '';
-        width: 100%;
-        height: 100%;
+  
         top: 0;
         left: 0;
         position: absolute;
@@ -230,7 +230,19 @@ body {
 .service-section .service-box-style-2 .box-content-style {
     padding: 0 30px 35px; }
   
+.group-card{
+    background-image: url('assets/Classroom.jpg');
+}
 
+.group-card .clip-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(to right, rgba(111, 88, 232, 0.6) 0%, #3763eb 100%); }
 
 #wrap {
     min-height: 100%;
@@ -239,6 +251,11 @@ body {
 .mask{
     object-fit: cover;
     clip-path: circle(200px at center);
+}
+
+.group-mask{
+    object-fit: cover;
+    clip-path: circle(250px at center);
 }
 
 /* Folded corner */
