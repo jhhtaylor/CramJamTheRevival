@@ -3,8 +3,9 @@ const express = require('express')
 const catchAsync = require('../../utils/catchAsync')
 const { isLoggedIn } = require('../middleware/middleware')
 const links = require('../controllers/links')
-
 const router = express.Router()
+
+
 
 router.route('/')
   .get(isLoggedIn, catchAsync(links.index))

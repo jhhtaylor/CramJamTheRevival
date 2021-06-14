@@ -1,33 +1,49 @@
 <% layout('layouts/boilerplate') -%>
-  <div class='container'>
-    <header class='jumbotron'>
-      <div class='container'>
-        <h1>Links</h1>
-        <p>View all links from groups you are a member of</p>
-        <p>
-          <a class='btn btn-primary btn-large' href="links/new">Add New Link</a>
-        </p>
-      </div>
-    </header>
 
-    <div class='row text-center' style='display:flex; flex-wrap: wrap;'>
+
+  <div class='container'>
+    <h1>Links</h1>
+    <p>View all links from groups you are a member of</p>
+    <a class='header-btn theme-btn text-decoration-none' href="links/new">Add New Link</a>
+
+    <hr>
+
+    <div class="row ">
       <% linkItems.forEach(function(link){ %>
-        <div class="col-md-12 col-sm-12">
-          <div class='img-thumbnail'>
-            <div class="caption">
-              <h4>
-                <!-- In <#%= link.group%> - -->
-                <%= link.name %>
-              </h4>
-              <p>posted by <%= link.user.username%>
-              </p>
-            </div>
-            <a href="<%= link.url %>" target="_blank">
+        <div class="col-lg-3 card  me-2 py-2">
+          <div class="link-header">
+            <h4>
               <%= link.name %>
-            </a>
+            </h4>
+            <p>posted by <%= link.user.username%>
+            </p>
           </div>
+          <hr>
+          <a href="<%= link.url %>" target="_blank" class="text-decoration-none">
+            <% if(link.link_data.image) { %>
+              <img src="<%= link.link_data.image %>" class="link_img">
+              <% } else {%>
+                <img src="assets/image-not-found.png" class="link_img">
+                <% } %>
+                  <strong class="link-title text-left">
+                    <% if(link.link_data.title) { %>
+
+                      <%= link.link_data.title %>
+
+                        <% } else {%>
+                          No Title
+                          <% } %>
+                  </strong>
+                  <p class="link-title text-left">
+                    <% if(link.link_data.description) { %>
+
+                      <%= link.link_data.description %>
+
+                        <% }%>
+                  </p>
+          </a>
         </div>
-        <p></p> <!-- for spacing, should come up with better solution -->
+
         <% }); %>
     </div>
   </div>

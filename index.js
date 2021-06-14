@@ -29,6 +29,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
 const mongoSanitize = require('express-mongo-sanitize')
+
 const publicDir = path.join(__dirname, 'public')
 
 app.engine('ejs', ejsMate)
@@ -43,6 +44,7 @@ app.use(passport.initialize()) // initialise passort
 app.use(passport.session()) // add passport login between sessions
 app.use(mongoSanitize()) // removes special charachters from query strings like $ to prevent mongo injection
 
+
 passport.use(new LocalPassport(StudentProfile.authenticate())) // use a local storage strategy
 passport.serializeUser(StudentProfile.serializeUser()) // function added by passport-local-mongoose
 passport.deserializeUser(StudentProfile.deserializeUser()) // function added by passport-local-mongoose
@@ -56,6 +58,7 @@ app.use((req, res, next) => {
   next()
 })
 app.all('*', logActivity)
+
 app.use('/', mainRouter)
 app.use('/students', studentRouter, express.static(publicDir))
 app.use('/groups', groupRouter, express.static(publicDir))
