@@ -34,13 +34,11 @@ module.exports.createGroup = async (req, res, next) => {
     name: req.body.name
   })
   await group.save()
-  if (req.user._id !== undefined) {
-    group.members.push(req.user._id)
-    await group.save()
-    const user = await StudentProfile.findById(req.user._id)
-    user.groups.push(group._id)
-    await user.save()
-  }
+  group.members.push(req.user._id)
+  await group.save()
+  const user = await StudentProfile.findById(req.user._id)
+  user.groups.push(group._id)
+  await user.save()
   // req.flash('success', 'Created new group!')
   res.redirect('/groups/')
 }
@@ -49,10 +47,6 @@ module.exports.showGroup = async (req, res) => {
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
 
-  if (!group) {
-    // req.flash('error', 'Cannot find that group!')
-    return res.redirect('/groups')
-  }
   res.render('groups/show', { group, groupPolls })
 }
 

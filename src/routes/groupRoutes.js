@@ -11,7 +11,7 @@ router.route('/')
   .get(isLoggedIn, catchAsync(groups.index))
 
 router.route('/new')
-  .get(groups.renderNewForm)
+  .get(isLoggedIn, groups.renderNewForm)
   .post(isLoggedIn, catchAsync(groups.createGroup))
 
 router.route('/:id')
