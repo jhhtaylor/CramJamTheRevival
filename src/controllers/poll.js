@@ -49,6 +49,11 @@ module.exports.vote = async (poll, type) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
+  if (req.user._id.toString() === memberId) {
+    console.log('Member cannot create poll to remove themselves from a group')
+    res.redirect('back')
+    return
+  }
   const exists = await groups.isInGroup(groupId, memberId)
 
   if (!exists || action === 'Remove') {

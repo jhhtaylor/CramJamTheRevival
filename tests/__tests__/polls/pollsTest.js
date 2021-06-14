@@ -315,6 +315,44 @@ describe('Poll controller functionality', () => {
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
   })
 
+  test('User cannot create poll that affects themselves', async () => {
+    await StudentProfile.deleteMany({})
+    await Poll.deleteMany({})
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test3.member3@test3.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const student = await newStudent.save()
+
+    const group = new GroupSchema({
+      name: 'Test Group',
+      members: [student._id]
+    })
+    await group.save()
+
+    const req = {
+      params: {
+        groupId: group._id,
+        action: 'Invite',
+        memberId: student._id
+      },
+      user: student,
+      flash: function () {}
+    }
+    const res = { redirect (url) { return url } }
+    await poll.createPoll(req, res)
+    const checkPoll = await Poll.findOne({})
+    expect(checkPoll).toEqual(null)
+  })
+
   test('User can create a poll to invite a user to a group', async () => {
     await StudentProfile.deleteMany({})
     await Poll.deleteMany({})
