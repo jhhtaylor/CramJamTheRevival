@@ -26,13 +26,14 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  if (members === voted) { // checking sorted arrays
+  if (members.length === voted.length) { // checking sorted arrays
+    console.log('everyone voted')
     votePoll.active = false
     await votePoll.save()
+    this.updatePoll(votePoll._id)
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
-  this.updatePoll(votePoll._id)
   res.redirect('back')
 }
 
@@ -48,10 +49,30 @@ module.exports.vote = async (poll, type) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
+  const userId = req.user._id
+  if (userId.toString() == memberId && action === 'Remove') {
+    console.log('Member cannot create poll to remove themselves from a group')
+    res.redirect('back')
+    return
+  }
+  if (userId.toString() == memberId && action === 'Invite') {
+    console.log('Member cannot create poll to invite themselves to a group')
+    res.redirect('back')
+    return
+  }
   const exists = await groups.isInGroup(groupId, memberId)
+
   if (!exists || action === 'Remove') {
-    const group = await GroupSchema.findById(groupId).populate('members')
-    const members = group.members
+    const group = await GroupSchema.findById(groupId)
+    const allMembers = group.members
+    let members
+    if (action === 'Remove') {
+      members = allMembers.filter(function (e) {
+        return e != memberId
+      })
+    } else {
+      members = allMembers
+    }
     const newPoll = new Poll({
       members,
       name: `New poll from: ${req.user.username}`,
@@ -77,34 +98,34 @@ module.exports.createPoll = async (req, res) => {
 module.exports.updatePoll = async (pollId) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
-  if (poll.votes.yes === group.members.length) {
-    switch (poll.action) {
-      case 'Add':
-        await groups.addGroupMember(group._id, poll.affected)
-          .then(done => {
-            console.log('added successfully')
-          }).catch(err => {
-            console.log(err)
-          })
-        break
-
-      case 'Invite':
-        await groups.invite(group._id, poll.affected).then(done => {
-          console.log('invited successfully')
+  switch (poll.action) {
+    case 'Add':
+      await groups.addGroupMember(group._id, poll.affected)
+        .then(done => {
+          console.log('Added successfully')
         }).catch(err => {
           console.log(err)
         })
-        break
+      break
 
-      case 'Remove':
-        await groups.deleteMember(group._id, poll.affected).then(done => {
-          console.log('removed successfully')
+    case 'Invite':
+      await groups.invite(group._id, poll.affected)
+        .then(done => {
+          console.log('Invited successfully')
         }).catch(err => {
           console.log(err)
         })
-        break
-    }
-    await GroupSchema.updateOne({ _id: group._id },
-      { $pull: { polls: pollId } })
+      break
+
+    case 'Remove':
+      await groups.deleteMember(group._id, poll.affected)
+        .then(done => {
+          console.log('Removed successfully')
+        }).catch(err => {
+          console.log(err)
+        })
+      break
   }
+  await GroupSchema.updateOne({ _id: group._id },
+    { $pull: { polls: pollId } })
 }

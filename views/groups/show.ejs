@@ -9,10 +9,12 @@
             <% for (var i=0; i < group.members.length; i++) { %>
                 <li>
                     <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                    <% if(!group.members[i]._id.equals(signedInUser._id) ) { %>
                         <form class="d-inline"
                             action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>" method="POST" method="POST">
                             <button>Remove</button>
                         </form>
+                    <% } %> 
                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
                             <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
                                 !raters.includes(signedInUser._id)) { %>
