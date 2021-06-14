@@ -10,7 +10,7 @@ Mongo injection is a method by which unwanted queries are created by users enter
 
 ## Decision
 
-A package express-mongo-injection, will be used. This package uses a middleware to remove any special characters in query parameters.
+A package express-mongo-sanitize, will be used. This package uses a middleware to remove any special characters in query parameters.
 
 ## Consequences
 
