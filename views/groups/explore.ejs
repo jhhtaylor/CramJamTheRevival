@@ -1,19 +1,29 @@
 <% layout('layouts/boilerplate') -%>
-
-    <hr>
-    <h2>Invite:</h2>
-    <hr>
-    <% students.forEach(student=> { %>
-        <div>
-            <h3>
-                <%= student.firstName %>
-                    <%= student.lastName %>
-            </h3>
-            <h5>Email: <%= student.email %>
-            </h5>
-            <form action="/polls/<%=group._id%>/Invite/<%=student._id%>" method="POST">
-                <button>Invite to group</button>
-            </form>
-        </div>
+    <div class="container">
+        <h1>Invite:</h1>
         <hr>
-        <% }); %>
+        <div class="row">
+            <% students.forEach(student=> { %>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-2">
+                    <div class="card me-1 py-3 px-4">
+                        <div class="row">
+                            <h3>
+                                <%= student.firstName %>
+                                    <%= student.lastName %>
+                            </h3>
+                            <h6>Email: <%= student.email %>
+                            </h6>
+                        </div>
+                        <div class="row text-center text-decoration-none mt-3">
+                            <form action="/polls/<%=group._id%>/Invite/<%=student._id%>" method="POST"
+                                class="col-lg-12">
+                                <button class="btn explore-btn">Invite</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <% }); %>
+                    <hr>
+        </div>
+    </div>
