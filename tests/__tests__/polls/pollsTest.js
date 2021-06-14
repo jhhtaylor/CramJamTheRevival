@@ -1,4 +1,5 @@
 const poll = require('../../../src/controllers/poll')
+const httpMocks = require('node-mocks-http')
 const middleWare = require('../../../src/middleware/middleware')
 const { Poll } = require('../../../src/db/poll')
 const { StudentProfile } = require('../../../src/db/studentProfiles')
@@ -334,21 +335,22 @@ describe('Poll controller functionality', () => {
 
     const group = new GroupSchema({
       name: 'Test Group',
-      members: [student._id]
+      members: [student._id],
+      tags: ['this group']
     })
     await group.save()
-
-    const req = {
+    console.log('this poll')
+    const request = httpMocks.createRequest({
       params: {
         groupId: group._id,
-        action: 'Invite',
+        action: 'Remove',
         memberId: student._id
       },
       user: student,
       flash: function () {}
-    }
-    const res = { redirect (url) { return url } }
-    await poll.createPoll(req, res)
+    })
+    const response = httpMocks.createResponse()
+    await poll.createPoll(request, response)
     const checkPoll = await Poll.findOne({})
     expect(checkPoll).toEqual(null)
   })
@@ -405,6 +407,7 @@ describe('Poll controller functionality', () => {
     const data = getGeoData()
     const location = data.location
     const geodata = data.geodata
+
     const newStudent = new StudentProfile({
       email: 'test3.member3@test3.com',
       firstName: 'Member',
@@ -415,10 +418,10 @@ describe('Poll controller functionality', () => {
       geodata
     })
     const student = await newStudent.save()
-
+    const otherStudent = { _id: Mongoose.Types.ObjectId() }
     const group = new GroupSchema({
       name: 'Test Group',
-      members: [student._id]
+      members: [student._id, otherStudent._id]
     })
     await group.save()
 
@@ -426,7 +429,7 @@ describe('Poll controller functionality', () => {
       params: {
         groupId: group._id,
         action: 'Remove',
-        memberId: student._id
+        memberId: otherStudent._id
       },
       user: student,
       flash: function () {}
@@ -438,7 +441,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.affected).toEqual(otherStudent._id)
     expect(checkPoll.action).toEqual('Remove')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
@@ -461,10 +464,10 @@ describe('Poll controller functionality', () => {
       geodata
     })
     const student = await newStudent.save()
-
+    const otherStudent = { _id: Mongoose.Types.ObjectId() }
     const group = new GroupSchema({
       name: 'Test Group',
-      members: [student._id]
+      members: [student._id, otherStudent._id]
     })
     await group.save()
 
@@ -472,7 +475,7 @@ describe('Poll controller functionality', () => {
       params: {
         groupId: group._id,
         action: 'Remove',
-        memberId: student._id
+        memberId: otherStudent._id
       },
       user: student,
       flash: function () {}
@@ -484,7 +487,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.affected).toEqual(otherStudent._id)
     expect(checkPoll.action).toEqual('Remove')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
@@ -507,7 +510,7 @@ describe('Poll controller functionality', () => {
       geodata
     })
     const student = await newStudent.save()
-
+    const otherStudent = { _id: Mongoose.Types.ObjectId() }
     const group = new GroupSchema({
       name: 'Test Group',
       members: [student._id]
@@ -518,7 +521,7 @@ describe('Poll controller functionality', () => {
       params: {
         groupId: group._id,
         action: 'Remove',
-        memberId: student._id
+        memberId: otherStudent._id
       },
       user: student,
       flash: function () {}
@@ -530,7 +533,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.affected).toEqual(otherStudent._id)
     expect(checkPoll.action).toEqual('Remove')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)

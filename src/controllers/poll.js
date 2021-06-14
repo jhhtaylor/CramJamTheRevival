@@ -49,7 +49,8 @@ module.exports.vote = async (poll, type) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
-  if (req.user._id.toString() === memberId) {
+  const userId = req.user._id
+  if (userId.toString() == memberId) {
     console.log('Member cannot create poll to remove themselves from a group')
     res.redirect('back')
     return
@@ -92,7 +93,6 @@ module.exports.createPoll = async (req, res) => {
 module.exports.updatePoll = async (pollId) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
-  console.log(poll.action)
   switch (poll.action) {
     case 'Add':
       await groups.addGroupMember(group._id, poll.affected)
@@ -113,7 +113,6 @@ module.exports.updatePoll = async (pollId) => {
       break
 
     case 'Remove':
-      console.log('hello?')
       await groups.deleteMember(group._id, poll.affected)
         .then(done => {
           console.log('Removed successfully')
