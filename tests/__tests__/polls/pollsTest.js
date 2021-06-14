@@ -316,7 +316,7 @@ describe('Poll controller functionality', () => {
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
   })
 
-  test('User cannot create poll that affects themselves', async () => {
+  test('User cannot create poll to remove themself from a group', async () => {
     await StudentProfile.deleteMany({})
     await Poll.deleteMany({})
     const data = getGeoData()
@@ -344,6 +344,45 @@ describe('Poll controller functionality', () => {
       params: {
         groupId: group._id,
         action: 'Remove',
+        memberId: student._id
+      },
+      user: student,
+      flash: function () {}
+    })
+    const response = httpMocks.createResponse()
+    await poll.createPoll(request, response)
+    const checkPoll = await Poll.findOne({})
+    expect(checkPoll).toEqual(null)
+  })
+
+  test('User cannot create poll to invite themself to a group', async () => {
+    await StudentProfile.deleteMany({})
+    await Poll.deleteMany({})
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const newStudent = new StudentProfile({
+      email: 'test3.member3@test3.com',
+      firstName: 'Member',
+      lastName: 'Test',
+      password: '',
+      groups: [],
+      location,
+      geodata
+    })
+    const student = await newStudent.save()
+
+    const group = new GroupSchema({
+      name: 'Test Group',
+      members: [student._id],
+      tags: ['this group']
+    })
+    await group.save()
+    console.log('this poll')
+    const request = httpMocks.createRequest({
+      params: {
+        groupId: group._id,
+        action: 'Invite',
         memberId: student._id
       },
       user: student,
@@ -448,7 +487,7 @@ describe('Poll controller functionality', () => {
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
   })
 
-  test('User can create a poll to remove a user from a group', async () => {
+  test('User can create a poll to add themself to a group', async () => {
     await StudentProfile.deleteMany({})
     await Poll.deleteMany({})
     const data = getGeoData()
@@ -467,15 +506,14 @@ describe('Poll controller functionality', () => {
     const otherStudent = { _id: Mongoose.Types.ObjectId() }
     const group = new GroupSchema({
       name: 'Test Group',
-      members: [student._id, otherStudent._id]
+      members: [otherStudent._id]
     })
     await group.save()
-
     const req = {
       params: {
         groupId: group._id,
-        action: 'Remove',
-        memberId: otherStudent._id
+        action: 'Add',
+        memberId: student._id
       },
       user: student,
       flash: function () {}
@@ -486,15 +524,15 @@ describe('Poll controller functionality', () => {
     const savedStudent = await StudentProfile.findOne({})
     const savedGroup = await GroupSchema.findById(group._id)
 
-    expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(otherStudent._id)
-    expect(checkPoll.action).toEqual('Remove')
+    expect(checkPoll.members).toContainEqual(otherStudent._id)
+    expect(checkPoll.affected).toEqual(savedStudent._id)
+    expect(checkPoll.action).toEqual('Add')
     expect(checkPoll.group).toEqual(group._id)
-    expect(savedStudent.polls).toContainEqual(checkPoll._id)
+    expect(savedStudent.polls.length).toEqual(0)
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
   })
 
-  test('User can create a poll to remove a user from a group', async () => {
+  test('User cannot create a poll to invite themself to a group', async () => {
     await StudentProfile.deleteMany({})
     await Poll.deleteMany({})
     const data = getGeoData()
@@ -520,7 +558,7 @@ describe('Poll controller functionality', () => {
     const req = {
       params: {
         groupId: group._id,
-        action: 'Remove',
+        action: 'Invite',
         memberId: otherStudent._id
       },
       user: student,
@@ -534,7 +572,7 @@ describe('Poll controller functionality', () => {
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
     expect(checkPoll.affected).toEqual(otherStudent._id)
-    expect(checkPoll.action).toEqual('Remove')
+    expect(checkPoll.action).toEqual('Invite')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
     expect(savedGroup.polls).toContainEqual(checkPoll._id)

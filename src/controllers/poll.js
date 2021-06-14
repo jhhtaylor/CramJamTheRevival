@@ -50,8 +50,13 @@ module.exports.vote = async (poll, type) => {
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
   const userId = req.user._id
-  if (userId.toString() == memberId) {
+  if (userId.toString() == memberId && action === 'Remove') {
     console.log('Member cannot create poll to remove themselves from a group')
+    res.redirect('back')
+    return
+  }
+  if (userId.toString() == memberId && action === 'Invite') {
+    console.log('Member cannot create poll to invite themselves to a group')
     res.redirect('back')
     return
   }
