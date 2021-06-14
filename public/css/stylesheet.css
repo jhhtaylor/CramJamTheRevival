@@ -433,3 +433,17 @@ body {
     border: 2px solid;
     border-radius: 10px;
 }
+
+.link_img{
+    width:100%;
+}
+
+.link-title{
+    color:#6A7C92;
+}
+
+.link-card:hover{
+    -webkit-box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45);
+    -moz-box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45);
+    box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45); 
+}
