@@ -28,7 +28,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
-const mongoSanitize = require('express-mongo-santize')
+const mongoSanitize = require('express-mongo-sanitize')
 const publicDir = path.join(__dirname, 'public')
 
 app.engine('ejs', ejsMate)
