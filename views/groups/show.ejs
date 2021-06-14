@@ -20,12 +20,15 @@
                                 <li class="row">
                                     <div class="col-lg-6">
                                         <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                                            <% if(!group.members[i]._id.equals(signedInUser._id) ) { %>
                                             <form class="d-inline"
                                                 action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
                                                 method="POST" method="POST">
                                                 <button class="btn remove-btn"><i class="fas fa-times"></i></button>
                                             </form>
+                                             <% } %>
                                     </div>
+                                   
                                     <div class="col-lg-6">
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
                                             <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
@@ -47,7 +50,6 @@
                                                     <button class="d-inline btn rate-btn align-items-center"><i
                                                             class="fas fa-check"></i></button>
                                                 </form>
-
                                                 <% } %>
                                     </div>
                                 </li>
