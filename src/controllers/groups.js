@@ -90,14 +90,22 @@ module.exports.deleteGroupMember = async (req, res) => {
 module.exports.isInGroup = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   const isIn = group.members.includes(memberId)
+  if (isIn === true) { return true }
+  return false
+}
+
+module.exports.isInvited = async (groupId, memberId) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
   const isInvited = group.invites.includes(memberId)
-  // const hasRequested = group.requests.includes(memberId) // wait for requests to be implemented
-  const pollsAffected = group.polls.map(poll => poll.affected)
-  let isInAPoll = false
-  if (pollsAffected) {
-    isInAPoll = pollsAffected.includes(memberId)
+  if (isInvited === true) { return true }
+  return false
+}
+
+module.exports.isInPoll = async (groupId, memberId, action) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if (poll.action === action && poll.affected == memberId) { return true }
   }
-  if (isIn === true || isInvited === true || isInAPoll === true) { return true }
   return false
 }
 

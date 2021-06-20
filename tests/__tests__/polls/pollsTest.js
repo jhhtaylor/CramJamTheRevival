@@ -270,7 +270,7 @@ describe('Poll controller functionality', () => {
     done()
   })
 
-  test('User can create a poll to add a user to a group', async () => {
+  test('User can create a poll request to join a group', async () => {
     await StudentProfile.deleteMany({})
     await Poll.deleteMany({})
     const data = getGeoData()

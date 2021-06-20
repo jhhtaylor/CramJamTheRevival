@@ -26,8 +26,8 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  if (members.length === voted.length) { // checking sorted arrays
-    console.log('everyone voted')
+  if (members.length > (voted.length / 2)) { // checking sorted arrays
+    console.log('majority voted')
     votePoll.active = false
     await votePoll.save()
     this.updatePoll(votePoll._id)
@@ -47,52 +47,109 @@ module.exports.vote = async (poll, type) => {
   }
 }
 
+module.exports.newPoll = async (groupId, action, affected, members, owner) => {
+  const newPoll = new Poll({
+    members,
+    name: `New poll from: ${owner}`,
+    group: groupId,
+    action,
+    affected: affected
+  })
+  await newPoll.save()
+
+  await StudentProfile.updateMany({ _id: { $in: members } },
+    { $push: { polls: newPoll._id } })
+
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { polls: newPoll._id } })
+}
+
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
   const userId = req.user._id
+
+  console.log(`group: ${groupId}, member: ${memberId}, action: ${action}, user: ${req.user._id}`)
+
+  // Check if user is attempting to delete themself
   if (userId.toString() == memberId && action === 'Remove') {
     console.log('Member cannot create poll to remove themselves from a group')
     res.redirect('back')
     return
   }
+  // Check if user is attempting to invite themself
   if (userId.toString() == memberId && action === 'Invite') {
     console.log('Member cannot create poll to invite themselves to a group')
     res.redirect('back')
     return
   }
-  const exists = await groups.isInGroup(groupId, memberId)
 
-  if (!exists || action === 'Remove') {
-    const group = await GroupSchema.findById(groupId)
-    const allMembers = group.members
-    let members
-    if (action === 'Remove') {
-      members = allMembers.filter(function (e) {
-        return e != memberId
-      })
-    } else {
-      members = allMembers
-    }
-    const newPoll = new Poll({
-      members,
-      name: `New poll from: ${req.user.username}`,
-      group: groupId,
-      action,
-      affected: memberId
-    })
-    await newPoll.save()
+  // Check if the poll already exists
+  const pollExists = await groups.isInPoll(groupId, memberId, action)
 
-    await StudentProfile.updateMany({ _id: { $in: members } },
-      { $push: { polls: newPoll._id } })
-
-    await GroupSchema.updateOne({ _id: groupId },
-      { $push: { polls: newPoll._id } })
-
-    req.flash('success', 'Successfuly created new poll')
-    res.redirect(`/groups/${groupId}`)
-  } else {
-    console.log('Already is in group')
+  if (pollExists) {
+    console.log('This poll already exists')
+    res.redirect('back')
+    return
   }
+
+  // Find group
+  const group = await GroupSchema.findById(groupId)
+
+  // Create variables
+  let members
+  const affected = memberId
+
+  // Returns true if a member exists in a group or if a member has already been invited into a group
+  const isInGroup = await groups.isInGroup(groupId, memberId)
+  const isInvited = await groups.isInvited(groupId, memberId)
+
+  switch (action) {
+    // Request to join a group that they are not already a part of
+    // Should not already be in a group
+    // Should not already have requested to join a group (checked already)
+    // Voting members should be everyone already in the group
+    case 'Add':
+      if (isInGroup || isInvited) {
+        console.log('This member is already in the group')
+        res.redirect('back')
+        return
+      }
+      members = group.members
+      break
+
+    // Poll to invite a new member to a group
+    // Should not be able to invite someone who is already in a group (existsInGroup == false)
+    // Should not be able to invite one's self (checked)
+    // Should not be able to invite someone who has already been invited (existsInGroup == false)
+    // Voting members should be everyone already in the group
+    case 'Invite':
+      if (isInGroup || isInvited) {
+        console.log('This member is already in the group')
+        res.redirect('back')
+        return
+      }
+      members = group.members
+      break
+
+    // Poll to remove someone from a group
+    // Should not be able to create a poll to remove oneself
+    // Should not be able to remove someone who is already in a remove poll
+    // Should only be able to remove someone who is already in the group
+    // Voting members should be everyone in the group except the affected member
+    case 'Remove':
+      if (!isInGroup) {
+        console.log('This member is not in the group')
+        res.redirect('back')
+        return
+      }
+      members = group.members.filter(function (e) {
+        return e != affected
+      })
+      break
+  }
+  this.newPoll(groupId, action, affected, members, req.user.username)
+  req.flash('success', 'Successfuly created new poll')
+  res.redirect(`/groups/${groupId}`)
 }
 
 module.exports.updatePoll = async (pollId) => {
