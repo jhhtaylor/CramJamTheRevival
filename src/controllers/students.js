@@ -1,5 +1,5 @@
 const { StudentProfile } = require('../db/studentProfiles')
-const { geocodeAddress } = require('../../utils/geocodeAddress')
+const geocodeAddress = require('../../utils/geocodeAddress')
 
 const students = [{
   email: 'blake@email.com',
@@ -30,8 +30,8 @@ module.exports.renderRegisterStudent = (req, res) => {
 module.exports.registerStudent = async (req, res) => {
   const { email, firstName, lastName, password, username } = req.body
   const location = '20 Sunnyside Road, Orchards, Johannesburg'
-  // const coordinates = geocodeAddress.getGeocode(location)
-  const coordinates = [28.0305, -26.1929]
+  const coordinates = await geocodeAddress.getGeocode(location)
+  console.log(coordinates)
   const geodata = {
     type: 'Point',
     coordinates
