@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 const { response } = require('express')
 
 module.exports.index = async (req, res) => {
-  const links = await LinkSchema.find().populate('user')
+  const links = await LinkSchema.find().populate(['user', 'group'])
   await Promise.all(links.map(async link => {
     await fetch(link.url)
       .then(res => res.text())
@@ -22,7 +22,6 @@ module.exports.index = async (req, res) => {
         console.log(rej)
         link.link_data = {}
       })
-
   }))
   res.render('links/index', { linkItems: links })
 }
@@ -37,6 +36,9 @@ module.exports.createLink = async (req, res) => {
   // ensure all links work
   let url = req.body.url
 
+  if (!url.startsWith('https://')) {
+    url = 'https://' + url
+  }
   // Next: Should re-prompt user to enter link again
   if (!isValidHttpUrl(url)) {
     url = '/links' // take user back to links page if link url is not valid
@@ -46,7 +48,8 @@ module.exports.createLink = async (req, res) => {
   const link = new LinkSchema({
     name: req.body.name,
     url: url,
-    user: req.user
+    user: req.user,
+    group: req.body.selectedGroup
   })
   await link.save()
   res.redirect('/links')

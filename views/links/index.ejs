@@ -9,14 +9,17 @@
     <hr>
 
     <div class="row ">
-      <% linkItems.forEach(function(link){ %>
+      <!-- Slice and reverse just makes most recent links appear first -->
+      <% linkItems.slice().reverse().forEach(function(link){ %>
         <div class="col-lg-3 card  me-2 py-2">
           <div class="link-header">
             <h4>
               <%= link.name %>
             </h4>
-            <p>posted by <%= link.user.username%>
-            </p>
+            <strong>posted by user <%= link.user.username%>
+            </strong>
+            <i>in group <%=link.group.name%>
+            </i>
           </div>
           <hr>
           <a href="<%= link.url %>" target="_blank" class="text-decoration-none">
