@@ -1,4 +1,5 @@
 const { StudentProfile } = require('../src/db/studentProfiles')
+const { LinkSchema } = require('../src/db/links')
 const { GroupSchema } = require('../src/db/groups')
 const { MeetingSchema } = require('../src/db/meetings')
 const { db } = require('../src/db')
@@ -90,6 +91,7 @@ async function generateGroups (groupNames, numGroups) {
 async function generateMeetings (meetingNames) {
   // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
   await MeetingSchema.deleteMany({})
+  await LinkSchema.deleteMany({})
   console.log('Dropped Meetings Collection 🔮')
 
   const groups = await GroupSchema.find({}) // finds all groups in the database
