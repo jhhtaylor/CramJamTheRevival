@@ -1,9 +1,8 @@
 const { LinkSchema } = require('../db/links')
+const { GroupSchema } = require('../db/groups')
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
 const { response } = require('express')
-
-
 
 module.exports.index = async (req, res) => {
   const links = await LinkSchema.find().populate('user')
@@ -12,16 +11,16 @@ module.exports.index = async (req, res) => {
       .then(res => res.text())
       .then(data => {
         const $ = cheerio.load(data)
-        var title = $('meta[property="og:title"]').attr('content') || $('title').text() || $('meta[name="title"]').attr('content')
-        var description = $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content')
-        var url = $('meta[property="og:url"]').attr('content')
-        var site_name = $('meta[property="og:site_name"]').attr('content')
-        var image = $('meta[property="og:image"]').attr('content') || $('meta[property="og:image:url"]').attr('content')
-        link.link_data = { title: title, description: description, url: url, site_name: site_name, image: image}
+        const title = $('meta[property="og:title"]').attr('content') || $('title').text() || $('meta[name="title"]').attr('content')
+        const description = $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content')
+        const url = $('meta[property="og:url"]').attr('content')
+        const site_name = $('meta[property="og:site_name"]').attr('content')
+        const image = $('meta[property="og:image"]').attr('content') || $('meta[property="og:image:url"]').attr('content')
+        link.link_data = { title: title, description: description, url: url, site_name: site_name, image: image }
       })
-      .catch(rej => { 
+      .catch(rej => {
         console.log(rej)
-        link.link_data ={}
+        link.link_data = {}
       })
 
   }))
@@ -29,7 +28,9 @@ module.exports.index = async (req, res) => {
 }
 
 module.exports.renderNewForm = async (req, res) => {
-  res.render('links/new.ejs')
+  const userGroups = req.user.groups
+  const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
+  res.render('links/new.ejs', { groups })
 }
 
 module.exports.createLink = async (req, res) => {
