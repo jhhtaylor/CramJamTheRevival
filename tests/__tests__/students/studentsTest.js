@@ -6,7 +6,6 @@ const supertest = require('supertest')
 const { getGeoData } = require('../../../seeds/locationHelper')
 const { checkout } = require('../../../src/routes/mainRoutes')
 const Mongoose = require('mongoose')
-const { check } = require('express-validator')
 const request = supertest.agent(app)
 
 beforeAll(async () => { dbConnect() })
