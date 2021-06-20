@@ -12,7 +12,7 @@ module.exports.showPoll = async (req, res) => {
 }
 
 module.exports.showAllPolls = async (req, res) => {
-  const polls = await Poll.find({})
+  const polls = await Poll.find({}).populate(['affected', 'group'])
   res.render('polls/allPolls', { polls })
 }
 

@@ -1,58 +1,29 @@
 <% layout('layouts/boilerplate') -%>
-<h3>Notifications</h3>
-<% if (signedInUser.invites[0] === undefined){%>
-    <div class="card mb-3">
-        <h5>No new invites</h5>
-    </div>
-<% } else {%>
-    <% for (let invite of groupInvites){%>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="card-body">
-                        <h5 class="card-title">Invited to join <%= invite.name %></h5>
+    <div class="container">
+        <div class="row">
+            <h3>Notifications</h3>
+            <hr>
+            <div class="col-lg-6 col-sm-12">
+                <% if (signedInUser.invites[0]===undefined){%>
+                    <div class="card px-5 py-3 text-center">
+                        <h5>No new invites</h5>
                     </div>
-                </div>
-                <div class="col-md-5">
-                    <div class="card-body">
-                        <form action="/groups/<%= invite._id %>/acceptInvite" method="POST">
-                            <button class="btn btn-success">Accept</button>
-                        </form>
-                        <form action="/groups/<%= invite._id %>/declineInvite" method="POST">
-                        <button class="btn btn-danger">Decline</button>
-                        </form>
+                <% } else {%>
+                    <% for (let invite of groupInvites){%>
+                        <%- include('partials/pollCard', {invite:invite}) %>  
+                    <% }%>
+                <% }%>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <% if (signedInUser.polls[0]===undefined){%>
+                    <div class="card px-5 py-3 text-center">
+                        <h5>No new polls</h5>
                     </div>
-                </div>
+                <% } else {%>
+                    <% for (let poll of userPolls){%>
+                        <%- include('partials/pollCard', {poll:poll}) %>  
+                    <% }%>
+                <% }%>
             </div>
         </div>
-        <% }%>
-<% }%>
-<% if (signedInUser.polls[0] === undefined){%>
-    <div class="card mb-3">
-        <h5>No new polls</h5>
     </div>
-<% } else {%>
-    <% for (let poll of userPolls){%>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="card-body">
-                        <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %></h5>
-                        <% if(!poll.voted.includes(signedInUser._id)) { %> 
-                            <form action="/polls/<%= poll._id %>/yes" method="POST">
-                              <button class="btn btn-success">Yes</button>
-                            </form>
-                            <form action="/polls/<%= poll._id %>/no" method="POST">
-                              <button class="btn btn-danger">No</button>
-                            </form>
-                            <% } else { %> 
-                            <p>Yes: <%= poll.votes.yes %> </p>
-                            <p>No: <%= poll.votes.no %> </p>
-                            <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %></p>
-                            <% } %> 
-                    </div>
-                </div>
-            </div>
-        </div>
-        <% }%>
-<% }%>

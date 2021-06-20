@@ -1,24 +1,18 @@
 <% layout('layouts/boilerplate') -%>
-<h2>All Polls</h2>
-
-<% for(let poll of polls) { %>
-  <div class="card mb-3 ">
-    <div class="card-body">
-        <h5 class="card-title"> 
-          <%= poll.name %>
-          <% if(poll.members.includes(signedInUser._id) && poll.active) { %> 
-          <form action="/polls/<%= poll._id %> " method="get">
-            <button class="btn btn-primary">View</button>
-          </form>
-          <% } %> 
-        </h5>
+  <div class="container">
+    <div class="row">
+    <h2>All Polls</h2>
+    
+    <div class="col-lg-6 col-sm-12">
+      <% if (polls.length==0){%>
+        <div class="card px-5 py-3 text-center">
+          <h5>No polls</h5>
+        </div>
+        <% } else {%>
+          <% for (let poll of polls){%>
+              <%- include('../partials/pollCard', {poll:poll}) %>
+          <% }%>
+        <% }%>
     </div>
   </div>
-<% } %>  
-
-<a class="btn btn-primary" href="/"> Home </a>
-<% if(signedInUser) { %> 
-<form action="/polls/" method="post">
-  <button class="btn btn-primary">New Poll</button>
-</form>
-<% } %> 
+</div>
