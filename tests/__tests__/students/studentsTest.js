@@ -10,6 +10,7 @@ const request = supertest.agent(app)
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
+beforeEach(async () => await StudentProfile.deleteMany({}))
 
 // will change once there is access to database
 describe('Student controller functionality', () => {
@@ -162,5 +163,109 @@ describe('Student controller functionality', () => {
       }
     }
     students.rateStudent(req, res)
+  })
+
+  test('Getting settings page', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const std = new StudentProfile({
+      email: 'testing@testuser.testing.test',
+      firstName: 'TestUserFirst',
+      lastName: 'TestUserLast',
+      groups: [],
+      username: 'Test',
+      password: 'test',
+      location,
+      geodata,
+      rating: [],
+      settings: { isSearchable: true }
+    })
+    const student = await std.save()
+    const req = {
+      params: { id: student._id },
+      user: { _id: student._id }
+    }
+    const res1 = {
+      render: function (str) { checkStringEquals(str, 'settings/edit') }
+    }
+    const res2 = {
+      render: function (str) { checkStringEquals(str, 'settings/settings') }
+    }
+    await students.editSettings(req, res1)
+    await students.getSettings(req, res2)
+    done()
+  })
+
+  test('Getting settings page', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const std = new StudentProfile({
+      email: 'testing@testuser.testing.test',
+      firstName: 'TestUserFirst',
+      lastName: 'TestUserLast',
+      groups: [],
+      username: 'Test',
+      password: 'test',
+      location,
+      geodata,
+      rating: [],
+      settings: { isSearchable: true }
+    })
+    const student = await std.save()
+    const req = {
+      params: { id: student._id },
+      user: { _id: '' },
+      flash: function (err, msg) {
+        checkStringEquals(err, 'error')
+        checkStringEquals(msg, 'Can only view your own settings')
+      }
+    }
+    const res1 = {
+      redirect: function (str) { checkStringEquals(str, '/') }
+    }
+    const res2 = {
+      redirect: function (str) { checkStringEquals(str, '/') }
+    }
+    await students.editSettings(req, res1)
+    await students.getSettings(req, res2)
+    done()
+  })
+
+  test('Testing changing settings', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const std = new StudentProfile({
+      email: 'testing@testuser.testing.test',
+      firstName: 'TestUserFirst',
+      lastName: 'TestUserLast',
+      groups: [],
+      username: 'Test',
+      password: 'test',
+      location,
+      geodata,
+      rating: [],
+      settings: { isSearchable: true }
+    })
+    const newUser = 'newUser'
+    const newEmail = 'newEmail@email.email'
+    const newLocation = 'newLocation'
+    const student = await std.save()
+    const req = {
+      params: { id: student._id },
+      user: { _id: student._id },
+      flash: function () { },
+      body: { username: newUser, email: newEmail, location: newLocation, isSearchable: undefined }
+    }
+    const res = { redirect: function () {} }
+    await students.updateProfile(req, res)
+    const studentCheck = await StudentProfile.findById(student._id)
+    checkStringEquals(studentCheck.username, newUser)
+    checkStringEquals(studentCheck.email, newEmail)
+    checkStringEquals(studentCheck.location, newLocation)
+    checkStringEquals(studentCheck.settings.isSearchable, false)
+    done()
   })
 })

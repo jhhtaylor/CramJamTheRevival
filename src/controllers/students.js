@@ -64,3 +64,39 @@ module.exports.rateStudent = async (req, res) => {
   await StudentProfile.findByIdAndUpdate(id, { $push: { rating: studentRating } })
   res.redirect('/groups')
 }
+
+module.exports.getSettings = async (req, res) => {
+  const { id } = req.params
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  res.render('settings/settings')
+}
+
+module.exports.editSettings = async (req, res) => {
+  const { id } = req.params
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  res.render('settings/edit')
+}
+
+module.exports.updateProfile = async (req, res) => {
+  const { id } = req.params
+  const { email, username, location, isSearchable } = req.body
+  console.log(id, isSearchable)
+  let searchable = true
+  if (!isSearchable) searchable = false
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  // TODO: convert location into a geolocation as well
+  const student = await StudentProfile.findByIdAndUpdate(id, { $set: { email: email, username: username, location: location, settings: { isSearchable: searchable } } })
+  res.redirect(`/students/settings/${id}`)
+}

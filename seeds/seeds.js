@@ -38,7 +38,8 @@ async function generateStudents (firstNames, lastNames, numStudents) {
       username: `${firstName}${lastName}${i}`,
       invites: [],
       location,
-      geodata
+      geodata,
+      settings: { isSearchable: true }
     }
     insertStudents.push(newStudent)
   }
