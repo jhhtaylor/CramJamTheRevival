@@ -28,8 +28,8 @@ module.exports.renderRegisterStudent = (req, res) => {
 }
 
 module.exports.registerStudent = async (req, res) => {
-  const { email, firstName, lastName, password, username } = req.body
-  const location = '20 Sunnyside Road, Orchards, Johannesburg'
+  const { email, firstName, lastName, password, username, addressLine, suburb, city } = req.body
+  const location = `${addressLine}, ${suburb}, ${city}`
   const coordinates = await geocodeAddress.getGeocode(location)
   console.log(coordinates)
   const geodata = {
