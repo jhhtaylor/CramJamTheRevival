@@ -34,10 +34,11 @@
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item" href="/notifications">Notifications <% if(signedInUser.invites.length>
-                        0) {%><span class="badge notification-link">
-                          <%= signedInUser.invites.length %>
-                        </span>
+                  <% const numNotifications = signedInUser.invites.length + signedInUser.polls.length%>
+                  <li><a class="dropdown-item" href="/notifications">Notifications <% if(numNotifications >0) {%>
+                    <span class="badge notification-link">
+                          <%= numNotifications %>
+                    </span>
                         <%} %></a></li>
                   <li><a class="dropdown-item" href="/groups">Groups</a></li>
                   <li><a class="dropdown-item" href="/students">Profile</a></li>
@@ -49,9 +50,9 @@
                   </li>
                   <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
                 </ul>
-                <% if(signedInUser.invites.length> 0) {%>
+                <% if(numNotifications > 0) {%>
                   <span class="badge notification">
-                    <%= signedInUser.invites.length %>
+                    <%= numNotifications %>
                   </span>
                   <% } %>
               </div>

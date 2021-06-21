@@ -1,29 +1,40 @@
 <% layout('layouts/boilerplate') -%>
     <div class="container">
         <div class="row">
-            <h3>Notifications</h3>
+            <div class="col-lg-6 col-sm-12">
+                <h3>Notifications</h3>
+            </div>
             <hr>
+        </div>
+        <div class="row">
             <div class="col-lg-6 col-sm-12">
                 <% if (signedInUser.invites[0]===undefined){%>
                     <div class="card px-5 py-3 text-center">
                         <h5>No new invites</h5>
                     </div>
-                <% } else {%>
-                    <% for (let invite of groupInvites){%>
-                        <%- include('partials/pollCard', {invite:invite}) %>  
-                    <% }%>
-                <% }%>
+                    <% } else {%>
+                        <% for (let invite of groupInvites){%>
+                            <%- include('partials/pollCard', {invite:invite}) %>
+                                <% }%>
+                                    <% }%>
             </div>
             <div class="col-lg-6 col-sm-12">
                 <% if (signedInUser.polls[0]===undefined){%>
                     <div class="card px-5 py-3 text-center">
                         <h5>No new polls</h5>
                     </div>
-                <% } else {%>
-                    <% for (let poll of userPolls){%>
-                        <%- include('partials/pollCard', {poll:poll}) %>  
-                    <% }%>
-                <% }%>
+                    <% } else {%>
+                        <% for (let poll of userPolls){%>
+                            <%- include('partials/pollCard', {poll:poll}) %>
+                                <% }%>
+                                    <% }%>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a class="header-btn theme-btn text-decoration-none mb-3" href="/polls"> View all polls
+                </a>
             </div>
         </div>
     </div>
