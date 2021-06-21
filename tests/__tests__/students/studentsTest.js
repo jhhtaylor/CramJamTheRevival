@@ -74,7 +74,7 @@ describe('Student controller functionality', () => {
     }
     const response = await request
       .post('/students/register')
-      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}`)
+      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}&addressLine=${data.addressLine}&suburb=${data.suburb}&city=${data.city}`)
     expect(response.status).toBe(302) // 302 is redirect
     const user = await StudentProfile.findOne({ email: data.email })
     checkNotEmpty(user)
@@ -93,11 +93,14 @@ describe('Student controller functionality', () => {
       lastName: 'TestUserLast',
       groups: [],
       username: 'Test',
-      password: 'test'
+      password: 'test',
+      addressLine: '20 Sunnyside Road',
+      suburb: 'Orchards',
+      city: 'Johannesburg'
     }
     const response = await request
       .post('/students/register')
-      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}`)
+      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}&addressLine=${data.addressLine}&suburb=${data.suburb}&city=${data.city}`)
     expect(response.status).toBe(302) // 302 is redirect
     const user = await StudentProfile.findOne({ email: data.email })
     const loginResponse = await request
@@ -120,7 +123,7 @@ describe('Student controller functionality', () => {
     }
     const response = await request
       .post('/students/register')
-      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}`)
+      .send(`email=${data.email}&username=${data.username}&firstName=${data.firstName}&lastName=${data.lastName}&password=${data.password}&addressLine=${data.addressLine}&suburb=${data.suburb}&city=${data.city}`)
     expect(response.status).toBe(302) // 302 is redirect
     const user = await StudentProfile.findOne({ email: data.email })
     const loginResponse = await request

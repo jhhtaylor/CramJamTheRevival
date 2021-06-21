@@ -32,6 +32,9 @@ router
     body('username').escape().trim(),
     body('firstName').escape().trim(),
     body('lastName').escape().trim(),
+    body('addressLine').escape().trim(),
+    body('suburb').escape().trim(),
+    body('city').escape().trim(),
     catchAsync(students.registerStudent)
   )
 

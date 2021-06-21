@@ -9,7 +9,6 @@ const router = express.Router()
 
 router.route('/').get(isLoggedIn, catchAsync(links.index))
 
-
 router.route('/new').get(isLoggedIn, catchAsync(links.renderNewForm))
 
 router
