@@ -47,6 +47,7 @@ module.exports.createLink = async (req, res) => {
 
   const link = new LinkSchema({
     name: req.body.name,
+    notes: req.body.notes,
     url: url,
     user: req.user,
     group: req.body.selectedGroup

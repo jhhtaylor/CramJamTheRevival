@@ -21,6 +21,11 @@
             <i>in group <%=link.group.name%>
             </i>
           </div>
+          <div>
+            <p>
+              <%= link.notes %>
+            </p>
+          </div>
           <hr>
           <a href="<%= link.url %>" target="_blank" class="text-decoration-none">
             <% if(link.link_data.image) { %>
