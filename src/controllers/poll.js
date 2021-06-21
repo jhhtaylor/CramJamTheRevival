@@ -28,7 +28,7 @@ module.exports.votePoll = async (req, res) => {
   const voted = [...votePoll.voted]
   voted.sort()
   if (voted.length > (members.length / 2)) { // checking sorted arrays
-    req.flash('Poll closed', 'Majority voted')
+    req.flash('success', 'Majority voted')
     votePoll.active = false
     await votePoll.save()
     await this.updatePoll(votePoll._id, req)
