@@ -67,6 +67,7 @@ describe('Poll controller functionality', () => {
     const req = {
       params: { poll: savedPoll._id, type: 'yes' },
       user: student
+
     }
     let index = false
     const res = { render: function () { index = true } }
@@ -87,7 +88,8 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'yes' },
-      user: student
+      user: student,
+      flash: function () { }
     }
     const res = { redirect: function () { } }
     await poll.votePoll(req, res)
@@ -114,7 +116,8 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'no' },
-      user: student
+      user: student,
+      flash: function () { }
     }
     const res = { redirect: function () { } }
     await poll.votePoll(req, res)
