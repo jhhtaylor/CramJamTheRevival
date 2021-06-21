@@ -48,17 +48,15 @@ module.exports.vote = async (poll, type) => {
 }
 
 module.exports.newPoll = async (groupId, action, affected, members, owner) => {
-  const poll = new Poll({
+  const newPoll = new Poll({
     members,
     name: `New poll from: ${owner}`,
     group: groupId,
     action,
     affected: affected
   })
-  const newPoll = await poll.save()
+  await newPoll.save()
 
-  const p = await Poll.findOne({})
-  console.log(`saved ${p}...`)
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $push: { polls: newPoll._id } })
 
