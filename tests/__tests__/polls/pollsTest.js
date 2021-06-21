@@ -10,13 +10,38 @@ const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
 const request = supertest.agent(app)
 const Mongoose = require('mongoose')
+// const { before } = require('cheerio/lib/api/manipulation')
+
+let student
+let group
+let extraMember1
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
-afterEach(async () => {
+
+beforeEach(async () => {
   await Poll.deleteMany({})
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
+
+  const data = getGeoData()
+  const location = data.location
+  const geodata = data.geodata
+  student = new StudentProfile({
+    email: 'test.member@test.com',
+    firstName: 'Member',
+    lastName: 'Test',
+    password: '',
+    groups: [],
+    location,
+    geodata
+  })
+  await student.save()
+  group = new GroupSchema({
+    name: 'Test Group',
+    members: [student._id]
+  })
+  await group.save()
 })
 
 describe('Poll controller functionality', () => {
@@ -29,29 +54,11 @@ describe('Poll controller functionality', () => {
   })
 
   test('Poll view controller', async () => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test0.member0@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group._id
@@ -59,7 +66,8 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'yes' },
-      user: savedStudent
+      user: student
+
     }
     let index = false
     const res = { render: function () { index = true } }
@@ -68,29 +76,11 @@ describe('Poll controller functionality', () => {
   })
 
   test('Poll controller increases vote yes', async () => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test0.member0@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group._id
@@ -98,7 +88,8 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'yes' },
-      user: savedStudent
+      user: student,
+      flash: function () { }
     }
     const res = { redirect: function () { } }
     await poll.votePoll(req, res)
@@ -113,29 +104,11 @@ describe('Poll controller functionality', () => {
   })
 
   test('Poll controller increases vote no', async () => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test1.member1@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group._id
@@ -143,7 +116,8 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'no' },
-      user: savedStudent
+      user: student,
+      flash: function () { }
     }
     const res = { redirect: function () { } }
     await poll.votePoll(req, res)
@@ -152,29 +126,11 @@ describe('Poll controller functionality', () => {
   })
 
   test('User is allowed into poll', async () => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test.member@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group
@@ -182,7 +138,7 @@ describe('Poll controller functionality', () => {
     const savedPoll = await newPoll.save()
     const req = {
       params: { poll: savedPoll._id, type: 'no' },
-      user: savedStudent,
+      user: student,
       flash: function () { }
     }
     const res = { redirect: function () { } }
@@ -193,30 +149,13 @@ describe('Poll controller functionality', () => {
   })
 
   test('User isnt allowed into poll', async () => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test2.member2@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
     const savedStudent2 = { _id: 'TestId' }
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
+
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group._id
@@ -236,70 +175,31 @@ describe('Poll controller functionality', () => {
   })
 
   test('Can view a poll', async (done) => {
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test.member@test.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const savedStudent = await newStudent.save()
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [savedStudent._id]
-    })
-    await group.save()
     const newPoll = new Poll({
-      members: [savedStudent._id],
+      members: [student._id],
       name: 'Testing Poll',
       action: 'Remove',
-      affected: savedStudent._id,
+      affected: student._id,
       votes: { yes: 0, no: 0 },
       voted: [],
       group: group._id
     })
     const savedPoll = await newPoll.save()
-    request.user = savedStudent
+    request.user = student
     // const response = await request.get(`/polls/${savedPoll._id}`)
     // expect(response.status).toBe(200) test doesnt run because we dont have access to req.user
     done()
   })
 
-  test('User can create a poll to add a user to a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id]
-    })
-    await group.save()
-    const invitedStudent = { _id: Mongoose.Types.ObjectId() }
+  test('User can create a poll request to join a group', async () => {
+    const addStudent = { _id: Mongoose.Types.ObjectId(), username: 'Test' }
     const req = {
       params: {
         groupId: group._id,
         action: 'Add',
-        memberId: invitedStudent._id
+        memberId: addStudent._id
       },
-      user: student,
+      user: addStudent,
       flash: function () {}
     }
     const res = { redirect: function () { } }
@@ -309,7 +209,7 @@ describe('Poll controller functionality', () => {
     const savedGroup = await GroupSchema.findById(group._id)
 
     expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(invitedStudent._id)
+    expect(checkPoll.affected).toEqual(addStudent._id)
     expect(checkPoll.action).toEqual('Add')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
@@ -317,29 +217,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('User cannot create poll to remove themself from a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id],
-      tags: ['this group']
-    })
-    await group.save()
-    console.log('this poll')
     const request = httpMocks.createRequest({
       params: {
         groupId: group._id,
@@ -356,29 +233,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('User cannot create poll to invite themself to a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id],
-      tags: ['this group']
-    })
-    await group.save()
-    console.log('this poll')
     const request = httpMocks.createRequest({
       params: {
         groupId: group._id,
@@ -395,27 +249,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('User can create a poll to invite a user to a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id]
-    })
-    await group.save()
     const invitedStudent = { _id: Mongoose.Types.ObjectId() }
     const req = {
       params: {
@@ -441,22 +274,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('User can create a poll to remove a user from a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
     const otherStudent = { _id: Mongoose.Types.ObjectId() }
     const group = new GroupSchema({
       name: 'Test Group',
@@ -487,28 +304,37 @@ describe('Poll controller functionality', () => {
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
   })
 
-  test('User can create a poll to add themself to a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
+  test('User cannot create a poll to invite themself to a group', async () => {
     const otherStudent = { _id: Mongoose.Types.ObjectId() }
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [otherStudent._id]
+
+    const req = {
+      params: {
+        groupId: group._id,
+        action: 'Invite',
+        memberId: otherStudent._id
+      },
+      user: otherStudent,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+    await poll.createPoll(req, res)
+    const checkPoll = await Poll.findOne({})
+
+    expect(checkPoll).toBe(null)
+  })
+
+  test('User cannot create a poll that already exists', async () => {
+    const newPoll = new Poll({
+      members: [student._id],
+      name: 'Testing Poll',
+      action: 'Add',
+      affected: student._id,
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: group._id
     })
-    await group.save()
+    await newPoll.save()
+
     const req = {
       params: {
         groupId: group._id,
@@ -520,87 +346,12 @@ describe('Poll controller functionality', () => {
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
-    const checkPoll = await Poll.findOne({})
-    const savedStudent = await StudentProfile.findOne({})
-    const savedGroup = await GroupSchema.findById(group._id)
+    const checkPoll = await Poll.find({})
 
-    expect(checkPoll.members).toContainEqual(otherStudent._id)
-    expect(checkPoll.affected).toEqual(savedStudent._id)
-    expect(checkPoll.action).toEqual('Add')
-    expect(checkPoll.group).toEqual(group._id)
-    expect(savedStudent.polls.length).toEqual(0)
-    expect(savedGroup.polls).toContainEqual(checkPoll._id)
-  })
-
-  test('User cannot create a poll to invite themself to a group', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-    const otherStudent = { _id: Mongoose.Types.ObjectId() }
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id]
-    })
-    await group.save()
-
-    const req = {
-      params: {
-        groupId: group._id,
-        action: 'Invite',
-        memberId: otherStudent._id
-      },
-      user: student,
-      flash: function () {}
-    }
-    const res = { redirect: function () { } }
-    await poll.createPoll(req, res)
-    const checkPoll = await Poll.findOne({})
-    const savedStudent = await StudentProfile.findOne({})
-    const savedGroup = await GroupSchema.findById(group._id)
-
-    expect(checkPoll.members).toContainEqual(savedStudent._id)
-    expect(checkPoll.affected).toEqual(otherStudent._id)
-    expect(checkPoll.action).toEqual('Invite')
-    expect(checkPoll.group).toEqual(group._id)
-    expect(savedStudent.polls).toContainEqual(checkPoll._id)
-    expect(savedGroup.polls).toContainEqual(checkPoll._id)
+    expect(checkPoll.length).toEqual(1)
   })
 
   test('Remove type poll updates correctly', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: student._id
-    })
-    await group.save()
-
     await StudentProfile.updateOne({ _id: student._id },
       { $push: { groups: group._id } })
 
@@ -617,7 +368,11 @@ describe('Poll controller functionality', () => {
     })
     const savedPoll = await newPoll.save()
 
-    await poll.updatePoll(savedPoll._id)
+    const req = {
+      flash: function () {}
+    }
+
+    await poll.updatePoll(savedPoll._id, req)
     const savedStudent = await StudentProfile.findOne({})
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(0)
@@ -626,28 +381,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('Add type poll updates correctly', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id]
-    })
-    await group.save()
-
     const newPoll = new Poll({
       members: [student._id],
       name: 'Testing Poll',
@@ -659,7 +392,10 @@ describe('Poll controller functionality', () => {
     })
     await newPoll.save()
 
-    await poll.updatePoll(newPoll._id)
+    const req = {
+      flash: function () {}
+    }
+    await poll.updatePoll(newPoll._id, req)
     const savedStudent = await StudentProfile.findById(student._id)
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(1)
@@ -668,28 +404,6 @@ describe('Poll controller functionality', () => {
   })
 
   test('Invite type poll updates correctly', async () => {
-    await StudentProfile.deleteMany({})
-    await Poll.deleteMany({})
-    const data = getGeoData()
-    const location = data.location
-    const geodata = data.geodata
-    const newStudent = new StudentProfile({
-      email: 'test3.member3@test3.com',
-      firstName: 'Member',
-      lastName: 'Test',
-      password: '',
-      groups: [],
-      location,
-      geodata
-    })
-    const student = await newStudent.save()
-
-    const group = new GroupSchema({
-      name: 'Test Group',
-      members: [student._id]
-    })
-    await group.save()
-
     const newPoll = new Poll({
       members: [student._id],
       name: 'Testing Poll',
@@ -701,7 +415,11 @@ describe('Poll controller functionality', () => {
     })
     await newPoll.save()
 
-    await poll.updatePoll(newPoll._id)
+    const req = {
+      flash: function () {}
+    }
+
+    await poll.updatePoll(newPoll._id, req)
     const savedStudent = await StudentProfile.findById(student._id)
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(0)

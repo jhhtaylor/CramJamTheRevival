@@ -24,7 +24,7 @@ module.exports.isPartOfVote = async (req, res, next) => {
   if (!check.members.includes(req.user._id)) {
     req.flash('error', 'You are not part of this vote')
     req.session.returnTo = req.originalUrl
-    return res.redirect('/polls')
+    return res.redirect('back')
   }
   next()
 }

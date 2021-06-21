@@ -2,6 +2,7 @@ const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
 const { GroupSchema } = require('../db/groups')
 const groups = require('./groups')
+const methods = require('./functions')
 
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
@@ -26,11 +27,11 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  if (members.length === voted.length) { // checking sorted arrays
-    console.log('everyone voted')
+  if (voted.length > (members.length / 2)) { // checking sorted arrays
+    req.flash('success', 'Majority voted ')
     votePoll.active = false
     await votePoll.save()
-    this.updatePoll(votePoll._id)
+    await this.updatePoll(votePoll._id, req)
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
@@ -47,82 +48,113 @@ module.exports.vote = async (poll, type) => {
   }
 }
 
-module.exports.createPoll = async (req, res) => {
-  const { groupId, action, memberId } = req.params
-  const userId = req.user._id
-  if (userId.toString() == memberId && action === 'Remove') {
-    console.log('Member cannot create poll to remove themselves from a group')
-    res.redirect('back')
-    return
+module.exports.pollExists = async (groupId, memberId, action) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if (poll.action === action && poll.affected == memberId) { return true }
   }
-  if (userId.toString() == memberId && action === 'Invite') {
-    console.log('Member cannot create poll to invite themselves to a group')
-    res.redirect('back')
-    return
+  return false
+}
+module.exports.isInPoll = async (groupId, memberId, action) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if ((poll.action === 'Invite' || poll.action === 'Add') && poll.affected == memberId) { return true }
   }
-  const exists = await groups.isInGroup(groupId, memberId)
-
-  if (!exists || action === 'Remove') {
-    const group = await GroupSchema.findById(groupId)
-    const allMembers = group.members
-    let members
-    if (action === 'Remove') {
-      members = allMembers.filter(function (e) {
-        return e != memberId
-      })
-    } else {
-      members = allMembers
-    }
-    const newPoll = new Poll({
-      members,
-      name: `New poll from: ${req.user.username}`,
-      group: groupId,
-      action,
-      affected: memberId
-    })
-    await newPoll.save()
-
-    await StudentProfile.updateMany({ _id: { $in: members } },
-      { $push: { polls: newPoll._id } })
-
-    await GroupSchema.updateOne({ _id: groupId },
-      { $push: { polls: newPoll._id } })
-
-    req.flash('success', 'Successfuly created new poll')
-    res.redirect(`/groups/${groupId}`)
-  } else {
-    console.log('Already is in group')
+  return false
+}
+module.exports.hasRequested = async (groupId, memberId) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if (poll.action === 'Add' && poll.affected == memberId) { return true }
   }
+  return false
 }
 
-module.exports.updatePoll = async (pollId) => {
+module.exports.newPoll = async (groupId, action, affected, members, owner) => {
+  const newPoll = new Poll({
+    members,
+    name: `New poll from: ${owner}`,
+    group: groupId,
+    action,
+    affected: affected
+  })
+  await newPoll.save()
+
+  await StudentProfile.updateMany({ _id: { $in: members } },
+    { $push: { polls: newPoll._id } })
+
+  await GroupSchema.updateOne({ _id: groupId },
+    { $push: { polls: newPoll._id } })
+}
+
+module.exports.createPoll = async (req, res) => {
+  const { groupId, action, memberId } = req.params
+
+  // Check if the poll already exists
+  const pollExists = await this.pollExists(groupId, memberId, action)
+  if (pollExists) {
+    req.flash('error', 'This poll already exists')
+    res.redirect('back')
+    return
+  }
+
+  // Find group
+  const group = await GroupSchema.findById(groupId)
+
+  // Create variables
+  const affected = memberId
+
+  // Returns true if a member exists in a group or if a member has already been invited into a group
+  const isInGroup = await groups.isInGroup(groupId, affected)
+  const isInvited = await groups.isInvited(groupId, affected)
+  const isInPoll = await this.isInPoll(groupId, affected)
+  const hasRequested = await this.hasRequested(groupId, affected)
+
+  // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
+  const members = methods[action](isInGroup, isInvited, isInPoll, hasRequested, group.members, affected, req.user._id)
+  if (members.error != null) {
+    req.flash('error', members.error)
+    res.redirect('back')
+    return
+  }
+
+  // Create new poll
+  await this.newPoll(groupId, action, affected, members.members, req.user.username).then(done => {
+    req.flash('success', 'Successfuly created new poll')
+  }).catch(err => {
+    req.flash('error', err)
+  })
+  res.redirect(`/groups/${groupId}`)
+}
+
+module.exports.updatePoll = async (pollId, req) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
   switch (poll.action) {
     case 'Add':
       await groups.addGroupMember(group._id, poll.affected)
         .then(done => {
-          console.log('Added successfully')
+          req.flash('success', 'Request Successful')
         }).catch(err => {
-          console.log(err)
+          req.flash('error', err)
         })
       break
 
     case 'Invite':
       await groups.invite(group._id, poll.affected)
         .then(done => {
-          console.log('Invited successfully')
+          req.flash('success', 'Invite Successful')
         }).catch(err => {
-          console.log(err)
+          req.flash('error', err)
         })
       break
 
     case 'Remove':
       await groups.deleteMember(group._id, poll.affected)
         .then(done => {
-          console.log('Removed successfully')
+          req.flash('success', 'Remove Successful')
         }).catch(err => {
-          console.log(err)
+          req.flash('error', err)
         })
       break
   }
