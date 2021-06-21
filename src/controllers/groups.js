@@ -101,14 +101,6 @@ module.exports.isInvited = async (groupId, memberId) => {
   return false
 }
 
-module.exports.isInPoll = async (groupId, memberId, action) => {
-  const group = await GroupSchema.findById(groupId).populate('polls')
-  for (const poll of group.polls) {
-    if (poll.action === action && poll.affected == memberId) { return true }
-  }
-  return false
-}
-
 module.exports.invite = async (groupId, memberId) => {
   await GroupSchema.updateOne({ _id: groupId },
     { $push: { invites: memberId } })

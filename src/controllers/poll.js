@@ -2,6 +2,7 @@ const { Poll } = require('../db/poll')
 const { StudentProfile } = require('../db/studentProfiles')
 const { GroupSchema } = require('../db/groups')
 const groups = require('./groups')
+const methods = require('./functions')
 
 module.exports.showPoll = async (req, res) => {
   const { poll } = req.params
@@ -47,6 +48,21 @@ module.exports.vote = async (poll, type) => {
   }
 }
 
+module.exports.pollExists = async (groupId, memberId, action) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if (poll.action === action && poll.affected == memberId) { return true }
+  }
+  return false
+}
+module.exports.hasRequested = async (groupId, memberId) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if (poll.action === 'Add' && poll.affected == memberId) { return true }
+  }
+  return false
+}
+
 module.exports.newPoll = async (groupId, action, affected, members, owner) => {
   const newPoll = new Poll({
     members,
@@ -66,24 +82,9 @@ module.exports.newPoll = async (groupId, action, affected, members, owner) => {
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
-  const userId = req.user._id
-
-  // Check if user is attempting to delete themself
-  if (userId.toString() == memberId && action === 'Remove') {
-    req.flash('error', 'Member cannot create a poll to remove themself from a group')
-    res.redirect('back')
-    return
-  }
-  // Check if user is attempting to invite themself
-  if (userId.toString() == memberId && action === 'Invite') {
-    req.flash('error', 'Member cannot create a poll to invite themself to a group')
-    res.redirect('back')
-    return
-  }
 
   // Check if the poll already exists
-  const pollExists = await groups.isInPoll(groupId, memberId, action)
-
+  const pollExists = await this.pollExists(groupId, memberId, action)
   if (pollExists) {
     req.flash('error', 'This poll already exists')
     res.redirect('back')
@@ -94,60 +95,27 @@ module.exports.createPoll = async (req, res) => {
   const group = await GroupSchema.findById(groupId)
 
   // Create variables
-  let members
   const affected = memberId
 
   // Returns true if a member exists in a group or if a member has already been invited into a group
-  const isInGroup = await groups.isInGroup(groupId, memberId)
-  const isInvited = await groups.isInvited(groupId, memberId)
+  const isInGroup = await groups.isInGroup(groupId, affected)
+  const isInvited = await groups.isInvited(groupId, affected)
+  const hasRequested = await this.hasRequested(groupId, affected)
 
-  switch (action) {
-    // Request to join a group that they are not already a part of
-    // Should not already be in a group
-    // Should not already have requested to join a group (checked already)
-    // Voting members should be everyone already in the group
-    case 'Add':
-      if (isInGroup || isInvited) {
-        req.flash('error', 'Member is already part of group')
-        console.log('already here')
-        res.redirect('back')
-        return
-      }
-      members = group.members
-      break
-
-    // Poll to invite a new member to a group
-    // Should not be able to invite someone who is already in a group (existsInGroup == false)
-    // Should not be able to invite one's self (checked)
-    // Should not be able to invite someone who has already been invited (existsInGroup == false)
-    // Voting members should be everyone already in the group
-    case 'Invite':
-      if (isInGroup || isInvited) {
-        req.flash('error', 'Member is already part of group')
-        res.redirect('back')
-        return
-      }
-      members = group.members
-      break
-
-    // Poll to remove someone from a group
-    // Should not be able to create a poll to remove oneself
-    // Should not be able to remove someone who is already in a remove poll
-    // Should only be able to remove someone who is already in the group
-    // Voting members should be everyone in the group except the affected member
-    case 'Remove':
-      if (!isInGroup) {
-        req.flash('error', 'Member is not in group')
-        res.redirect('back')
-        return
-      }
-      members = group.members.filter(function (e) {
-        return e != affected
-      })
-      break
+  // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
+  const members = methods[action](isInGroup, isInvited, hasRequested, group.members, affected, req.user._id)
+  if (members.error != null) {
+    req.flash('error', members.error)
+    res.redirect('back')
+    return
   }
-  await this.newPoll(groupId, action, affected, members, req.user.username)
-  req.flash('success', 'Successfuly created new poll')
+
+  // Create new poll
+  await this.newPoll(groupId, action, affected, members.members, req.user.username).then(done => {
+    req.flash('success', 'Successfuly created new poll')
+  }).catch(err => {
+    req.flash('error', err)
+  })
   res.redirect(`/groups/${groupId}`)
 }
 

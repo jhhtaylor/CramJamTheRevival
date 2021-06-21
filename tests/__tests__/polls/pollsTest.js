@@ -323,6 +323,34 @@ describe('Poll controller functionality', () => {
     expect(checkPoll).toBe(null)
   })
 
+  test('User cannot create a poll that already exists', async () => {
+    const newPoll = new Poll({
+      members: [student._id],
+      name: 'Testing Poll',
+      action: 'Add',
+      affected: student._id,
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: group._id
+    })
+    await newPoll.save()
+
+    const req = {
+      params: {
+        groupId: group._id,
+        action: 'Add',
+        memberId: student._id
+      },
+      user: student,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+    await poll.createPoll(req, res)
+    const checkPoll = await Poll.find({})
+
+    expect(checkPoll.length).toEqual(1)
+  })
+
   test('Remove type poll updates correctly', async () => {
     await StudentProfile.updateOne({ _id: student._id },
       { $push: { groups: group._id } })
