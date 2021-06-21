@@ -340,7 +340,11 @@ describe('Poll controller functionality', () => {
     })
     const savedPoll = await newPoll.save()
 
-    await poll.updatePoll(savedPoll._id)
+    const req = {
+      flash: function () {}
+    }
+
+    await poll.updatePoll(savedPoll._id, req)
     const savedStudent = await StudentProfile.findOne({})
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(0)
@@ -360,7 +364,10 @@ describe('Poll controller functionality', () => {
     })
     await newPoll.save()
 
-    await poll.updatePoll(newPoll._id)
+    const req = {
+      flash: function () {}
+    }
+    await poll.updatePoll(newPoll._id, req)
     const savedStudent = await StudentProfile.findById(student._id)
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(1)
@@ -380,7 +387,11 @@ describe('Poll controller functionality', () => {
     })
     await newPoll.save()
 
-    await poll.updatePoll(newPoll._id)
+    const req = {
+      flash: function () {}
+    }
+
+    await poll.updatePoll(newPoll._id, req)
     const savedStudent = await StudentProfile.findById(student._id)
     const savedGroup = await GroupSchema.findById(group._id)
     expect(savedStudent.groups.length).toBe(0)

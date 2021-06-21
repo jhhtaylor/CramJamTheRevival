@@ -30,7 +30,7 @@ module.exports.votePoll = async (req, res) => {
     req.flash('Poll closed', 'Majority voted')
     votePoll.active = false
     await votePoll.save()
-    await this.updatePoll(votePoll._id)
+    await this.updatePoll(votePoll._id, req)
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
@@ -151,34 +151,34 @@ module.exports.createPoll = async (req, res) => {
   res.redirect(`/groups/${groupId}`)
 }
 
-module.exports.updatePoll = async (pollId) => {
+module.exports.updatePoll = async (pollId, req) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
   switch (poll.action) {
     case 'Add':
       await groups.addGroupMember(group._id, poll.affected)
         .then(done => {
-          console.log('success', 'Request Successful')
+          req.flash('success', 'Request Successful')
         }).catch(err => {
-          console.log('error', err)
+          req.flash('error', err)
         })
       break
 
     case 'Invite':
       await groups.invite(group._id, poll.affected)
         .then(done => {
-          console.log('success', 'Invite Successful')
+          req.flash('success', 'Invite Successful')
         }).catch(err => {
-          console.log('error', err)
+          req.flash('error', err)
         })
       break
 
     case 'Remove':
       await groups.deleteMember(group._id, poll.affected)
         .then(done => {
-          console.log('success', 'Remove Successful')
+          req.flash('success', 'Remove Successful')
         }).catch(err => {
-          console.log('error', err)
+          req.flash('error', err)
         })
       break
   }
