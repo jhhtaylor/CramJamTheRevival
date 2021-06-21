@@ -23,7 +23,10 @@ module.exports.index = async (req, res) => {
         link.link_data = {}
       })
   }))
-  res.render('links/index', { linkItems: links })
+  // to only show links the user is apart of
+  const userGroups = req.user.groups
+
+  res.render('links/index', { links: links, userGroups: userGroups })
 }
 
 module.exports.renderNewForm = async (req, res) => {
