@@ -11,7 +11,7 @@ async function getGeocode (location) {
   const coordinates = [data.features[0].geometry.coordinates[0], data.features[0].geometry.coordinates[1]]
   console.log([data.features[0].geometry.coordinates[0], data.features[0].geometry.coordinates[1]])
   return coordinates
-}z
+}
 
 getGeocode('20 Sunnyside Road, Orchards, Johannesburg')
 
