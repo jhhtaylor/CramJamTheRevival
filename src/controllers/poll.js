@@ -35,7 +35,7 @@ module.exports.votePoll = async (req, res) => {
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
-  res.redirect('back')
+  res.redirect('groups/')
 }
 
 module.exports.vote = async (poll, type) => {
