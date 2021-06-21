@@ -3,6 +3,7 @@ const { GroupSchema } = require('../src/db/groups')
 const { MeetingSchema } = require('../src/db/meetings')
 const { db } = require('../src/db')
 const { getGeoData } = require('./locationHelper')
+const { LinkSchema } = require('../src/db/links')
 
 const studentFirstNames = ['Dave', 'Steve', 'Will', 'Jess', 'Emily', 'Rebecca']
 const studentLastNames = ['Stevens', 'Williams', 'Denham', 'Tobias', 'Taylor', 'Bench']
@@ -11,16 +12,23 @@ const meetingNames = ['Study', 'Chat', 'Braai', 'Lunch', 'Coffee']
 const tags = ['Fun', 'Rocks', 'Math', 'Interactive']
 const coords = [[23.3645, 34.0575], [28.0473, 26.2041]] // plett, joburg coords
 
+const linkNames = ['Study Notes', 'Study Tips', 'Introduction to Notes', 'Important Link', 'Please Read']
+const linkNotes = ['Please read this by Monday', 'Please read this by Tuesday', 'Please read this by Wednesday', 'Please read this by Thursday', 'Please read this by Friday']
+const linkUrls = ['https://en.wikipedia.org/wiki/Special:Random', 'https://en.wikipedia.org/wiki/Special:Random', 'https://en.wikipedia.org/wiki/Special:Random', 'https://en.wikipedia.org/wiki/Special:Random', 'https://en.wikipedia.org/wiki/Special:Random']
+
 generateStudents(studentFirstNames, studentLastNames, 10)
   .then(() => generateGroups(groupNames, 5))
   .then(() => generateMeetings(meetingNames))
+  .then(() => generateLinks(linkNames, linkNotes, linkUrls, 5))
   .then(() => db.close())
   .catch(err => {
     console.error('Error:', err)
   })
 
-async function generateStudents (firstNames, lastNames, numStudents) {
-  const insertStudents = []
+async function generateStudents(firstNames, lastNames, numStudents) {
+  // Deletes all the current data in there to start fresh
+  await StudentProfile.deleteMany({})
+  console.log('Dropped Students Collection 🔮')
 
   // generate a random set of user profile data
   for (let i = 0; i < numStudents; i++) {
@@ -29,7 +37,7 @@ async function generateStudents (firstNames, lastNames, numStudents) {
     const geodata = data.geodata
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-    const newStudent = {
+    const newStudent = new StudentProfile({
       email: `${firstName}.${lastName}${i}@test.com`,
       firstName: firstName,
       lastName: lastName,
@@ -40,18 +48,15 @@ async function generateStudents (firstNames, lastNames, numStudents) {
       location,
       geodata,
       settings: { isSearchable: true }
-    }
-    insertStudents.push(newStudent)
+    })
+    await StudentProfile.register(newStudent, 'test')
   }
-  // Deletes all the current data in there to start fresh
-  await StudentProfile.deleteMany({})
-  console.log('Dropped Students Collection 🔮')
+
   // Inserts many students into a mongodb collection
-  await StudentProfile.insertMany(insertStudents)
   console.log('Inserted New Students 💎')
 }
 
-async function generateGroups (groupNames, numGroups) {
+async function generateGroups(groupNames, numGroups) {
   const people = await StudentProfile.find({}) // finds all profiles in the database
 
   // Deletes all the current data in there to start fresh
@@ -88,7 +93,7 @@ async function generateGroups (groupNames, numGroups) {
   console.log('Inserted New Groups 💎')
 }
 
-async function generateMeetings (meetingNames) {
+async function generateMeetings(meetingNames) {
   // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
   await MeetingSchema.deleteMany({})
   console.log('Dropped Meetings Collection 🔮')
@@ -115,4 +120,36 @@ async function generateMeetings (meetingNames) {
     index++
   }
   console.log('Inserted New Meetings 💎')
+}
+
+async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
+  // Deletes all the current data in there to start fresh
+  await LinkSchema.deleteMany({})
+  console.log('Dropped Links Collection 🔮')
+
+  const people = await StudentProfile.find({}) // finds all profiles in the database
+  const groups = await GroupSchema.find({}) // finds all groups in the database
+
+  const insertLinks = []
+  for (let i = 0; i < numLinks; i++) {
+    const name = linkNames[Math.floor(Math.random() * linkNames.length)] // creates random group name
+    const note = linkNotes[Math.floor(Math.random() * linkNotes.length)]
+    const url = linkUrls[Math.floor(Math.random() * linkUrls.length)]
+    const user = people[Math.floor(Math.random() * people.length)]._id // finds random member to add
+    const group = groups[Math.floor(Math.random() * groups.length)]._id // finds random member to add
+
+    const newLink = new LinkSchema({
+      name: name,
+      note: note,
+      url: url,
+      user: user,
+      group: group
+    })
+
+    insertLinks.push(newLink)
+  }
+
+  // Inserts many links into a mongodb collection
+  await LinkSchema.insertMany(insertLinks)
+  console.log('Inserted New Links 💎')
 }

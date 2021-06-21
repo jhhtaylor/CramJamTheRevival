@@ -9,41 +9,51 @@
     <hr>
 
     <div class="row ">
-      <% linkItems.forEach(function(link){ %>
-        <div class="col-lg-3 card  me-2 py-2">
-          <div class="link-header">
-            <h4>
-              <%= link.name %>
-            </h4>
-            <p>posted by <%= link.user.username%>
-            </p>
+      <!-- Slice and reverse just makes most recent links appear first -->
+      <% links.slice().reverse().forEach(function(link){ %>
+        <!-- list only links from group signed in user is a part of -->
+        <% if(signedInUser.groups.includes(link.group._id)) { %>
+          <div class="col-lg-3 card  me-2 py-2">
+            <div class="link-header">
+              <h4>
+                <%= link.name %>
+              </h4>
+              <strong>posted by user <%= link.user.username%>
+              </strong>
+              <i>in group <%=link.group.name%>
+              </i>
+            </div>
+            <div>
+              <p>
+                <%= link.note %>
+              </p>
+            </div>
+            <hr>
+            <a href="<%= link.url %>" target="_blank" class="text-decoration-none">
+              <% if(link.link_data.image) { %>
+                <img src="<%= link.link_data.image %>" class="link_img">
+                <% } else {%>
+                  <img src="assets/image-not-found.png" class="link_img">
+                  <% } %>
+                    <strong class="link-title text-left">
+                      <% if(link.link_data.title) { %>
+
+                        <%= link.link_data.title %>
+
+                          <% } else {%>
+                            No Title
+                            <% } %>
+                    </strong>
+                    <p class="link-title text-left">
+                      <% if(link.link_data.description) { %>
+
+                        <%= link.link_data.description %>
+
+                          <% }%>
+                    </p>
+            </a>
           </div>
-          <hr>
-          <a href="<%= link.url %>" target="_blank" class="text-decoration-none">
-            <% if(link.link_data.image) { %>
-              <img src="<%= link.link_data.image %>" class="link_img">
-              <% } else {%>
-                <img src="assets/image-not-found.png" class="link_img">
-                <% } %>
-                  <strong class="link-title text-left">
-                    <% if(link.link_data.title) { %>
-
-                      <%= link.link_data.title %>
-
-                        <% } else {%>
-                          No Title
-                          <% } %>
-                  </strong>
-                  <p class="link-title text-left">
-                    <% if(link.link_data.description) { %>
-
-                      <%= link.link_data.description %>
-
-                        <% }%>
-                  </p>
-          </a>
-        </div>
-
-        <% }); %>
+          <% } %>
+            <% }); %>
     </div>
   </div>
