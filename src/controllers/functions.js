@@ -21,8 +21,6 @@ const add = function (isInGroup, isInvited, isInPoll, hasRequested, members, aff
 // Poll should not be created if the affected person is already in a poll to be added to the group
 // All current group members should be allowed to vote
 const invite = function (isInGroup, isInvited, isInPoll, hasRequested, members, affected, user) {
-  console.log(`hasReq: ${hasRequested}`)
-  console.log(`isInv: ${isInvited}`)
   let error = null
   if (isInGroup || isInvited || isInPoll) {
     const err = 'Member is already in the group'

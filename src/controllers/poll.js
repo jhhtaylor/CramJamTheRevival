@@ -28,14 +28,14 @@ module.exports.votePoll = async (req, res) => {
   const voted = [...votePoll.voted]
   voted.sort()
   if (voted.length > (members.length / 2)) { // checking sorted arrays
-    req.flash('success', 'Majority voted')
+    req.flash('success', 'Majority voted ')
     votePoll.active = false
     await votePoll.save()
     await this.updatePoll(votePoll._id, req)
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
-  res.redirect('groups/')
+  res.redirect('back')
 }
 
 module.exports.vote = async (poll, type) => {
