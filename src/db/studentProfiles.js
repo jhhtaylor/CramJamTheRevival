@@ -11,7 +11,8 @@ const studentProfileSchema = new Schema({
   invites: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   polls: [{ type: Schema.Types.ObjectId, ref: 'Poll' }],
   location: { type: String, required: true }, // string location name eg Wits
-  geodata: { // actual geographic data such as longitude latitude
+  geodata: {
+    // actual geographic data such as longitude latitude
     type: {
       type: String,
       enum: ['Point'],
@@ -22,8 +23,16 @@ const studentProfileSchema = new Schema({
       required: true
     }
   },
-  rating: [{ rated: { type: Number }, rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' } }],
-  isAdmin: { type: Boolean, default: false }
+  rating: [
+    {
+      rated: { type: Number },
+      rater: { type: Schema.Types.ObjectId, ref: 'StudentProfile' }
+    }
+  ],
+  isAdmin: { type: Boolean, default: false },
+  settings: {
+    isSearchable: { type: Boolean, default: true }
+  }
 })
 
 studentProfileSchema.virtual('averageRating').get(function () {
@@ -37,4 +46,7 @@ studentProfileSchema.virtual('averageRating').get(function () {
 
 studentProfileSchema.plugin(localMongoose)
 
-module.exports.StudentProfile = mongoose.model('StudentProfile', studentProfileSchema)
+module.exports.StudentProfile = mongoose.model(
+  'StudentProfile',
+  studentProfileSchema
+)

@@ -46,7 +46,8 @@ async function generateStudents(firstNames, lastNames, numStudents) {
       username: `${firstName}${lastName}${i}`,
       invites: [],
       location,
-      geodata
+      geodata,
+      settings: { isSearchable: true }
     })
     await StudentProfile.register(newStudent, 'test')
   }
