@@ -20,7 +20,7 @@
                                 <li class="row">
                                     <div class="col-lg-6">
                                         <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
-                                            <% if(!group.members[i]._id.equals(signedInUser._id) ) { %>
+                                            <% if(!group.members[i]._id.equals(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
                                             <form class="d-inline"
                                                 action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
                                                 method="POST" method="POST">
@@ -32,7 +32,7 @@
                                     <div class="col-lg-6">
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
                                             <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
-                                                !raters.includes(signedInUser._id)) { %>
+                                                !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
                                                 <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
                                                     class="">
                                                     <div class="rate">
@@ -55,7 +55,7 @@
                                 </li>
                                 
                                 <% } %>
-                                    <% if (group.invites.length> 0) {%>
+                                    <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
                                         <hr>
                                         <h5>Pending invites</h5>
                                         <% for (var i=0; i < group.invites.length; i++) { %>
@@ -64,13 +64,15 @@
                                             </li>
                                             <% } %>
                                                 <% } %>
-                                                <hr>
+                
+                                                <% if (signedInUser.groups.includes(group._id)){%>
                                                     <div class="text-center">
                                                         <a class="header-btn theme-btn text-decoration-none mt-3 "
                                                             href="/groups/<%=group._id%>/explore"> Invite new
                                                             members
                                                         </a>
                                                     </div>
+                                                <% } %>
                         </div>
                     </div>
                 </div>
@@ -78,7 +80,7 @@
             <div class="col-lg-6 col-md-12">
                 <% for (let poll of groupPolls){%>
                    <%- include('../partials/pollCard.ejs', {poll:poll}) %>
-                    <% }%>
+                <% }%>
             </div>
         </div>
     </div>

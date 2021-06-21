@@ -17,6 +17,8 @@ const logRouter = require('./src/routes/activityLog')
 const { logActivity } = require('./src/middleware/middleware')
 const linkRouter = require('./src/routes/linkRoutes')
 
+const methods = require('./src/controllers/functions.js') // path to functions.js
+
 const db = require('./src/db')
 const { settings } = require('./utils/sessionSettings')
 const { StudentProfile } = require('./src/db/studentProfiles')
@@ -43,7 +45,6 @@ app.use(flash()) // adding flash
 app.use(passport.initialize()) // initialise passort
 app.use(passport.session()) // add passport login between sessions
 app.use(mongoSanitize()) // removes special charachters from query strings like $ to prevent mongo injection
-
 
 passport.use(new LocalPassport(StudentProfile.authenticate())) // use a local storage strategy
 passport.serializeUser(StudentProfile.serializeUser()) // function added by passport-local-mongoose

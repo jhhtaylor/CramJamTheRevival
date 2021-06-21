@@ -7,7 +7,7 @@
     </div>
     <hr>
     <div class="row">
-        <% if(!poll.voted.includes(signedInUser._id)) { %>
+        <% if(!poll.voted.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
             <form action="/polls/<%= poll._id %>/yes" method="POST" class="col-lg-6 text-center">
                 <button class="btn poll-yes"><i class="fas fa-check"></i></button>
             </form>
