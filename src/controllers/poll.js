@@ -26,7 +26,7 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  if (members.length > (voted.length / 2)) { // checking sorted arrays
+  if (voted.length > (members.length / 2)) { // checking sorted arrays
     console.log('majority voted')
     votePoll.active = false
     await votePoll.save()
@@ -48,15 +48,17 @@ module.exports.vote = async (poll, type) => {
 }
 
 module.exports.newPoll = async (groupId, action, affected, members, owner) => {
-  const newPoll = new Poll({
+  const poll = new Poll({
     members,
     name: `New poll from: ${owner}`,
     group: groupId,
     action,
     affected: affected
   })
-  await newPoll.save()
+  const newPoll = await poll.save()
 
+  const p = await Poll.findOne({})
+  console.log(`saved ${p}...`)
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $push: { polls: newPoll._id } })
 
@@ -67,8 +69,7 @@ module.exports.newPoll = async (groupId, action, affected, members, owner) => {
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
   const userId = req.user._id
-
-  console.log(`group: ${groupId}, member: ${memberId}, action: ${action}, user: ${req.user._id}`)
+  console.log('Create poll start')
 
   // Check if user is attempting to delete themself
   if (userId.toString() == memberId && action === 'Remove') {
@@ -147,7 +148,7 @@ module.exports.createPoll = async (req, res) => {
       })
       break
   }
-  this.newPoll(groupId, action, affected, members, req.user.username)
+  await this.newPoll(groupId, action, affected, members, req.user.username)
   req.flash('success', 'Successfuly created new poll')
   res.redirect(`/groups/${groupId}`)
 }
