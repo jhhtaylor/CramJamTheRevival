@@ -4,11 +4,13 @@ html {
   scroll-behavior: smooth; }
 
 body {
+  background-color: #f6f8faff;
   font-family: "Poppins", sans-serif;
   font-weight: normal;
   font-style: normal;
   color: #6A7C92;
-  overflow-x: hidden; }
+  overflow-x: hidden;
+ }
 
 * {
   margin: 0;
@@ -21,12 +23,23 @@ body {
 .page{
     padding-bottom: 60px;
 }
+.brighten img {
+    opacity: 1;
+}
 
+.brighten img:hover {
+    opacity: 0.5;
+    -webkit-transition: all 0.1s ease-out 0s;
+    -moz-transition: all 0.1s ease-out 0s;
+    -ms-transition: all 0.1s ease-out 0s;
+    -o-transition: all 0.1s ease-out 0s;
+    transition: all 0.1s ease-out 0s;
+}
 
 .navbar-area {
     width: 100%;
     z-index: 99;
-    background-color: rgb(236, 128, 95);
+    background-color: #182224ff;
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
     -ms-transition: all 0.3s ease-out 0s;
@@ -50,7 +63,7 @@ body {
     color: #fff;
     cursor: pointer;
     z-index: 5;
-    transition: all .4s ease-in-out;
+    transition: all .1s ease-in-out;
     border: none;
     background: linear-gradient(to left, rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%);
     background-size: 200% auto;
@@ -63,7 +76,7 @@ body {
         box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45); }
     .theme-btn.border-btn {
         padding: 14px 40px;
-        background: transparent;
+        background: #fff;
         border: 1.5px solid rgb(236, 128, 95);
         color: #fff;
         font-size: 18px;
@@ -74,11 +87,12 @@ body {
 .header-btn .theme-btn {
     padding: 10px 30px; }
 
-
-
+.dropdown-triangle{
+    color: #fff
+}
 .navbar {
     width: 100%;
-    padding: 20px 0;
+    padding: 0px 0;
     position: relative;
     -webkit-transition: all 0.3s ease-out 0s;
     -moz-transition: all 0.3s ease-out 0s;
@@ -95,7 +109,7 @@ body {
     position: relative;
     z-index: 1; }
 .navbar-nav > .nav-item > a:hover {
-    color: #1d2c58; }
+    color: rgb(236, 128, 95); }
 .navbar-nav > .nav-item > a {
     font-size: 16px;
     color: #ffffff;
@@ -121,7 +135,7 @@ body {
     -ms-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
-    background: rgb(236, 128, 95);
+    background: #182224ff;
     padding: 0px 0; }
     
 .sticky .navbar {
@@ -130,8 +144,9 @@ body {
 
 
 .box-style {
+    background-color: #fff;
     padding: 40px 30px;
-    border: 1px solid #F4EEFB;
+    border: 1px solid#E8E8E8;
     border-radius: 10px;
     margin-bottom: 30px;
     -webkit-transition: all 0.3s ease-out 0s;
@@ -212,7 +227,7 @@ body {
     position: relative;
     z-index: 9; }
 .service-section .service-box-style-2 .box-icon-style i {
-    color: transparent;
+    color: #fff;
     -webkit-background-clip: text;
     -moz-background-clip: text;
     -ms-background-clip: text;
@@ -284,18 +299,23 @@ body {
 }
 
 .footer {
-    background-color: rgb(235, 235, 235);
-    position: fixed;
-    z-index: 99;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    /* Set the fixed height of the footer here */
-    line-height: 60px;
-    /* Vertically center the text there */
-    background-color: #f5f5f5;
-    clear:both;
+    margin-top: auto; 
+    align-content: center;
 }
+
+.footer-img-brighten {
+    opacity: 0.4;
+}
+
+.footer-img-brighten:hover {
+    opacity: 0.8;
+    -webkit-transition: all 0.1s ease-out 0s;
+    -moz-transition: all 0.1s ease-out 0s;
+    -ms-transition: all 0.1s ease-out 0s;
+    -o-transition: all 0.1s ease-out 0s;
+    transition: all 0.1s ease-out 0s;
+}
+
 
 .notification {
     position: relative;
