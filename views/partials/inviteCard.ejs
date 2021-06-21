@@ -7,10 +7,10 @@
     </div>
     <hr>
     <div class="row">
-            <form action="/groups/<%= invite._id %>/declineInvite" method="POST" class="col-lg-6 text-center">
+            <form action="/groups/<%= invite._id %>/acceptInvite" method="POST" class="col-lg-6 text-center">
                 <button class="btn poll-yes"><i class="fas fa-check"></i></button>
             </form>
-            <form action="/groups/<%= invite._id %>/acceptInvite" method="POST" class="col-lg-6 text-center">
+            <form action="/groups/<%= invite._id %>/declineInvite" method="POST" class="col-lg-6 text-center">
                 <button class="btn poll-no"><i class="fas fa-times"></i></button>
             </form>
     </div>
