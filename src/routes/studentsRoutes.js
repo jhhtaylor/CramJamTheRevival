@@ -5,6 +5,7 @@ const students = require('../controllers/students')
 const catchAsync = require('../../utils/catchAsync')
 const router = express.Router()
 const { body } = require('express-validator')
+const { isLoggedIn } = require('../middleware/middleware')
 
 router.get('/', function (req, res) {
   res.render('students/students', { students: students.list() })
@@ -31,6 +32,9 @@ router
     body('username').escape().trim(),
     body('firstName').escape().trim(),
     body('lastName').escape().trim(),
+    body('addressLine').escape().trim(),
+    body('suburb').escape().trim(),
+    body('city').escape().trim(),
     catchAsync(students.registerStudent)
   )
 
@@ -45,6 +49,13 @@ router
     }),
     catchAsync(students.loginStudent)
   )
+
+router.route('/settings/:id')
+  .get(isLoggedIn, students.getSettings)
+
+router.route('/settings/:id/edit')
+  .get(isLoggedIn, students.editSettings)
+  .put(isLoggedIn, catchAsync(students.updateProfile))
 
 router.route('/logout').get(students.logoutStudent)
 

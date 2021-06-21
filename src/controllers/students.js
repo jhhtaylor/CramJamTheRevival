@@ -1,5 +1,5 @@
 const { StudentProfile } = require('../db/studentProfiles')
-const { geocodeAddress } = require('../../utils/geocodeAddress')
+const geocodeAddress = require('../../utils/geocodeAddress')
 
 const students = [{
   email: 'blake@email.com',
@@ -28,10 +28,10 @@ module.exports.renderRegisterStudent = (req, res) => {
 }
 
 module.exports.registerStudent = async (req, res) => {
-  const { email, firstName, lastName, password, username } = req.body
-  const location = '20 Sunnyside Road, Orchards, Johannesburg'
-  // const coordinates = geocodeAddress.getGeocode(location)
-  const coordinates = [28.0305, -26.1929]
+  const { email, firstName, lastName, password, username, addressLine, suburb, city } = req.body
+  const location = `${addressLine}, ${suburb}, ${city}`
+  const coordinates = await geocodeAddress.getGeocode(location)
+  console.log(coordinates)
   const geodata = {
     type: 'Point',
     coordinates
@@ -63,4 +63,40 @@ module.exports.rateStudent = async (req, res) => {
   const studentRating = { rated: parseInt(rating), rater: raterID }
   await StudentProfile.findByIdAndUpdate(id, { $push: { rating: studentRating } })
   res.redirect('/groups')
+}
+
+module.exports.getSettings = async (req, res) => {
+  const { id } = req.params
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  res.render('settings/settings')
+}
+
+module.exports.editSettings = async (req, res) => {
+  const { id } = req.params
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  res.render('settings/edit')
+}
+
+module.exports.updateProfile = async (req, res) => {
+  const { id } = req.params
+  const { email, username, location, isSearchable } = req.body
+  console.log(id, isSearchable)
+  let searchable = true
+  if (!isSearchable) searchable = false
+  if (id != req.user._id) {
+    req.flash('error', 'Can only view your own settings')
+    res.redirect('/')
+    return
+  }
+  // TODO: convert location into a geolocation as well
+  const student = await StudentProfile.findByIdAndUpdate(id, { $set: { email: email, username: username, location: location, settings: { isSearchable: searchable } } })
+  res.redirect(`/students/settings/${id}`)
 }

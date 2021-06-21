@@ -1,0 +1,60 @@
+<% layout('layouts/boilerplate') -%>
+
+  <div class="container">
+    <h1>Settings:</h1>
+    <div class="row">
+      <h3>Email</h3>
+      <div class="col">
+        <span id="emailString">
+          <%= signedInUser.email %>
+        </span>
+      </div>
+      <div class="col">
+        <button class="btn btn-secondary" id="viewEmail">
+          <i class="bi bi-eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3>Username</h3>
+        <span>
+          <%= signedInUser.username %>
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3>Address</h3>
+      <div class="col">
+        <span id="locationString">
+          <%= signedInUser.location %>
+        </span>
+      </div>
+      <div class="col">
+        <button class="btn btn-secondary" id="viewLocation">
+          <i class="bi bi-eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3>Searchable:</h3>
+        <span>
+          <%= signedInUser.settings.isSearchable %>
+        </span>
+      </div>
+    </div>
+
+    <form action="/students/settings/<%=signedInUser._id%>/edit" method="get">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+  </div>
+
+  <script>
+    const student = <%- JSON.stringify(signedInUser) %> //note this has to look like <%- %> if saving please save without formatting
+  </script>
+
+  <script src="/js/settings.js"></script>

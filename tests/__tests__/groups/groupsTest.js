@@ -47,7 +47,7 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('A student can view an explore page group if logged', async (done) => {
+  test('A student can view an explore page group if logged in', async (done) => {
     const newGroup = new GroupSchema({
       name: 'New Test Group',
       members: testStudent._id
@@ -63,7 +63,7 @@ describe('Group controller functionality', () => {
       body: { name: testGroupName },
       user: testStudent
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testGroupName)
@@ -85,7 +85,7 @@ describe('Group controller functionality', () => {
         id: testGroup._id
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     const expectedGroup = await GroupSchema.findById(testGroup._id)
     await groups.deleteGroup(req, res)
@@ -114,7 +114,7 @@ describe('Group controller functionality', () => {
         member: testStudent._id
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup.members.length).toEqual(1)
@@ -137,7 +137,7 @@ describe('Group controller functionality', () => {
         id: testGroup._id
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -185,7 +185,7 @@ describe('Group controller functionality', () => {
       params: { id: testGroup._id, member: testStudent._id },
       user: testStudent
     }
-    const response = { redirect (url) { return url } }
+    const response = { redirect(url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -224,7 +224,7 @@ describe('Group controller functionality', () => {
       params: { id: testGroup._id },
       user: testStudent._id
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -279,7 +279,7 @@ describe('Group controller functionality', () => {
       params: { id: testGroup._id },
       user: testStudent._id
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.declineInvite(req, res)
 

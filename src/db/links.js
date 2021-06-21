@@ -3,9 +3,11 @@ const { Schema } = mongoose
 
 // Link Schema
 const linkSchema = new Schema({
-  name: { type: String, required: true },
-  url: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: 'StudentProfile' }
+  name: { type: String },
+  note: { type: String },
+  url: { type: String },
+  user: { type: Schema.Types.ObjectId, ref: 'StudentProfile' },
+  group: { type: Schema.Types.ObjectId, ref: 'Group' }
 })
 
 module.exports.LinkSchema = mongoose.model('Link', linkSchema)
