@@ -16,7 +16,8 @@
                             required>
                     </div>
                     <div class="form-group mt-2">
-                        <select class="ui dropdown" id="list" type='Group' name='selectedGroup' placeholder='Group'>
+                        <select class="ui dropdown" id="list" type='Group' name='selectedGroup' placeholder='Group'
+                            required>
                             <% for (let group of groups){%>
                                 <option value=<%=group._id%>>
                                     <%=group.name %>
