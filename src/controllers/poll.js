@@ -70,13 +70,13 @@ module.exports.createPoll = async (req, res) => {
 
   // Check if user is attempting to delete themself
   if (userId.toString() == memberId && action === 'Remove') {
-    req.flash('Error', 'Member cannot create a poll to remove themself from a group')
+    req.flash('error', 'Member cannot create a poll to remove themself from a group')
     res.redirect('back')
     return
   }
   // Check if user is attempting to invite themself
   if (userId.toString() == memberId && action === 'Invite') {
-    req.flash('Error', 'Member cannot create a poll to invite themself to a group')
+    req.flash('error', 'Member cannot create a poll to invite themself to a group')
     res.redirect('back')
     return
   }
@@ -85,7 +85,7 @@ module.exports.createPoll = async (req, res) => {
   const pollExists = await groups.isInPoll(groupId, memberId, action)
 
   if (pollExists) {
-    req.flash('Error', 'This poll already exists')
+    req.flash('error', 'This poll already exists')
     res.redirect('back')
     return
   }
@@ -108,7 +108,8 @@ module.exports.createPoll = async (req, res) => {
     // Voting members should be everyone already in the group
     case 'Add':
       if (isInGroup || isInvited) {
-        req.flash('Error', 'Member is already part of group')
+        req.flash('error', 'Member is already part of group')
+        console.log('already here')
         res.redirect('back')
         return
       }
@@ -122,7 +123,7 @@ module.exports.createPoll = async (req, res) => {
     // Voting members should be everyone already in the group
     case 'Invite':
       if (isInGroup || isInvited) {
-        req.flash('Error', 'Member is already part of group')
+        req.flash('error', 'Member is already part of group')
         res.redirect('back')
         return
       }
@@ -136,7 +137,7 @@ module.exports.createPoll = async (req, res) => {
     // Voting members should be everyone in the group except the affected member
     case 'Remove':
       if (!isInGroup) {
-        req.flash('Error', 'Member is not in group')
+        req.flash('error', 'Member is not in group')
         res.redirect('back')
         return
       }
@@ -157,27 +158,27 @@ module.exports.updatePoll = async (pollId) => {
     case 'Add':
       await groups.addGroupMember(group._id, poll.affected)
         .then(done => {
-          console.log('Success', 'Request Successful')
+          console.log('success', 'Request Successful')
         }).catch(err => {
-          console.log('Error', err)
+          console.log('error', err)
         })
       break
 
     case 'Invite':
       await groups.invite(group._id, poll.affected)
         .then(done => {
-          console.log('Success', 'Invite Successful')
+          console.log('success', 'Invite Successful')
         }).catch(err => {
-          console.log('Error', err)
+          console.log('error', err)
         })
       break
 
     case 'Remove':
       await groups.deleteMember(group._id, poll.affected)
         .then(done => {
-          console.log('Success', 'Remove Successful')
+          console.log('success', 'Remove Successful')
         }).catch(err => {
-          console.log('Error', err)
+          console.log('error', err)
         })
       break
   }
