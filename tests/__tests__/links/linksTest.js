@@ -9,11 +9,35 @@ const { app } = require('../../../utils/testUtils/expressTestUtils')
 const supertest = require('supertest')
 const request = supertest.agent(app)
 
+let testStudent
+let testGroup
+
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
 beforeEach(async () => {
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
+
+  const data = getGeoData()
+  const location = data.location
+  const geodata = data.geodata
+
+  testStudent = new StudentProfile({
+    email: 'test.member@test.com',
+    firstName: 'Member',
+    lastName: 'Test',
+    password: '',
+    groups: [],
+    location,
+    geodata
+  })
+  await testStudent.save()
+
+  testGroup = new GroupSchema({
+    name: 'New Test Group',
+    members: testStudent._id
+  })
+  await testGroup.save()
 })
 
 describe('Link controller functionality', () => {
@@ -25,10 +49,16 @@ describe('Link controller functionality', () => {
 
   test('A link can be added to the database', async () => {
     const testName = 'New Test Link'
+    const testNote = 'New Test Note'
     const testUrl = 'https://www.google.com/'
-    // can't test the new user relation functionality as cannot simulate signing in...
     const req = {
-      body: { name: testName, url: testUrl }
+      body: {
+        name: testName,
+        note: testNote,
+        url: testUrl // ,
+        // user: testStudent._id,
+        // group: testGroup._id
+      }
 
     }
 
@@ -36,6 +66,12 @@ describe('Link controller functionality', () => {
     await links.createLink(req, res)
     const expectedLink = await LinkSchema.findOne({})
     expect(expectedLink.name).toEqual(testName)
+    expect(expectedLink.note).toEqual(testNote)
     expect(expectedLink.url).toEqual(testUrl)
+    // Cannot test these as need to be logged in :(
+    // console.log(expectedLink)
+    // expect(expectedLink.user._id).toEqual(testStudent._id)
+    // Cannot test as require user input (selectedGroup)
+    // expect(expectedLink.group._id).toEqual(testGroup._id)
   })
 })

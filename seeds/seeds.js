@@ -26,7 +26,9 @@ generateStudents(studentFirstNames, studentLastNames, 10)
   })
 
 async function generateStudents(firstNames, lastNames, numStudents) {
-  const insertStudents = []
+  // Deletes all the current data in there to start fresh
+  await StudentProfile.deleteMany({})
+  console.log('Dropped Students Collection 🔮')
 
   // generate a random set of user profile data
   for (let i = 0; i < numStudents; i++) {
@@ -35,7 +37,7 @@ async function generateStudents(firstNames, lastNames, numStudents) {
     const geodata = data.geodata
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-    const newStudent = {
+    const newStudent = new StudentProfile({
       email: `${firstName}.${lastName}${i}@test.com`,
       firstName: firstName,
       lastName: lastName,
@@ -45,14 +47,11 @@ async function generateStudents(firstNames, lastNames, numStudents) {
       invites: [],
       location,
       geodata
-    }
-    insertStudents.push(newStudent)
+    })
+    await StudentProfile.register(newStudent, 'test')
   }
-  // Deletes all the current data in there to start fresh
-  await StudentProfile.deleteMany({})
-  console.log('Dropped Students Collection 🔮')
+
   // Inserts many students into a mongodb collection
-  await StudentProfile.insertMany(insertStudents)
   console.log('Inserted New Students 💎')
 }
 
@@ -129,14 +128,14 @@ async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
   const insertLinks = []
   for (let i = 0; i < numLinks; i++) {
     const name = linkNames[Math.floor(Math.random() * linkNames.length)] // creates random group name
-    const notes = linkNotes[Math.floor(Math.random() * linkNotes.length)]
+    const note = linkNotes[Math.floor(Math.random() * linkNotes.length)]
     const url = linkUrls[Math.floor(Math.random() * linkUrls.length)]
     const user = people[Math.floor(Math.random() * people.length)]._id // finds random member to add
     const group = groups[Math.floor(Math.random() * groups.length)]._id // finds random member to add
 
     const newLink = new LinkSchema({
       name: name,
-      notes: notes,
+      note: note,
       url: url,
       user: user,
       group: group
