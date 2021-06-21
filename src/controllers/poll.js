@@ -55,6 +55,13 @@ module.exports.pollExists = async (groupId, memberId, action) => {
   }
   return false
 }
+module.exports.isInPoll = async (groupId, memberId, action) => {
+  const group = await GroupSchema.findById(groupId).populate('polls')
+  for (const poll of group.polls) {
+    if ((poll.action === 'Invite' || poll.action === 'Add') && poll.affected == memberId) { return true }
+  }
+  return false
+}
 module.exports.hasRequested = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
@@ -100,10 +107,11 @@ module.exports.createPoll = async (req, res) => {
   // Returns true if a member exists in a group or if a member has already been invited into a group
   const isInGroup = await groups.isInGroup(groupId, affected)
   const isInvited = await groups.isInvited(groupId, affected)
+  const isInPoll = await this.isInPoll(groupId, affected)
   const hasRequested = await this.hasRequested(groupId, affected)
 
   // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
-  const members = methods[action](isInGroup, isInvited, hasRequested, group.members, affected, req.user._id)
+  const members = methods[action](isInGroup, isInvited, isInPoll, hasRequested, group.members, affected, req.user._id)
   if (members.error != null) {
     req.flash('error', members.error)
     res.redirect('back')

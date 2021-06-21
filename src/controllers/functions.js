@@ -2,10 +2,11 @@
 // Returns members and an error
 // Poll should not be created if the affected person is already part of the group
 // Poll should not be created if the affected person is already invited to the group
+// Poll should not be created if the affected person is already in a poll to be invited to the group
 // All current group members should be allowed to vote
-const add = function (isInGroup, isInvited, hasRequested, members, affected, user) {
+const add = function (isInGroup, isInvited, isInPoll, hasRequested, members, affected, user) {
   let error = null
-  if (isInGroup || isInvited) {
+  if (isInGroup || isInvited || isInPoll) {
     const err = 'Member is already in the group'
     error = err
   }
@@ -17,10 +18,13 @@ const add = function (isInGroup, isInvited, hasRequested, members, affected, use
 // Poll should not be created if the affected person is already part of the group
 // Poll should not be created if the user is attempting to invite themself
 // Poll should not be created if the user is attempting to invite someone who has already requested to join
+// Poll should not be created if the affected person is already in a poll to be added to the group
 // All current group members should be allowed to vote
-const invite = function (isInGroup, isInvited, hasRequested, members, affected, user) {
+const invite = function (isInGroup, isInvited, isInPoll, hasRequested, members, affected, user) {
+  console.log(`hasReq: ${hasRequested}`)
+  console.log(`isInv: ${isInvited}`)
   let error = null
-  if (isInGroup || isInvited || hasRequested) {
+  if (isInGroup || isInvited || isInPoll) {
     const err = 'Member is already in the group'
     error = err
   }
@@ -36,7 +40,7 @@ const invite = function (isInGroup, isInvited, hasRequested, members, affected, 
 // Poll should not be created if the affected person is not already part of the group
 // Poll should not be created if the user is attempting to remove themself (they may simply leave the group, no poll needs to be created)
 // All current group members, except the affected member, should be allowed to vote
-const remove = function (isInGroup, isInvited, hasRequested, members, affected, user) {
+const remove = function (isInGroup, isInvited, isInPoll, hasRequested, members, affected, user) {
   let error = null
   if (!isInGroup) {
     const err = 'Member is not in group'
