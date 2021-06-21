@@ -122,6 +122,10 @@ async function generateMeetings(meetingNames) {
 }
 
 async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
+  // Deletes all the current data in there to start fresh
+  await LinkSchema.deleteMany({})
+  console.log('Dropped Links Collection 🔮')
+
   const people = await StudentProfile.find({}) // finds all profiles in the database
   const groups = await GroupSchema.find({}) // finds all groups in the database
 
@@ -144,9 +148,6 @@ async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
     insertLinks.push(newLink)
   }
 
-  // Deletes all the current data in there to start fresh
-  await LinkSchema.deleteMany({})
-  console.log('Dropped Links Collection 🔮')
   // Inserts many links into a mongodb collection
   await LinkSchema.insertMany(insertLinks)
   console.log('Inserted New Links 💎')
