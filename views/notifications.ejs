@@ -13,7 +13,7 @@
                         <h5>No new invites</h5>
                     </div>
                     <% } else {%>
-                        <% if(signedInUser.groups.length === 10){ %>
+                        <% if(signedInUser.groups.length === groupLimit){ %>
                             <p>
                                 You have <%= signedInUser.invites.length %> new group invite<%if(signedInUser.invites.length > 1){%>sqq<%}%>. Remove some groups to view new invites.  
                             </p>
