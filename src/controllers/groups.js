@@ -30,19 +30,23 @@ module.exports.renderNewForm = (req, res) => {
   res.render('groups/new')
 }
 
-module.exports.createGroup = async (req, res, next) => {
+module.exports.createGroup = async (req, res) => {
   const group = new GroupSchema({
     name: req.body.name
   })
   await group.save()
-  group.members.push(req.user._id)
-  await group.save()
-  const user = await StudentProfile.findById(req.user._id)
-  user.groups.push(group._id)
-  await user.save()
-  // req.flash('success', 'Created new group!')
+  try {
+    await this.addGroupMember(group._id, req.user._id, req)
+  } catch (err) {
+    // Err possibilities:
+    // 1) Group limit reached
+    req.flash('error', err.message)
+    await this.deleteGroup(group._id)
+  }
+  req.flash('success', 'Created new group!')
   res.redirect('/groups/')
 }
+
 module.exports.showGroup = async (req, res) => {
   const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites'])
   const polls = group.polls
@@ -51,14 +55,12 @@ module.exports.showGroup = async (req, res) => {
   res.render('groups/show', { group, groupPolls })
 }
 
-module.exports.deleteGroup = async (req, res) => {
-  const { id } = req.params
-  const group = await GroupSchema.findById(id)
+module.exports.deleteGroup = async (groupId) => {
+  const group = await GroupSchema.findById(groupId)
   const members = group.members
-  await GroupSchema.findByIdAndDelete(id)
+  await GroupSchema.findByIdAndDelete(groupId)
   await StudentProfile.updateMany({ _id: { $in: members } },
-    { $pull: { groups: id } })
-  res.redirect('/groups')
+    { $pull: { groups: groupId } })
 }
 
 module.exports.deleteMember = async (groupId, memberId) => {
@@ -115,10 +117,11 @@ module.exports.inviteGroupMember = async (req, res) => {
   res.redirect(`/groups/${groupId}`)
 }
 module.exports.addGroupMember = async (groupId, memberId) => {
+  const student = await StudentProfile.findById(memberId)
+  student.groups.push(groupId)
+  await student.save()
   await GroupSchema.updateOne({ _id: groupId },
     { $push: { members: memberId } })
-  await StudentProfile.updateOne({ _id: memberId },
-    { $push: { groups: groupId } })
 }
 
 module.exports.removeInvite = async (groupId, memberId) => {
