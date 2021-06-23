@@ -37,15 +37,15 @@
                                                     class="">
                                                     <div class="rate">
                                                         <input type="radio" id="star5_<%= i%>" name="rating" value="5" />
-                                                        <label for="star5_<%= i%>" title="text">5 stars</label>
+                                                        <label for="star5_<%= i%>">5 stars</label>
                                                         <input type="radio" id="star4_<%= i%>" name="rating" value="4" />
-                                                        <label for="star4_<%= i%>" title="text">4 stars</label>
+                                                        <label for="star4_<%= i%>">4 stars</label>
                                                         <input type="radio" id="star3_<%= i%>" name="rating" value="3" />
-                                                        <label for="star3_<%= i%>" title="text">3 stars</label>
+                                                        <label for="star3_<%= i%>">3 stars</label>
                                                         <input type="radio" id="star2_<%= i%>" name="rating" value="2" />
-                                                        <label for="star2_<%= i%>" title="text">2 stars</label>
+                                                        <label for="star2_<%= i%>" >2 stars</label>
                                                         <input type="radio" id="star1_<%= i%>" name="rating" value="1" />
-                                                        <label for="star1_<%= i%>" title="text">1 star</label>
+                                                        <label for="star1_<%= i%>">1 star</label>
                                                     </div>
                                                     <button class="d-inline btn rate-btn align-items-center"><i
                                                             class="fas fa-check"></i></button>
@@ -53,9 +53,10 @@
                                                 <% } %>
                                     </div>
                                 </li>
-                                <hr>
+                                
                                 <% } %>
                                     <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
+                                        <hr>
                                         <h5>Pending invites</h5>
                                         <% for (var i=0; i < group.invites.length; i++) { %>
                                             <li>
@@ -78,43 +79,8 @@
             </div>
             <div class="col-lg-6 col-md-12">
                 <% for (let poll of groupPolls){%>
-                    <div class="card mb-3">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="card-body">
-                                    <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <% if(!poll.voted.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
-                                    <form action="/polls/<%= poll._id %>/yes" method="POST" class="col-lg-6 text-center mb-3">
-                                        <button class="btn poll-yes"><i
-                                            class="fas fa-check"></i></button>
-                                    </form>
-                                    <form action="/polls/<%= poll._id %>/no" method="POST" class="col-lg-6 text-center  mb-3">
-                                        <button class="btn poll-no"><i
-                                            class="fas fa-times"></i></button>
-                                    </form>
-                                    <% } else { %>
-                                        <div class="col-lg-4 text-center">
-                                            <p>Yes: <%= poll.votes.yes %>
-                                            </p>
-                                        </div>
-                                        <div class="col-lg-4 text-center">
-                                            <p>No: <%= poll.votes.no %>
-                                            </p>
-                                        </div>
-                                        <div class="col-lg-4 text-center">
-                                            <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %>
-                                            </p>
-                                        </div>
-                                        <% } %>
-
-                            </div>
-                        </div>
-                    </div>
-                    <% }%>
+                   <%- include('../partials/pollCard.ejs', {poll:poll}) %>
+                <% }%>
             </div>
         </div>
     </div>

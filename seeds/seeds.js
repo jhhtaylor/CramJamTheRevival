@@ -2,6 +2,7 @@ const { StudentProfile } = require('../src/db/studentProfiles')
 const { LinkSchema } = require('../src/db/links')
 const { GroupSchema } = require('../src/db/groups')
 const { MeetingSchema } = require('../src/db/meetings')
+const { Poll } = require('../src/db/poll')
 const { db } = require('../src/db')
 const { getGeoData } = require('./locationHelper')
 
@@ -29,6 +30,9 @@ async function generateStudents (firstNames, lastNames, numStudents) {
   // Deletes all the current data in there to start fresh
   await StudentProfile.deleteMany({})
   console.log('Dropped Students Collection 🔮')
+   // Deletes all the current data in there to start fresh
+   await Poll.deleteMany({})
+   console.log('Dropped Poll Collection 🔮')
 
   // generate a random set of user profile data
   for (let i = 0; i < numStudents; i++) {

@@ -97,11 +97,6 @@ describe('Poll controller functionality', () => {
     expect(checkPoll.votes.yes).toBe(1)
   })
 
-  test('Can view polls page', async (done) => {
-    const response = await request.get('/polls/')
-    expect(response.status).toBe(200)
-    done()
-  })
 
   test('Poll controller increases vote no', async () => {
     const newPoll = new Poll({

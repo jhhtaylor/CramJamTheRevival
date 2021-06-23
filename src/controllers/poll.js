@@ -13,8 +13,8 @@ module.exports.showPoll = async (req, res) => {
 }
 
 module.exports.showAllPolls = async (req, res) => {
-  const polls = await Poll.find({})
-  res.render('polls/allPolls', { polls })
+  const polls = await Poll.find({members: {$in: req.user._id}}).populate(['affected', 'group'])
+  res.render('polls/allPolls', { polls: polls })
 }
 
 module.exports.votePoll = async (req, res) => {
