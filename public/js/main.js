@@ -1,3 +1,14 @@
+const processScroll = () => {
+  const amount = document.getElementById('progress-bar').innerHTML
+  const scrollPercent = amount / 10 * 100 + '%'
+
+  // console.log(scrollTop + ' / ' + scrollBottom + ' / ' + scrollPercent);
+
+  document.getElementById('progress-bar').style.setProperty('--scrollAmount', scrollPercent)
+}
+
+document.addEventListener('DOMContentLoaded', processScroll);
+
 (function () {
   'use strict'
   const the_rest = document.querySelector('.all')

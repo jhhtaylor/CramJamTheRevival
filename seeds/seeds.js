@@ -5,7 +5,6 @@ const { MeetingSchema } = require('../src/db/meetings')
 const { Poll } = require('../src/db/poll')
 const { db } = require('../src/db')
 const { getGeoData } = require('./locationHelper')
-const { LinkSchema } = require('../src/db/links')
 
 const studentFirstNames = ['Dave', 'Steve', 'Will', 'Jess', 'Emily', 'Rebecca']
 const studentLastNames = ['Stevens', 'Williams', 'Denham', 'Tobias', 'Taylor', 'Bench']
@@ -27,7 +26,7 @@ generateStudents(studentFirstNames, studentLastNames, 10)
     console.error('Error:', err)
   })
 
-async function generateStudents(firstNames, lastNames, numStudents) {
+async function generateStudents (firstNames, lastNames, numStudents) {
   // Deletes all the current data in there to start fresh
   await StudentProfile.deleteMany({})
   console.log('Dropped Students Collection 🔮')
@@ -61,7 +60,7 @@ async function generateStudents(firstNames, lastNames, numStudents) {
   console.log('Inserted New Students 💎')
 }
 
-async function generateGroups(groupNames, numGroups) {
+async function generateGroups (groupNames, numGroups) {
   const people = await StudentProfile.find({}) // finds all profiles in the database
 
   // Deletes all the current data in there to start fresh
@@ -98,7 +97,7 @@ async function generateGroups(groupNames, numGroups) {
   console.log('Inserted New Groups 💎')
 }
 
-async function generateMeetings(meetingNames) {
+async function generateMeetings (meetingNames) {
   // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
   await MeetingSchema.deleteMany({})
   await LinkSchema.deleteMany({})
@@ -128,7 +127,7 @@ async function generateMeetings(meetingNames) {
   console.log('Inserted New Meetings 💎')
 }
 
-async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
+async function generateLinks (linkNames, linkNotes, linkUrls, numLinks) {
   // Deletes all the current data in there to start fresh
   await LinkSchema.deleteMany({})
   console.log('Dropped Links Collection 🔮')

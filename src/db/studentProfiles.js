@@ -1,13 +1,25 @@
 const mongoose = require('mongoose')
 const localMongoose = require('passport-local-mongoose')
 const { Schema } = mongoose
+const MAX_GROUPS = 10
 
 // Student Profile Schema
 const studentProfileSchema = new Schema({
   email: { type: String, required: true, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
+  groups: {
+    type: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Group'
+    }],
+    validate: {
+      validator: function (v) {
+        return v.length <= MAX_GROUPS
+      },
+      message: props => 'Group limit reached!'
+    }
+  },
   invites: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
   polls: [{ type: Schema.Types.ObjectId, ref: 'Poll' }],
   location: { type: String, required: true }, // string location name eg Wits
@@ -43,8 +55,11 @@ studentProfileSchema.virtual('averageRating').get(function () {
   avg /= this.rating.length
   return avg
 })
-
 studentProfileSchema.plugin(localMongoose)
+
+function arrayLimit (val) {
+  return val.length <= 10
+}
 
 module.exports.StudentProfile = mongoose.model(
   'StudentProfile',

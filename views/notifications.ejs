@@ -13,9 +13,15 @@
                         <h5>No new invites</h5>
                     </div>
                     <% } else {%>
+                        <% if(signedInUser.groups.length === groupLimit){ %>
+                            <p>
+                                You have <%= signedInUser.invites.length %> new group invite<%if(signedInUser.invites.length > 1){%>sqq<%}%>. Remove some groups to view new invites.  
+                            </p>
+                        <%} else{%>
                         <% for (let invite of groupInvites){%>
                             <%- include('partials/inviteCard', {invite:invite}) %>
                                 <% }%>
+                                    <% }%>
                                     <% }%>
             </div>
             <div class="col-lg-6 col-sm-12">

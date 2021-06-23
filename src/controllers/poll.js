@@ -136,7 +136,7 @@ module.exports.updatePoll = async (pollId, req) => {
         .then(done => {
           req.flash('success', 'Request Successful')
         }).catch(err => {
-          req.flash('error', err)
+          req.flash('error', err.message)
         })
       break
 
@@ -145,7 +145,7 @@ module.exports.updatePoll = async (pollId, req) => {
         .then(done => {
           req.flash('success', 'Invite Successful')
         }).catch(err => {
-          req.flash('error', err)
+          req.flash('error', err.message)
         })
       break
 
@@ -154,7 +154,7 @@ module.exports.updatePoll = async (pollId, req) => {
         .then(done => {
           req.flash('success', 'Remove Successful')
         }).catch(err => {
-          req.flash('error', err)
+          req.flash('error', err.message)
         })
       break
   }

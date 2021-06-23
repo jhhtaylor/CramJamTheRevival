@@ -31,8 +31,10 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
 const mongoSanitize = require('express-mongo-sanitize')
+const { GroupSchema } = require('./src/db/groups')
 
 const publicDir = path.join(__dirname, 'public')
+const GROUP_LIMIT = 10
 
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs')
@@ -56,6 +58,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
   res.locals.signedInUser = req.user
+  res.locals.groupLimit = GROUP_LIMIT
   next()
 })
 app.all('*', logActivity)

@@ -61,9 +61,10 @@ describe('Group controller functionality', () => {
   test('A group can be added to the database', async () => {
     const req = {
       body: { name: testGroupName },
-      user: testStudent
+      user: testStudent,
+      flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testGroupName)
@@ -78,17 +79,8 @@ describe('Group controller functionality', () => {
     })
     const testGroup = await newGroup.save()
 
-    const req = {
-      body: { name: testGroup.name },
-      user: testStudent,
-      params: {
-        id: testGroup._id
-      }
-    }
-    const res = { redirect(url) { return url } }
-
     const expectedGroup = await GroupSchema.findById(testGroup._id)
-    await groups.deleteGroup(req, res)
+    await groups.deleteGroup(testGroup._id)
     const updatedGroup = await GroupSchema.findById(expectedGroup._id)
     expect(updatedGroup).toEqual(null)
     const updatedUser = await StudentProfile.findById(testStudent._id)
@@ -111,10 +103,11 @@ describe('Group controller functionality', () => {
       user: testStudent,
       params: {
         id: testGroup._id,
-        member: testStudent._id
+        member: testStudent._id,
+        flash: function () { }
       }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup.members.length).toEqual(1)
@@ -134,10 +127,11 @@ describe('Group controller functionality', () => {
       body: { name: testGroup.name },
       user: testStudent,
       params: {
-        id: testGroup._id
+        id: testGroup._id,
+        flash: function () { }
       }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -148,15 +142,15 @@ describe('Group controller functionality', () => {
   test('A member can be added to a group', async (done) => {
     const newGroup = new GroupSchema({
       name: 'New Test Group',
-      members: testStudent._id
+      members: extraMember1._id
     })
     const testGroup = await newGroup.save()
 
-    await groups.addGroupMember(testGroup._id, extraMember1._id) // test actual function
+    await groups.addGroupMember(testGroup._id, testStudent._id) // test actual function
     const expectedGroup = await GroupSchema.findById(testGroup._id)
     expect(expectedGroup.members.length).toEqual(2)
-    expect(expectedGroup.members[0]).toEqual(testStudent._id)
-    expect(expectedGroup.members[1]).toEqual(extraMember1._id)
+    expect(expectedGroup.members[0]).toEqual(extraMember1._id)
+    expect(expectedGroup.members[1]).toEqual(testStudent._id)
     done()
   })
   test('A member gets an invite to a group', async (done) => {
@@ -183,9 +177,10 @@ describe('Group controller functionality', () => {
     const testGroup = await newGroup.save()
     const request = {
       params: { id: testGroup._id, member: testStudent._id },
-      user: testStudent
+      user: testStudent,
+      flash: function () { }
     }
-    const response = { redirect(url) { return url } }
+    const response = { redirect (url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -222,9 +217,10 @@ describe('Group controller functionality', () => {
 
     const req = {
       params: { id: testGroup._id },
-      user: testStudent._id
+      user: testStudent._id,
+      flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -277,9 +273,10 @@ describe('Group controller functionality', () => {
 
     const req = {
       params: { id: testGroup._id },
-      user: testStudent._id
+      user: testStudent._id,
+      flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.declineInvite(req, res)
 
@@ -290,6 +287,91 @@ describe('Group controller functionality', () => {
     expect(updatedStudent.invites.length).toEqual(0)
     expect(updatedGroup.members.length).toEqual(1) // the test user should be in the group twice because they invited themself
     expect(updatedStudent.groups.length).toEqual(0) // the test user should be in the group twice because they invited themself
+
+    done()
+  })
+  test('A student who is already part of 10 groups cannot be added to a new group', async (done) => {
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: []
+    })
+    const testGroup = await newGroup.save()
+    for (let i = 0; i < 10; i++) {
+      testStudent.groups.push(Mongoose.Types.ObjectId())
+      await testStudent.save()
+    }
+    expect(testStudent.groups.length).toBe(10)
+    let error
+    try {
+      await groups.addGroupMember(testGroup._id, testStudent._id)
+    } catch (e) {
+      error = e
+    }
+    const group = await GroupSchema.findOne({})
+    const student = await StudentProfile.findOne({})
+    expect(error.message).toBe('StudentProfile validation failed: groups: Group limit reached!')
+    expect(student.groups.length).toBe(10)
+    expect(group.members.length).toBe(0)
+
+    done()
+  })
+  test('A student cannot create a new group if they are already part of 10 groups', async (done) => {
+    for (let i = 0; i < 10; i++) {
+      testStudent.groups.push(Mongoose.Types.ObjectId())
+      await testStudent.save()
+    }
+    expect(testStudent.groups.length).toBe(10)
+    const req = {
+      body: { name: 'testGroup' },
+      user: testStudent,
+      flash: function () { }
+    }
+    const res = { redirect (url) { return url } }
+
+    await groups.createGroup(req, res)
+
+    const group = await GroupSchema.findOne({})
+    const student = await StudentProfile.findOne({})
+    expect(student.groups.length).toBe(10)
+    expect(group).toBe(null) // group should not be created
+
+    done()
+  })
+
+  test('A student cannot accept an invite if they are already part of 10 groups', async (done) => {
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: [],
+      invites: [testStudent._id]
+    })
+    const testGroup = await newGroup.save()
+
+    // Fill student's groups
+    for (let i = 0; i < 10; i++) {
+      testStudent.groups.push(Mongoose.Types.ObjectId())
+      await testStudent.save()
+    }
+    testStudent.invites.push(Mongoose.Types.ObjectId())
+    await testStudent.save()
+
+    const req = {
+      body: { name: 'testGroup' },
+      user: testStudent,
+      params: {
+        id: Mongoose.Types.ObjectId()
+      },
+      flash: function () { }
+    }
+    const res = { redirect (url) { return url } }
+
+    await groups.acceptInvite(req, res)
+
+    const group = await GroupSchema.findOne({})
+    const student = await StudentProfile.findOne({})
+    expect(student.groups.length).toBe(10)
+    expect(group.members.length).toBe(0) // group should not be created
+    expect(student.invites.length).toBe(1)
+    expect(group.invites.length).toBe(1)
 
     done()
   })
