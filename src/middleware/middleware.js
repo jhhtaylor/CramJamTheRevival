@@ -45,7 +45,3 @@ module.exports.logActivity = async (req, res, next) => {
   await newLog.save()
   next()
 }
-
-module.exports.groupLimit = async (req, res, next) => {
-  return req.groupLimit
-}
