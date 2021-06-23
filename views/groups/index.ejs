@@ -3,34 +3,37 @@
         <div class="row">
             <% if(groups.length> 0) {%>
                 <h1>Your Groups</h1>
-                <% for (let group of groups){%>
+        
+                <%for (var i = 0; i < 10; i++){%>
                     <div class="col-lg-3 col-md-6">
-                        <div class="box-style">
-                            <div class="box-content-style">
-                                <h4>
-                                    <%= group.name %>
+                        
+                                <%if (groups[i]) { %>
+                                    <div class="box-style box-style-full">
+                                        <div class="box-content-style">
+                                    <h4>
+                                    <%= groups[i].name %>
                                 </h4>
                                 <p>Group description goes here</p>
                                 <div class="header-btn">
-                                    <a href="/groups/<%=group._id%>" class="theme-btn text-decoration-none">View</a>
+                                    <a href="/groups/<%=groups[i]._id%>" class="theme-btn text-decoration-none">View</a>
                                 </div>
+                                    
+                                <% }else{%>
+                                <div class="box-style box-style-empty">
+                                <div class="box-content-style-empty">
+                                <a href="\groups\new" class="text-decoration-none text-center">
+                                        <div class="box-icon-style-empty">
+                                            <i class="fas fa-plus text-decoration-none"></i>
+                                        </div>
+
+                                        
+                                    </a>
+                                <% }%>
+        
                             </div>
                         </div>
                     </div>
                     <% }%>
-                    <% if(signedInUser.groups.length < 10){ %>
-                        <div class="col-lg-2">
-                            <div class="box-style">
-                                <div class="box-content-style">
-                                    <a href="\groups\new" class="text-decoration-none text-center">
-                                        <div class="box-icon-style ">
-                                            <i class="fas fa-plus text-decoration-none"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <% } %> 
         </div>
         <% }else{%>
         <div class="container">
@@ -42,11 +45,12 @@
             </div>
         </div>
         <% } %>
+        <% if(signedInUser.groups.length < 10) {%>
             <h3>Request to join one of the available groups below!</h3>
             <div class="row">
                 <% for (let group of randomGroups){%>
                     <div class="col-lg-4 col-md-6 group-card">
-                        <div class="box-style">
+                        <div class="box-style box-style-full">
                             <div class="box-content-style">
                                 <h4>
                                     <%= group.name %>
@@ -63,4 +67,5 @@
                     </div>
                     <% } %>
             </div>
+            <% } %>
     </div>

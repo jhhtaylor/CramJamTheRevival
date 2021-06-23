@@ -144,7 +144,6 @@ body {
 
 
 .box-style {
-    background-color: #fff;
     padding: 40px 30px;
     border: 1px solid#E8E8E8;
     border-radius: 10px;
@@ -154,6 +153,23 @@ body {
     -ms-transition: all 0.3s ease-out 0s;
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s; }
+    .box-style-full{
+        background-color: #fff;
+    }
+    .box-style-empty{
+        background-color: transparent;
+    }
+    .box-style-empty:hover {
+        -webkit-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+        -moz-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+        box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45); }
+        .box-style:hover .box-icon-style {
+          color: #fff;
+          border-color: transparent;
+          background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%) }
+          .box-style:hover .box-icon-style::after {
+            opacity: 1;
+            visibility: visible; }
     .box-style:hover {
       -webkit-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
       -moz-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
@@ -161,7 +177,7 @@ body {
       .box-style:hover .box-icon-style {
         color: #fff;
         border-color: transparent;
-        background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%); }
+        background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%) }
         .box-style:hover .box-icon-style::after {
           opacity: 1;
           visibility: visible; }
@@ -170,12 +186,12 @@ body {
       height: 78px;
       border-radius: 50%;
       margin-bottom: 25px;
-      background: #fff;
+      background: transparent;
       border: 2px solid rgb(236, 128, 95);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgb(236, 128, 95);
+      color:rgb(236, 128, 95);
       font-size: 40px;
       -webkit-transition: all 0.3s ease-out 0s;
       -moz-transition: all 0.3s ease-out 0s;
@@ -205,6 +221,69 @@ body {
       font-size: 25px;
       font-weight: 600;
       margin-bottom: 20px; }
+
+.box-icon-style-empty {
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    margin-bottom: 25px;
+    background: transparent;
+    border: 2px solid#E8E8E8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:#E8E8E8;
+    font-size: 40px;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+    position: relative; }
+    .box-style-empty:hover {
+        -webkit-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+        -moz-box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45);
+        box-shadow: 0px 0px 30px rgba(215, 224, 252, 0.45); }
+        .box-style-empty:hover .box-icon-style-empty {
+          color: #fff;
+          border-color: transparent;
+          background: linear-gradient(rgba(232,232,231, 1) 0%, rgba(232,232,231, 1) 100%) }
+    .box-icon-style-empty::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      opacity: 0;
+      visibility: hidden;
+      background: linear-gradient(rgb(236, 128, 95) 0%, rgb(236, 118, 82) 100%);
+      -webkit-transition: all 0.3s ease-out 0s;
+      -moz-transition: all 0.3s ease-out 0s;
+      -ms-transition: all 0.3s ease-out 0s;
+      -o-transition: all 0.3s ease-out 0s;
+      transition: all 0.3s ease-out 0s;
+      z-index: -1;
+      border-radius: 50%;
+      border: 1px solid transparent; }   
+      .box-style-empty .box-content-style-empty h4 {
+        color: #E8E8E8;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px; }
+
+.box-empty-style{
+    background-color: black;
+    padding: 40px 30px;
+    border: 1px solid#E8E8E8;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s; 
+}
 
 /*===========================
     05. Service CSS 
@@ -467,4 +546,25 @@ body {
     -moz-box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45);
     box-shadow: 0px 0px 30px rgba(236, 128, 95, 0.45); 
 }
+
+/* Progress bar */
+.progress {
+    padding-top: 2vh;
+    padding-bottom: 4vh;
+    background-color: transparent;
+    align-self: center;
+}
+#progress-bar {
+    --scrollAmount: 0%;
+    
+    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    width: var(--scrollAmount);
+  
+    /*  background: linear-gradient(to right, #F24E1E var(--scrollAmount), transparent 0);
+    width: 100%; */
+
+    height: 25px;
+    align-tracks: center;
+    border-radius: 25px;
+  }
 
