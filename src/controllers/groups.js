@@ -38,8 +38,6 @@ module.exports.createGroup = async (req, res) => {
   try {
     await this.addGroupMember(group._id, req.user._id, req)
   } catch (err) {
-    // Err possibilities:
-    // 1) Group limit reached
     req.flash('error', err.message)
     await this.deleteGroup(group._id)
   }
@@ -134,8 +132,12 @@ module.exports.removeInvite = async (groupId, memberId) => {
 module.exports.acceptInvite = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.user._id
-  this.addGroupMember(groupId, memberId)
-  this.removeInvite(groupId, memberId)
+  try {
+    await this.addGroupMember(groupId, memberId)
+    await this.removeInvite(groupId, memberId)
+  } catch (err) {
+    req.flash('error', err.message)
+  }
   res.redirect(`/groups/${groupId}`)
 }
 

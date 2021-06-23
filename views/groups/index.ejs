@@ -18,6 +18,7 @@
                         </div>
                     </div>
                     <% }%>
+                    <% if(signedInUser.groups.length < 10){ %>
                         <div class="col-lg-2">
                             <div class="box-style">
                                 <div class="box-content-style">
@@ -29,6 +30,7 @@
                                 </div>
                             </div>
                         </div>
+                        <% } %> 
         </div>
         <% }else{%>
         <div class="container">
