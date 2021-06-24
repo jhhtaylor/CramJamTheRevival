@@ -17,9 +17,17 @@
                             <h5>Group members (<%= group.members.length%>)</h5>
                             <hr>
                             <% for (var i=0; i < group.members.length; i++) { %>
-                                <li class="row">
-                                    <div class="col-lg-6">
-                                        <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                                <div class="row">
+                                    <div class="col-lg-2 " align='center'>
+                                        <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
+                                    </div>
+                                    <div class="col-lg-4 align-self-center">
+
+                                            <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                                            <% if(group.members[i]._id.equals(signedInUser._id)) {%>
+                                                (you)
+                                                <%}%>
+
                                             <% if(!group.members[i]._id.equals(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
                                             <form class="d-inline"
                                                 action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
@@ -29,7 +37,7 @@
                                              <% } %>
                                     </div>
                                    
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-5 align-self-center text-end" >
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
                                             <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
                                                 !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
@@ -50,20 +58,37 @@
                                                     <button class="d-inline btn rate-btn align-items-center"><i
                                                             class="fas fa-check"></i></button>
                                                 </form>
-                                                <% } %>
+                                                <% }else{%>
+                                                            <a id="modal-button" class="button">leave group</a>
+                                                        
+                                                <%} %>
                                     </div>
-                                </li>
-                                
+                                </div>
+                                <hr>
                                 <% } %>
-                                    <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
-                                        <hr>
+                                    
+                        </div>
+                    </div>
+                    <div class="row mb-4 mt-3">
+                        <div class="col-lg-12 card py-3">
+                        <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
                                         <h5>Pending invites</h5>
+                                        <hr>
                                         <% for (var i=0; i < group.invites.length; i++) { %>
-                                            <li>
-                                                <%= group.invites[i].username%>
-                                            </li>
+                                            <div class="row">
+                                                <div class="col-lg-2 " align='center'>
+                                                    <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
+                                                </div>
+                                                <div class="col-lg-4 pad-top-10">
+                                                    @<%= `${group.invites[i].username}` %>
+                                                </div>
+                                            </div>
+                                                <hr>
                                             <% } %>
-                                                <% } %>
+                                                <% }else{%>
+                                                    <h5>No pending invites</h5>
+                                                         <hr>
+                                                <%} %>
                 
                                                 <% if (signedInUser.groups.includes(group._id)){%>
                                                     <div class="text-center">
@@ -72,11 +97,12 @@
                                                             members
                                                         </a>
                                                     </div>
-                                                <% } %>
-                        </div>
+                                                <% }%>
+                                            </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-6 col-md-12">
                 <% for (let poll of groupPolls){%>
                    <%- include('../partials/pollCard.ejs', {poll:poll}) %>
@@ -84,3 +110,7 @@
             </div>
         </div>
     </div>
+
+
+    <%- include('../partials/modal', {action: 'leave group', group:group}) -%>
+
