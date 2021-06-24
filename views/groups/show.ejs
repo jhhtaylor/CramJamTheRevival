@@ -11,14 +11,20 @@
                             <h5>Group description goes here</h5>
                         </div>
                     </div>
+                    <div class="row">
+                        <a id="modal-button" class="button">leave group</a>
+                    </div>
 
                     <div class="row mb-4 mt-3">
                         <div class="col-lg-12 card py-3">
                             <h5>Group members (<%= group.members.length%>)</h5>
                             <hr>
                             <% for (var i=0; i < group.members.length; i++) { %>
-                                <li class="row">
-                                    <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-2 " align='center'>
+                                        <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
+                                    </div>
+                                    <div class="col-lg-4 pad-top-10">
                                         <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
                                             <% if(!group.members[i]._id.equals(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
                                             <form class="d-inline"
@@ -29,7 +35,7 @@
                                              <% } %>
                                     </div>
                                    
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-5 pad-top-5" >
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
                                             <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
                                                 !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
@@ -52,8 +58,8 @@
                                                 </form>
                                                 <% } %>
                                     </div>
-                                </li>
-                                
+                                </div>
+                                <hr>
                                 <% } %>
                                     <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
                                         <hr>
@@ -84,3 +90,5 @@
             </div>
         </div>
     </div>
+    <%- include('../partials/modal', {action:'leave group'}) -%>
+
