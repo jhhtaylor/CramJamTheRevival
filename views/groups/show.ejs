@@ -58,7 +58,7 @@
                                                     <button class="d-inline btn rate-btn align-items-center"><i
                                                             class="fas fa-check"></i></button>
                                                 </form>
-                                                <% }else{%>
+                                                <% }else if(group.members[i]._id.equals(signedInUser._id)){%>
                                                             <a id="modal-button" class="button">leave group</a>
                                                         
                                                 <%} %>
