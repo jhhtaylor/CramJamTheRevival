@@ -27,6 +27,7 @@ h1{
 h3{
    padding-bottom: 5px; 
 }
+
   
 
 .page{
@@ -471,7 +472,7 @@ margin-bottom: 10px; }
 .rate {
     float: left;
     height: 46px;
-    padding: 0 10px;
+    padding-left: 45px;
 }
 .rate:not(:checked) > input {
     position:absolute;
@@ -636,7 +637,7 @@ margin-bottom: 10px; }
 }
 
 .modal-contents {
-	height: 250px;
+	height: 264px;
 	width: 500px;
 	background-color: white;
 	text-align: center;
@@ -645,14 +646,6 @@ margin-bottom: 10px; }
 	border-radius: 4px;
 }
 
-
-input {
-	margin: 15px auto;
-	display: block;
-	width: 50%;
-	padding: 8px;
-	border: 1px solid gray;
-}
 
 .close {
 	position: absolute;
@@ -676,4 +669,8 @@ input {
 }
 .pad-top-5{
     padding-top: 5px;
+}
+
+.pad-left-5{
+    padding-left: 60px;
 }

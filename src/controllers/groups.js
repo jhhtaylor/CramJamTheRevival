@@ -78,14 +78,8 @@ module.exports.deleteMember = async (groupId, memberId) => {
 module.exports.deleteGroupMember = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.params.member
-  const empty = await this.deleteMember(groupId, memberId)
-  if (!empty) {
-    console.log('not empty')
-    res.redirect('/groups')
-  } else {
-    console.log('empty')
-    res.redirect('/groups')
-  }
+  await this.deleteMember(groupId, memberId)
+  res.redirect('/groups')
 }
 module.exports.isInGroup = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
