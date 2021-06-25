@@ -83,7 +83,8 @@ module.exports.editSettings = async (req, res) => {
     res.redirect('/')
     return
   }
-  res.render('settings/edit')
+  const students = await StudentProfile.find({})
+  res.render('settings/edit', { allStudents: students })
 }
 
 module.exports.updateProfile = async (req, res) => {
