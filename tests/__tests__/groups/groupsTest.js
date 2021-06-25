@@ -47,17 +47,6 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('A student can view an explore page group if logged in', async (done) => {
-    const newGroup = new GroupSchema({
-      name: 'New Test Group',
-      members: testStudent._id
-    })
-    const testGroup = await newGroup.save()
-    const response = await request.get(`/groups/${testGroup._id}/explore`)
-    expect(response.status).toBe(200)
-    done()
-  })
-
   test('A group can be added to the database', async () => {
     const req = {
       body: { name: testGroupName },

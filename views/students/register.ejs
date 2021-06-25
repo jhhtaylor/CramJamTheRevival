@@ -8,7 +8,7 @@
 
       <!-- Registeration Form -->
       <div class="col-md-7 col-lg-6 ml-auto">
-        <form action="/students/register" method="POST">
+        <form action="/students/register" method="POST" class="needs-validation" novalidate>
           <div class="row">
             <h5>Profile</h5>
             <!-- username -->
@@ -20,6 +20,12 @@
               </div>
               <input id="userName" type="text" name="username" placeholder="Username"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="valid-feedback">    
+                  Valid Username    
+                </div>
+                <div class="invalid-feedback" id="usernameFeedback">       
+                  Invalid Username/Username Taken
+                </div>
             </div>
 
             <!-- First Name -->
@@ -31,6 +37,9 @@
               </div>
               <input id="firstName" type="text" name="firstName" placeholder="First Name"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="invalid-feedback">    
+                  Please Provide a First Name    
+                </div>
             </div>
 
             <!-- Last Name -->
@@ -42,6 +51,9 @@
               </div>
               <input id="lastName" type="text" name="lastName" placeholder="Last Name"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="invalid-feedback">    
+                  Please Provide a Last Name   
+                </div>
             </div>
 
             <!-- Email Address -->
@@ -53,6 +65,12 @@
               </div>
               <input id="email" type="email" name="email" placeholder="Email Address"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="valid-feedback">    
+                  Valid Email    
+                </div>
+                <div class="invalid-feedback" id="emailFeedback">  
+                  Invalid Email/Email Taken       
+                </div>
             </div>
 
             <!-- Phone Number -->
@@ -79,6 +97,9 @@
               </div>
               <input id="password" type="password" name="password" placeholder="Password"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="invalid-feedback">    
+                  Please Provide a Password    
+                </div>
             </div>
 
             <!-- Password Confirmation -->
@@ -89,7 +110,11 @@
                 </span>
               </div>
               <input id="passwordConfirmation" type="password" name="passwordConfirmation"
-                placeholder="Confirm Password" class="form-control bg-white border-left-0 border-md" required>
+                placeholder="Confirm Password" class="form-control bg-white border-left-0 border-md is-invalid" required>
+              <div class="invalid-feedback" id="passwordFeedback">    
+                Passwords Must Match     
+              </div>
+        
             </div>
 
             <h5>Address <span class="text-muted">(Optional)</span></h5>
@@ -148,7 +173,7 @@
 
             <!-- Submit Button -->
             <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
-              <button class="btn btn-primary btn-block py-2 mb-1 " type="submit">
+              <button id="registerBtn" class="btn btn-primary btn-block py-2 mb-1 " type="submit">
                 <span class="font-weight-bold">Create your account</span>
               </button>
             </div>
@@ -170,3 +195,9 @@
       </div>
     </div>
   </div>
+  <script>
+    const allStudents = <%- JSON.stringify(allStudents) %>
+  </script>
+  <script src="/js/validate.js"></script>
+  <script src="/js/confirmEmail.js"></script>
+  <script src="/js/confirmPassword.js"></script>

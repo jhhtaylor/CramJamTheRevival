@@ -50,16 +50,12 @@ const studentProfileSchema = new Schema({
 studentProfileSchema.virtual('averageRating').get(function () {
   let avg = 0
   for (const rate of this.rating) {
-    avg += rate
+    avg += rate.rated
   }
   avg /= this.rating.length
   return avg
 })
 studentProfileSchema.plugin(localMongoose)
-
-function arrayLimit (val) {
-  return val.length <= 10
-}
 
 module.exports.StudentProfile = mongoose.model(
   'StudentProfile',

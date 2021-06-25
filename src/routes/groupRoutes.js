@@ -23,7 +23,7 @@ router
   .get(isLoggedIn, catchAsync(groups.showTags))
 router
   .route('/:id')
-  .get(catchAsync(groups.showGroup))
+  .get(isLoggedIn, catchAsync(groups.showGroup))
   .delete(isLoggedIn, catchAsync(groups.deleteGroup))
 
 // router.route('/:id/poll/:poll/:member')
@@ -33,9 +33,9 @@ router
   .route('/:id/edit/:member')
   .delete(isLoggedIn, catchAsync(groups.deleteGroupMember))
 
-router.route('/:id/explore').get(catchAsync(groups.explore))
+router.route('/:id/explore').get(isLoggedIn, catchAsync(groups.explore))
 
-router.route('/:id/invite/:member').post(catchAsync(groups.inviteGroupMember))
+router.route('/:id/invite/:member').post(isLoggedIn, catchAsync(groups.inviteGroupMember))
 
 router
   .route('/:id/acceptInvite')

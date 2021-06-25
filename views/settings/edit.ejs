@@ -18,6 +18,9 @@
               </div>
               <input id="email" type="email" name="email" placeholder="Email Address" value="<%- signedInUser.email %>"
                 class="form-control bg-white border-left-0 border-md" required>
+                <div class="invalid-feedback" id="usernameFeedback">       
+                  Invalid Username/Username Taken
+                </div>
             </div>
           </div>
         </div>
@@ -33,6 +36,9 @@
               </div>
               <input id="userName" type="text" name="username" placeholder="Username"
                 value="<%- signedInUser.username %>" class="form-control bg-white border-left-0 border-md" required>
+                <div class="invalid-feedback" id="usernameFeedback">       
+                  Invalid Username/Username Taken
+                </div>
             </div>
           </div>
         </div>
@@ -66,10 +72,18 @@
           </div>
         </div>
         <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
-          <button class="btn btn-primary btn-block py-2 mb-1 " type="submit">
+          <button class="btn btn-primary btn-block py-2 mb-1 " type="submit" id="save">
             <span class="font-weight-bold">Save</span>
           </button>
         </div>
       </div>
     </div>
   </form>
+
+<script>
+  const allStudents = <%- JSON.stringify(allStudents) %>
+  const signedInUser = <%- JSON.stringify(signedInUser) %>
+</script>
+
+<script src="/js/settingsValidate.js"></script>
+<script src="/js/validate.js"></script>

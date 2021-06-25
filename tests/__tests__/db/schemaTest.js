@@ -83,6 +83,46 @@ describe('Profile test suite', () => {
     checkStringEquals(checkProfile.email, newEmail)
     await StudentProfile.deleteMany({})
   })
+  test('should calculate a students average rating', async () => {
+    const ratings = [
+      {
+        rated: 4
+      },
+      {
+        rated: 3
+      },
+      {
+        rated: 2
+      },
+      {
+        rated: 4
+      },
+      {
+        rated: 5
+      }
+
+    ]
+    const location = 'Wits'
+    const coordinates = [28.0305, -26.1929] // longitude latitude for wits
+    // hardcoded geolocation data which will become part of the form at some point
+    const geodata = {
+      type: 'Point',
+      coordinates
+    }
+    const newProfile = new StudentProfile({
+      email: 'oldUser@gmail.com',
+      firstName: 'Jess',
+      lastName: 'Spatula',
+      groups: [],
+      location,
+      geodata,
+      rating: ratings
+    })
+    await newProfile.save()
+    const avg = newProfile.averageRating
+    expect(avg).toBe(3.6)
+    await StudentProfile.deleteMany({})
+  })
 })
 
 describe('Group test suite', () => {

@@ -23,15 +23,15 @@ module.exports.explore = async (req, res) => {
 module.exports.showNotifications = (req, res) => {
   res.render('notifications')
 }
-module.exports.renderRegisterStudent = (req, res) => {
-  res.render('students/register')
+module.exports.renderRegisterStudent = async (req, res) => {
+  const students = await StudentProfile.find({})
+  res.render('students/register', { allStudents: students })
 }
 
 module.exports.registerStudent = async (req, res) => {
   const { email, firstName, lastName, password, username, addressLine, suburb, city } = req.body
   const location = `${addressLine}, ${suburb}, ${city}`
   const coordinates = await geocodeAddress.getGeocode(location)
-  console.log(coordinates)
   const geodata = {
     type: 'Point',
     coordinates
@@ -82,13 +82,13 @@ module.exports.editSettings = async (req, res) => {
     res.redirect('/')
     return
   }
-  res.render('settings/edit')
+  const students = await StudentProfile.find({})
+  res.render('settings/edit', { allStudents: students })
 }
 
 module.exports.updateProfile = async (req, res) => {
   const { id } = req.params
   const { email, username, location, isSearchable } = req.body
-  console.log(id, isSearchable)
   let searchable = true
   if (!isSearchable) searchable = false
   if (id != req.user._id) {

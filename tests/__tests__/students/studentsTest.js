@@ -271,4 +271,40 @@ describe('Student controller functionality', () => {
     checkStringEquals(studentCheck.settings.isSearchable, false)
     done()
   })
+
+  test('A user may not change another students setting', async (done) => {
+    const data = getGeoData()
+    const location = data.location
+    const geodata = data.geodata
+    const std = new StudentProfile({
+      email: 'testing@testuser.testing.test',
+      firstName: 'TestUserFirst',
+      lastName: 'TestUserLast',
+      groups: [],
+      username: 'Test',
+      password: 'test',
+      location,
+      geodata,
+      rating: [],
+      settings: { isSearchable: true }
+    })
+    const newUser = 'newUser'
+    const newEmail = 'newEmail@email.email'
+    const newLocation = 'newLocation'
+    const student = await std.save()
+    const req = {
+      params: { id: Mongoose.Types.ObjectId() },
+      user: { _id: student._id },
+      flash: function () { },
+      body: { username: newUser, email: newEmail, location: newLocation, isSearchable: undefined }
+    }
+    const res = { redirect: function () {} }
+    await students.updateProfile(req, res)
+    const studentCheck = await StudentProfile.findById(student._id)
+    checkStringEquals(studentCheck.username, student.username)
+    checkStringEquals(studentCheck.email, student.email)
+    checkStringEquals(studentCheck.location, student.location)
+    checkStringEquals(studentCheck.settings.isSearchable, true)
+    done()
+  })
 })
