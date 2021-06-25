@@ -141,3 +141,7 @@ module.exports.declineInvite = async (req, res) => {
   this.removeInvite(groupId, memberId)
   res.redirect(`/groups/${groupId}`)
 }
+
+module.exports.showTags = async (req, res) => {
+  res.render('tags/tags')
+}

@@ -18,7 +18,9 @@ router
     body('name').escape().trim(),
     catchAsync(groups.createGroup)
   )
-
+router
+  .route('/tags')
+  .get(isLoggedIn, catchAsync(groups.showTags))
 router
   .route('/:id')
   .get(catchAsync(groups.showGroup))
