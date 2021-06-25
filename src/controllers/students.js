@@ -31,7 +31,6 @@ module.exports.registerStudent = async (req, res) => {
   const { email, firstName, lastName, password, username, addressLine, suburb, city } = req.body
   const location = `${addressLine}, ${suburb}, ${city}`
   const coordinates = await geocodeAddress.getGeocode(location)
-  console.log(coordinates)
   const geodata = {
     type: 'Point',
     coordinates
@@ -88,7 +87,6 @@ module.exports.editSettings = async (req, res) => {
 module.exports.updateProfile = async (req, res) => {
   const { id } = req.params
   const { email, username, location, isSearchable } = req.body
-  console.log(id, isSearchable)
   let searchable = true
   if (!isSearchable) searchable = false
   if (id != req.user._id) {
