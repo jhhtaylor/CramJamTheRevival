@@ -105,7 +105,7 @@ module.exports.invite = async (groupId, memberId) => {
 module.exports.inviteGroupMember = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.params.member
-  this.invite(groupId, memberId)
+  await this.invite(groupId, memberId)
   res.redirect(`/groups/${groupId}`)
 }
 module.exports.addGroupMember = async (groupId, memberId) => {
@@ -138,6 +138,6 @@ module.exports.acceptInvite = async (req, res) => {
 module.exports.declineInvite = async (req, res) => {
   const groupId = req.params.id
   const memberId = req.user._id
-  this.removeInvite(groupId, memberId)
+  await this.removeInvite(groupId, memberId)
   res.redirect(`/groups/${groupId}`)
 }
