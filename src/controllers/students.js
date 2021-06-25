@@ -23,8 +23,9 @@ module.exports.explore = async (req, res) => {
 module.exports.showNotifications = (req, res) => {
   res.render('notifications')
 }
-module.exports.renderRegisterStudent = (req, res) => {
-  res.render('students/register')
+module.exports.renderRegisterStudent = async (req, res) => {
+  const students = await StudentProfile.find({})
+  res.render('students/register', { allStudents: students })
 }
 
 module.exports.registerStudent = async (req, res) => {
@@ -81,7 +82,8 @@ module.exports.editSettings = async (req, res) => {
     res.redirect('/')
     return
   }
-  res.render('settings/edit')
+  const students = await StudentProfile.find({})
+  res.render('settings/edit', { allStudents: students })
 }
 
 module.exports.updateProfile = async (req, res) => {
