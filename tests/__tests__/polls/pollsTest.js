@@ -208,6 +208,7 @@ describe('Poll controller functionality', () => {
     expect(checkPoll.members).toContainEqual(savedStudent._id)
     expect(checkPoll.affected).toEqual(addStudent._id)
     expect(checkPoll.action).toEqual('Add')
+    expect(checkPoll.reason).toEqual('Disrespectful behaviour')
     expect(checkPoll.group).toEqual(group._id)
     expect(savedStudent.polls).toContainEqual(checkPoll._id)
     expect(savedGroup.polls).toContainEqual(checkPoll._id)
