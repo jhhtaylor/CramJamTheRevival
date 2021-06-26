@@ -13,7 +13,7 @@ module.exports.showPoll = async (req, res) => {
 }
 
 module.exports.showAllPolls = async (req, res) => {
-  const polls = await Poll.find({members: {$in: req.user._id}}).populate(['affected', 'group'])
+  const polls = await Poll.find({ members: { $in: req.user._id } }).populate(['affected', 'group'])
   res.render('polls/allPolls', { polls: polls })
 }
 
@@ -70,13 +70,17 @@ module.exports.hasRequested = async (groupId, memberId) => {
   return false
 }
 
-module.exports.newPoll = async (groupId, action, affected, members, owner) => {
+module.exports.newPoll = async (groupId, action, affected, members, owner, reason) => {
+  if (!reason) {
+    reason = ''
+  }
   const newPoll = new Poll({
     members,
     name: `New poll from: ${owner}`,
     group: groupId,
     action,
-    affected: affected
+    affected: affected,
+    reason: reason
   })
   await newPoll.save()
 
@@ -110,18 +114,22 @@ module.exports.createPoll = async (req, res) => {
   const isInPoll = await this.isInPoll(groupId, affected)
   const hasRequested = await this.hasRequested(groupId, affected)
 
+  const { reason } = req.body
+
   // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
   const members = methods[action](isInGroup, isInvited, isInPoll, hasRequested, group.members, affected, req.user._id)
   if (members.error != null) {
+    console.log(members.error)
     req.flash('error', members.error)
     res.redirect('back')
     return
   }
 
   // Create new poll
-  await this.newPoll(groupId, action, affected, members.members, req.user.username).then(done => {
+  await this.newPoll(groupId, action, affected, members.members, req.user.username, reason).then(done => {
     req.flash('success', 'Successfuly created new poll')
   }).catch(err => {
+    console.log(err)
     req.flash('error', err)
   })
   res.redirect(`/groups/${groupId}`)

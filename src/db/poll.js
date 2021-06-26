@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
+const kickReasons = ['Disrespectful behaviour', 'Nonparticipatory', 'Consistently late', 'Missed too many meetings', 'Posts in a propriatel links', 'Does not share notes']
+
 // Group Schema
 const pollSchema = new Schema({
   name: { type: String, required: true },
@@ -10,7 +12,9 @@ const pollSchema = new Schema({
   votes: { yes: { type: Number, default: 0 }, no: { type: Number, default: 0 } },
   group: { type: Schema.Types.ObjectId, ref: 'Group' },
   active: { type: Boolean, default: true, required: true },
-  affected: { type: Schema.Types.ObjectId, ref: 'StudentProfile', required: true }
+  affected: { type: Schema.Types.ObjectId, ref: 'StudentProfile', required: true },
+  reason: { type: String, enum: ['', ...kickReasons] }
 })
 
 module.exports.Poll = mongoose.model('Poll', pollSchema)
+module.exports.KickReasons = kickReasons

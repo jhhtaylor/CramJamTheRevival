@@ -1,6 +1,6 @@
 const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
-const { Poll } = require('../db/poll')
+const { Poll, KickReasons } = require('../db/poll')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -50,7 +50,7 @@ module.exports.showGroup = async (req, res) => {
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
 
-  res.render('groups/show', { group, groupPolls })
+  res.render('groups/show', { group, groupPolls, KickReasons })
 }
 
 module.exports.deleteGroup = async (groupId) => {

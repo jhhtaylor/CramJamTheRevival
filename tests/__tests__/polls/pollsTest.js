@@ -97,7 +97,6 @@ describe('Poll controller functionality', () => {
     expect(checkPoll.votes.yes).toBe(1)
   })
 
-
   test('Poll controller increases vote no', async () => {
     const newPoll = new Poll({
       members: [student._id],
@@ -195,7 +194,10 @@ describe('Poll controller functionality', () => {
         memberId: addStudent._id
       },
       user: addStudent,
-      flash: function () {}
+      flash: function () {},
+      body: {
+        reason: 'Disrespectful behaviour'
+      }
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
@@ -252,7 +254,10 @@ describe('Poll controller functionality', () => {
         memberId: invitedStudent._id
       },
       user: student,
-      flash: function () {}
+      flash: function () {},
+      body: {
+        reason: 'Disrespectful behaviour'
+      }
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
@@ -283,7 +288,10 @@ describe('Poll controller functionality', () => {
         memberId: otherStudent._id
       },
       user: student,
-      flash: function () {}
+      flash: function () {},
+      body: {
+        reason: 'Disrespectful behaviour'
+      }
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
@@ -309,7 +317,10 @@ describe('Poll controller functionality', () => {
         memberId: otherStudent._id
       },
       user: otherStudent,
-      flash: function () {}
+      flash: function () {},
+      body: {
+        reason: 'Disrespectful behaviour'
+      }
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
@@ -337,7 +348,10 @@ describe('Poll controller functionality', () => {
         memberId: student._id
       },
       user: student,
-      flash: function () {}
+      flash: function () {},
+      body: {
+        reason: 'Disrespectful behaviour'
+      }
     }
     const res = { redirect: function () { } }
     await poll.createPoll(req, res)
