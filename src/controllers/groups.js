@@ -53,6 +53,12 @@ module.exports.showGroup = async (req, res) => {
   res.render('groups/show', { group, groupPolls })
 }
 
+module.exports.search = async (req, res) => {
+  const userGroups = req.user.groups
+  const notUserGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
+  res.render('groups/searchResults', { notUserGroups: notUserGroups })
+}
+
 module.exports.deleteGroup = async (groupId) => {
   const group = await GroupSchema.findById(groupId)
   const members = group.members
