@@ -7,6 +7,20 @@
                     <h3>
                         <%= noMatch %>
                     </h3>
+                    <!-- <div class="container"> -->
+                    <form action="/groups/searchResults" method="GET" class="form-inline">
+                        <div class="row align-items-center">
+                            <div class="col-lg-10 col-md-6 col-sm-4">
+                                <input type="text" name="search" placeholder="Group Search..."
+                                    class="form-control"></input>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                <input type="submit" value="Search" class="theme-btn text-decoration-none">
+
+                                <!-- <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button> -->
+                            </div>
+                    </form>
+                    <!-- </div> -->
                     <% } %>
                         <div class="row">
                             <% for (let group of notUserGroups){%>
@@ -39,4 +53,11 @@
                             </div>
                             <% } %>
         </div>
+        <form action="/groups/" method="GET" class="form-inline">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <input type="submit" value="Go Back" class="theme-btn text-decoration-none">
+                </div>
+            </div>
+        </form>
     </div>
