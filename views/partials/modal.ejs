@@ -1,11 +1,10 @@
 <div class="bg-modal" id="<%= id %>">
 	<div class="modal-contents">
 
-		<div class="close">+</div>
-
-            <h3>Are you sure?</h3>
-            <hr>
             <% if(action == 'leave group'){ %>
+                <div class="close">+</div>
+                <h3>Are you sure?</h3>
+                <hr>
                 <p>Are you sure you want to leave <b><%= group.name %></b>?</p>
                 <p>This action cannot be undone.</p>
                 <div class='row justify-content-center'>
@@ -41,6 +40,5 @@
                     </div>
                 </div>
             <% } %> 
-
 	</div>
 </div>
