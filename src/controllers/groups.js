@@ -1,6 +1,7 @@
 const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
 const { Poll } = require('../db/poll')
+const { Tag } = require('../db/tags')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -26,15 +27,23 @@ module.exports.explore = async (req, res) => {
   res.render('groups/explore', { students: students, group: group })
 }
 
-module.exports.renderNewForm = (req, res) => {
-  res.render('groups/new')
+module.exports.renderNewForm = async (req, res) => {
+  const allTags = await Tag.find({})
+  res.render('groups/new', { allTags })
 }
 
 module.exports.createGroup = async (req, res) => {
   const group = new GroupSchema({
-    name: req.body.name
+    name: req.body.name,
+    description: req.body.description
   })
   await group.save()
+  req.body.group = group._id
+  try {
+    await this.editTags(req, res)
+  } catch (err) {
+    req.flash('error', err.message)
+  }
   try {
     await this.addGroupMember(group._id, req.user._id, req)
   } catch (err) {
@@ -42,15 +51,15 @@ module.exports.createGroup = async (req, res) => {
     await this.deleteGroup(group._id)
   }
   req.flash('success', 'Created new group!')
-  res.redirect('/groups/')
+  res.redirect(`/groups/${group._id}`)
 }
 
 module.exports.showGroup = async (req, res) => {
-  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites'])
+  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites', 'tags'])
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
-
-  res.render('groups/show', { group, groupPolls })
+  const allTags = await Tag.find({})
+  res.render('groups/show', { group, groupPolls, allTags })
 }
 
 module.exports.deleteGroup = async (groupId) => {
@@ -142,6 +151,33 @@ module.exports.declineInvite = async (req, res) => {
   res.redirect(`/groups/${groupId}`)
 }
 
-module.exports.showTags = async (req, res) => {
-  res.render('tags/tags')
+module.exports.editTags = async (req, res) => {
+  const tagsStr = req.body.tags
+  const tags = tagsStr.split(',')
+  const group = await GroupSchema.findById(req.body.group).populate('tags')
+  const allTags = await Tag.find({})
+
+  // Clear the group's current tags if it has any
+  if (group.tags.length > 0) {
+    group.tags = []
+    await group.save()
+  }
+
+  for (const tag of tags) {
+    if (!allTags.some(t => t.name === tag)) {
+      const newTag = new Tag({
+        name: tag,
+        groups: [group._id]
+      })
+      await newTag.save()
+      group.tags.push(newTag._id)
+      await group.save()
+    } else {
+      const foundTag = await Tag.findOne({ name: String(tag) })
+      foundTag.groups.push(group._id)
+      foundTag.save()
+      group.tags.push(foundTag._id)
+      await group.save()
+    }
+  }
 }

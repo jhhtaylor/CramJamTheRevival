@@ -1,11 +1,10 @@
 <div class="bg-modal">
 	<div class="modal-contents">
 
-		<div class="close">+</div>
-
-            <h3>Are you sure?</h3>
-            <hr>
             <% if(action == 'leave group'){ %>
+                <div class="close">+</div>
+                <h3>Are you sure?</h3>
+                <hr>
                 <p>Are you sure you want to leave <b><%= group.name %></b>?</p>
                 <p>This action cannot be undone.</p>
                 <div class='row justify-content-center'>
@@ -13,7 +12,7 @@
                 <form action="/groups/<%= group._id %>" method="GET">
                     <button class="theme-btn-light text-decoration-none">Nevermind</button>
                 </form>
-            </div>
+                </div>
             <div class="col-lg-5 text-center "> 
                 <form action="/groups/<%= group._id %>/edit/<%= signedInUser._id %>?_method=delete" method="post">
                     <button class="theme-btn text-decoration-none">Leave</button>
@@ -21,6 +20,25 @@
             </div>
             </div>
             <% } %>
+            <% if(action == 'add tags'){ %>
+                <div class="skip">
+                    <a href ="groups/<%=group._id%>" class="skip">skip&#8594;</a>
+                </div>
+        
+                <h3>
+                    Enter some tags 
+                </h3>
+                <hr>
+                <p>Tagging your group lets other people kknow what it's about</p>
+                <p>
+                    <div class="tags-input" data-name="tags-input" id="tags-input">
+                    </div>
 
+                    <script>
+                        const allTags = <%- JSON.stringify(allTags) %> //note this has to look like <%- %> if saving please save without formatting
+                    </script>
+                    <script src="/js/tags.js"></script>
+                </p>
+            <% } %>
 	</div>
 </div>

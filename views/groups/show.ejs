@@ -5,10 +5,22 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 card mb-3 py-3">
-                            <h3>
-                                <%= group.name %>
-                            </h3>
-                            <h5>Group description goes here</h5>
+                                <h3><%= group.name %></h3>
+                                <% if(group.description) {%>
+                                    <hr>
+                                    <p class="text-truncate"><%=group.description%></p>
+                                <%} %>
+                                <% if(group.tags.length>0) {%>
+                                    <hr>
+                                    <div class="col-lg-12">
+                                    <% for(const tag of group.tags){%>
+                                        
+                                            <span class="show-tag"><%=tag.name%></span>
+                                        
+                                        
+                                    <%}%>
+                                </div>
+                                <%} %>
                         </div>
                     </div>
 
@@ -111,6 +123,5 @@
         </div>
     </div>
 
-
-    <%- include('../partials/modal', {action: 'leave group', group:group}) -%>
+    <%- include('../partials/modal', {action: 'leave group', group:group, allTags: allTags}) -%>
 <script src='js/modal.js'></script>
