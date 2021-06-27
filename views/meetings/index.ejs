@@ -1,10 +1,40 @@
 <% layout('layouts/boilerplate') -%>
-<div class="container">
-    <div class="row">
-        <% for(meeting of meetings) {%>
-            <div class="col-lg-3 card">
-
-            </div>
-        <% } %>
-    </div>
-</div>
+    <div class="container card">
+        <div class="row">
+            <% for(meeting of meetings) {%>
+                <%const
+                    date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
+                    <%const
+                        startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
+                        <%const
+                            endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
+                            <div class="col-lg-3 card p-3 m-3">
+                                <div class="row">
+                                    <div class="col-lg-10 text-start align-items-center">
+                                        <h3>
+                                            <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
+                                        </h3>
+                                        <h6>
+                                            <strong>
+                                                <%= date%>
+                                            </strong> From <strong>
+                                                <%=startTime%>
+                                            </strong> to <strong>
+                                                <%=endTime%>
+                                            </strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-lg-2 align-self-center text-center">
+                                        <a class="d-inline btn meeting-view-btn align-items-center"
+                                            href="/meetings/<%=meeting._id%>"><i class="fas fa-arrow-right"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                                <hr>
+                                <div class="row text-center py-3">
+                                    <div class="header-btn">
+                                        <a href="/groups" class="theme-btn text-decoration-none">Goto Groups</a>
+                                    </div>
+                                </div>
+        </div>

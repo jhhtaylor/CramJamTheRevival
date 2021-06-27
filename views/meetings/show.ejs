@@ -1,0 +1,26 @@
+<% layout('layouts/boilerplate') -%>
+<%const date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
+<%const startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
+<%const endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-7 card p-3 m-3">
+            <h1>
+                <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
+            </h1>
+            <h6>
+                <strong>
+                    <%= date%>
+                </strong> From <strong>
+                    <%=startTime%>
+                </strong> to <strong>
+                    <%=endTime%>
+                </strong>
+            </h6>
+            <hr>
+            <p>
+                <%= meeting.description %>
+            </p>
+        </div>
+    </div>
+</div>

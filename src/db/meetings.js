@@ -17,6 +17,14 @@ const meetingSchema = new Schema({
       type: [Number], // formatted as longitude latitude
       required: true
     }
+  },
+  start: {
+    type: Date,
+    required: true
+  },
+  end: {
+    type: Date,
+    required: true
   }
 })
 

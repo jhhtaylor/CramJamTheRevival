@@ -27,14 +27,14 @@
                         <h4>Pick a Date and Time</h4>
                         <div class="row align-items-center mb-3">
                             <div class="col-lg-6">
-                                <input type="date" class="form-control" id="datePicker" required>
+                                <input type="date" class="form-control" id="datePicker" name="date" required>
                             </div>
                             <div class="col-lg-3">
-                                <input id="startTime" type="time" name="StartTime" placeholder="Start Time"
+                                <input id="startTime" type="time" name="startTime" placeholder="Start Time"
                                     class="form-control" required>
                             </div>
                             <div class="col-lg-3">
-                                <input id="endTime" type="time" name="EndTime" placeholder="End Time"
+                                <input id="endTime" type="time" name="endTime" placeholder="End Time"
                                     class="form-control" required>
                             </div>
                         </div>
@@ -96,8 +96,8 @@
 
             const ts = document.getElementById('startTime')
             const te = document.getElementById('endTime')
-            ts.value = (today.getHours() + 2) % 24 + ":" + today.getMinutes()
-            te.value = (today.getHours() + 4) % 24 + ":" + today.getMinutes()
+            ts.value = String((today.getHours() + 2) % 24).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0')
+            te.value = String((today.getHours() + 4) % 24).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0')
 
 
 

@@ -112,31 +112,50 @@
                     <div class="row mb-4 mt-3">
                         <div class="col-lg-12 card py-3">
                             <% if (group.meetings.length> 0 && signedInUser.groups.includes(group._id)) {%>
-                                <h5>Planned Meeting</h5>
+                                <h5>Planned Meetings</h5>
                                 <hr>
                                 <% for (meeting of group.meetings) { %>
-                                    <div class="row">
-                                        <div class="col-lg-2 " align='center'>
-                                            <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50"
-                                                class="rounded-circle">
-                                        </div>
-                                        <div class="col-lg-4 pad-top-10">
-                                            @<%= `${group.invites[i].username}` %>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <% } %>
-                                        <% }else{%>
-                                            <h5>No Meetings Planned</h5>
-                                            <hr>
-                                            <%} %>
-                                                <% if (signedInUser.groups.includes(group._id)){%>
-                                                    <div class="text-center">
-                                                        <a class="header-btn theme-btn text-decoration-none mt-3 "
-                                                            href="/meetings/new/<%=group._id%>"> Plan a Meeting!
-                                                        </a>
+                                    <%const
+                                        date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
+                                        <%const
+                                            startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
+                                            <%const
+                                                endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
+                                                <div class="row">
+                                                    <div class="col-lg-10 text-start align-items-center">
+                                                        <h3>
+                                                            <%= meeting.name%>
+                                                        </h3>
+                                                        <h6>
+                                                            <strong>
+                                                                <%= date%>
+                                                            </strong> From <strong>
+                                                                <%=startTime%>
+                                                            </strong> to <strong>
+                                                                <%=endTime%>
+                                                            </strong>
+                                                        </h6>
                                                     </div>
-                                                    <% }%>
+                                                    <div class="col-lg-2 align-self-center text-center">
+                                                        <a class="btn meeting-view-btn align-items-center"
+                                                            href="/meetings/<%=meeting._id%>"><i
+                                                                class="fas fa-arrow-right"></i></a>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <% } %>
+                                                    <% }else{ %>
+                                                        <h5>No Meetings Planned</h5>
+                                                        <hr>
+                                                        <% } %>
+                                                            <% if (signedInUser.groups.includes(group._id)){%>
+                                                                <div class="text-center">
+                                                                    <a class="header-btn theme-btn text-decoration-none mt-3 "
+                                                                        href="/meetings/new/<%=group._id%>"> Plan a
+                                                                        Meeting!
+                                                                    </a>
+                                                                </div>
+                                                                <% } %>
                         </div>
                     </div>
                 </div>

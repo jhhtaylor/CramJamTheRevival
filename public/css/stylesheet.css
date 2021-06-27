@@ -542,12 +542,12 @@ margin-bottom: 10px; }
     right:2px;
 }
 
-.rate-btn:hover, .poll-yes:hover, .poll-no:hover, .remove-btn:hover{
+.rate-btn:hover, .poll-yes:hover, .poll-no:hover, .remove-btn:hover, .meeting-view-btn:hover{
     background-color: rgb(236, 128, 95);
     color: white;
 }
 
-.poll-yes, .poll-no{
+.poll-yes, .poll-no, .meeting-view-btn{
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -557,6 +557,7 @@ margin-bottom: 10px; }
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
+
 
 
 .poll-yes{

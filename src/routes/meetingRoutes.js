@@ -9,6 +9,10 @@ const { isLoggedIn } = require('../middleware/middleware')
 router.route('/')
   .get(isLoggedIn, catchAsync(meetings.index))
 
+router.route('/:meetingid')
+  .get(isLoggedIn, catchAsync(meetings.show))
+
+
 router.route('/new/:groupid')
   .get(isLoggedIn, meetings.renderNewForm)
   .post(
