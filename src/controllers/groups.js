@@ -54,22 +54,21 @@ module.exports.showGroup = async (req, res) => {
 }
 
 module.exports.search = async (req, res) => {
-  var noMatch = null;
+  let noMatch = null
+  const userGroups = req.user.groups
+  let notUserGroups
   if (req.query.search) { // get search results
     const regex = new RegExp(this.escapeRegex(req.query.search), 'gi') // 'gi' are flags, g - global, i - ignore case
-    // user earched something
-    const userGroups = req.user.groups
-    const notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate('members')
+    // user searched something
+    notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate('members')
     if (notUserGroups.length < 1) {
       noMatch = 'No groups match that query, please search again below.'
     }
-    res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
   } else { // get all notUserGroups from DB
     // user did not search something
-    const userGroups = req.user.groups
-    const notUserGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
-    res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
+    notUserGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
   }
+  res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
 }
 
 module.exports.deleteGroup = async (groupId) => {
