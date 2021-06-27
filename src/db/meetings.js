@@ -10,12 +10,12 @@ const meetingSchema = new Schema({
   location: { // formatted accoring to https://mongoosejs.com/docs/geojson.html
     type: {
       type: String,
-      enum: ['Point'],
+      enum: ['Point', 'Online'],
       required: true
     },
     coordinates: {
-      type: [Number], // formatted as longitude latitude
-      required: true
+      type: [Number],
+      required: true// formatted as longitude latitude
     }
   },
   start: {

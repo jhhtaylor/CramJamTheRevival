@@ -27,13 +27,18 @@
                         <h4>Pick a Date and Time</h4>
                         <div class="row align-items-center mb-3">
                             <div class="col-lg-6">
+                                <label class="form-label" for="datePicker">Date</label>
                                 <input type="date" class="form-control" id="datePicker" name="date" required>
+                                
                             </div>
                             <div class="col-lg-3">
+                                <label class="form-label" for="startTime">Start Time</label>
                                 <input id="startTime" type="time" name="startTime" placeholder="Start Time"
                                     class="form-control" required>
+                                
                             </div>
                             <div class="col-lg-3">
+                                <label class="form-label" for="endTime">End Time</label>
                                 <input id="endTime" type="time" name="endTime" placeholder="End Time"
                                     class="form-control" required>
                             </div>
@@ -42,7 +47,7 @@
                         <div class="form-check form-switch py-3">
                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="notOnline"
                                 data-bs-toggle="collapse" data-bs-target="#meetInPerson" aria-expanded="false"
-                                aria-controls="collapseExample" onchange="mapToggle(this)" required>
+                                aria-controls="collapseExample" onchange="mapToggle(this)">
                             <label class="form-check-label" for="flexSwitchCheckDefault">Meet In Person</label>
                         </div>
                         <div class="row">
@@ -57,12 +62,8 @@
                                             </span>
                                         </div>
                                         <input id="address" type="text" name="address" placeholder="Address"
-                                            value="<%= bestAddress.location %>"
                                             class="form-control bg-white border-left-0 border-md"
                                             onfocusout="updateAddress(this)">
-                                        <div class="invalid-feedback">
-                                            Please Provide a First Name
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -119,9 +120,20 @@
                 .setLngLat(coord)
                 .addTo(map);
 
-
+            let disable = true
+            let prevValue = null
             function mapToggle(radio) {
+                disable = !disable
                 map.resize();
+                const addr = document.getElementById("address")
+                if(disable){
+                    addr.setAttribute("disabled", "")
+                    prevValue = addr.getAttribute("value")
+                    addr.removeAttribute("value")
+                }else{
+                    addr.removeAttribute("disabled")
+                    addr.setAttribute("value", prevValue || bestAddress.location)
+                }
             }
 
             async function updateAddress(textField) {

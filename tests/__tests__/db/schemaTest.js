@@ -159,6 +159,13 @@ describe('Group test suite', () => {
 
 describe('Meetings test suite', () => {
   test('should save meeting to database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -166,7 +173,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const savedMeeting = await meeting.save()
     checkNotEmpty(savedMeeting)
@@ -174,6 +183,13 @@ describe('Meetings test suite', () => {
   })
 
   test('should find meeting in database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -181,7 +197,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const savedMeeting = await meeting.save()
     const checkMeeting = await MeetingSchema.findOne({ name: savedMeeting.name })
@@ -190,6 +208,13 @@ describe('Meetings test suite', () => {
   })
 
   test('should update meeting in the database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -197,7 +222,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'New Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const updatedName = 'Updated Meeting Name'
     const updateCoords = [23.3645, 34.0575]
