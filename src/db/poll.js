@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
-const kickReasons = ['Disrespectful behaviour', 'Nonparticipatory', 'Consistently late', 'Missed too many meetings', 'Posts in a propriatel links', 'Does not share notes']
+const kickReasons = ['Disrespectful behaviour', 'Non participatory', 'Consistently late', 'Missed too many meetings', 'Posts inappropriate links', 'Does not share notes']
 
 // Group Schema
 const pollSchema = new Schema({
