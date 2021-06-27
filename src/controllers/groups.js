@@ -56,8 +56,8 @@ module.exports.showGroup = async (req, res) => {
 module.exports.search = async (req, res) => {
   var noMatch = null;
   if (req.query.search) { // get search results
-    const regex = new RegExp(escapeRegex(req.query.search), 'gi'); // 'gi' are flags, g - global, i - ignore case
-    // console.log('Searched something')
+    const regex = new RegExp(this.escapeRegex(req.query.search), 'gi') // 'gi' are flags, g - global, i - ignore case
+    // user earched something
     const userGroups = req.user.groups
     const notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate('members')
     if (notUserGroups.length < 1) {
@@ -65,7 +65,7 @@ module.exports.search = async (req, res) => {
     }
     res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
   } else { // get all notUserGroups from DB
-    // console.log('Did not search something')
+    // user did not search something
     const userGroups = req.user.groups
     const notUserGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
     res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
@@ -161,6 +161,6 @@ module.exports.declineInvite = async (req, res) => {
   res.redirect(`/groups/${groupId}`)
 }
 
-function escapeRegex(text) {
+module.exports.escapeRegex = function (text) {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }

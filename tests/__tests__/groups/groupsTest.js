@@ -365,8 +365,8 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  // TEST SUSPENDED UNTIL FIGURED OUT HOW TO EMULATE SIGNED IN USER
-  /*test('A student can search for groups to join', async (done) => {
+  test('A student can search for groups that exist to join', async (done) => {
+
     const req = {
       body: { name: testGroupName },
       user: testStudent,
@@ -375,8 +375,33 @@ describe('Group controller functionality', () => {
     const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
 
+    const testSearch = 'test' // actual group name only has to contain part of what is searched
 
+    const regex = new RegExp(groups.escapeRegex(testSearch), 'gi')
+    const groupsRetrieved = await GroupSchema.find({ name: regex })
+    const expectedGroup = await GroupSchema.find({})
+    expect(groupsRetrieved).toEqual(expectedGroup)
 
     done()
-  }) */
+  })
+
+  test('A student cannot search for groups that do not exist join', async (done) => {
+
+    const req = {
+      body: { name: testGroupName },
+      user: testStudent,
+      flash: function () { }
+    }
+    const res = { redirect(url) { return url } }
+    await groups.createGroup(req, res)
+
+    const testSearch = 'fake' // should not be in db
+
+    const regex = new RegExp(groups.escapeRegex(testSearch), 'gi')
+    const groupsRetrieved = await GroupSchema.find({ name: regex })
+    const expectedGroup = await GroupSchema.find({})
+    expect(groupsRetrieved).not.toEqual(expectedGroup)
+
+    done()
+  })
 })
