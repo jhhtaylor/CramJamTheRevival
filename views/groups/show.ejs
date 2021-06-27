@@ -41,9 +41,9 @@
                                                 <%}%>
 
                                             <% if(!group.members[i]._id.equals(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
-                                            <form class="d-inline"
+                                            <form class="d-inline removeForm"
                                                 action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
-                                                method="POST" method="POST">
+                                                method="POST" method="POST" id="<%=group.members[i]._id%>">
                                                 <button class="btn remove-btn"><i class="fas fa-times"></i></button>
                                             </form>
                                              <% } %>
@@ -123,5 +123,8 @@
         </div>
     </div>
 
-    <%- include('../partials/modal', {action: 'leave group', group:group, allTags: allTags}) -%>
+
+    <%- include('../partials/modal', {action: 'leave group', group:group, id:'leave'}) -%>
+    <%- include('../partials/modal', {action: 'remove user', reasons: KickReasons, id:'remove'}) -%>
 <script src='js/modal.js'></script>
+<script src='js/kickReason.js'></script>

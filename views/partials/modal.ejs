@@ -1,4 +1,4 @@
-<div class="bg-modal">
+<div class="bg-modal" id="<%= id %>">
 	<div class="modal-contents">
 
             <% if(action == 'leave group'){ %>
@@ -8,31 +8,38 @@
                 <p>Are you sure you want to leave <b><%= group.name %></b>?</p>
                 <p>This action cannot be undone.</p>
                 <div class='row justify-content-center'>
-                <div class="col-lg-5 text-center"> 
-                <form action="/groups/<%= group._id %>" method="GET">
-                    <button class="theme-btn-light text-decoration-none">Nevermind</button>
-                </form>
-                </div>
-            <div class="col-lg-5 text-center "> 
-                <form action="/groups/<%= group._id %>/edit/<%= signedInUser._id %>?_method=delete" method="post">
-                    <button class="theme-btn text-decoration-none">Leave</button>
-                </form>
-            </div>
-            </div>
-            <% } %>
-            <% if(action == 'add tags'){ %>
-                <div class="skip">
-                    <a href ="groups/<%=group._id%>" class="skip">skip&#8594;</a>
-                </div>
-        
-                <h3>
-                    Enter some tags 
-                </h3>
-                <hr>
-                <p>Tagging your group lets other people kknow what it's about</p>
-                <p>
-                    <div class="tags-input" data-name="tags-input" id="tags-input">
+                    <div class="col-lg-5 text-center"> 
+                        <form action="/groups/<%= group._id %>" method="GET">
+                            <button class="theme-btn-light text-decoration-none">Nevermind</button>
+                        </form>
                     </div>
+                    <div class="col-lg-5 text-center "> 
+                        <form action="/groups/<%= group._id %>/edit/<%= signedInUser._id %>?_method=delete" method="post">
+                            <button class="theme-btn text-decoration-none">Leave</button>
+                        </form>
+                    </div>
+                </div>
+            <% } %>
+            <% if(action == 'remove user'){ %>
+                <div class="dropdown" style="margin-bottom: 2em;">
+                    <select class="form-select" aria-label="Kick Reason" id="kickReason">
+                        <% let count = 0 %>
+                        <% for(let reason of reasons) { %> 
+                        <% let selected = count == 0 ? "selected" : '' %>
+                        <option value="<%= reason %>" <%= selected %> ><%= reason %></option>
+                        <% count++ %>
+                        <% } %> 
+                      </select>
+                  </div>
+                <div class='row justify-content-center' style="margin-top: 2em;">
+                    <div class="col-lg-5 text-center">
+                        <button class="theme-btn text-decoration-none" type="button" id="kickBtn">Submit</button>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <button id="cancel" class="theme-btn-light text-decoration-none">Cancel</button>
+                    </div>
+                </div>
+            <% } %> 
 
                     <script>
                         const allTags = <%- JSON.stringify(allTags) %> //note this has to look like <%- %> if saving please save without formatting
