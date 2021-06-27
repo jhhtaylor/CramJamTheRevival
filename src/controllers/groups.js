@@ -61,7 +61,7 @@ module.exports.search = async (req, res) => {
     const userGroups = req.user.groups
     const notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate('members')
     if (notUserGroups.length < 1) {
-      noMatch = "No groups match that query, please search again below.";
+      noMatch = 'No groups match that query, please search again below.'
     }
     res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
   } else { // get all notUserGroups from DB
