@@ -1,10 +1,4 @@
-document.getElementById('modal-button').addEventListener('click', function () {
-  document.querySelector('.bg-modal').style.display = 'flex'
-})
 
-document.querySelector('.close').addEventListener('click', function () {
-  document.querySelector('.bg-modal').style.display = 'none'
-})
 (function () {
   'use strict'
   const the_rest = document.querySelector('.all')
@@ -23,13 +17,11 @@ document.querySelector('.close').addEventListener('click', function () {
   }
 
   if ('geolocation' in navigator) {
-    console.log('available')
+  
     navigator.geolocation.watchPosition((position) => {
-		  console.log(position.coords.latitude)
-		  console.log(position.coords.longitude)
-		  console.log(position)
+
     })
 	  } else {
-    console.log('not available')
+    
 	  }
 })()

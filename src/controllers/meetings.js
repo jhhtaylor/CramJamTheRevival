@@ -1,16 +1,38 @@
-// to be replaced with database access
-const meetings = [{
-  GroupName: 'Default meeting',
-  StartTime: '12:00',
-  EndTime: '1:00'
-}]
+const {MeetingSchema} = require('../db/meetings')
+const { GroupSchema } = require('../db/groups')
 
-module.exports.add = (newMeeting) => {
-  meetings.push(newMeeting)
+module.exports.index = async (req, res) => {
+  const userGroups = req.user.groups
+  const meetings = await MeetingSchema.find({ _id: { $in: userGroups } })
+  res.render('meetings/index', { meetings })
 }
 
-module.exports.list = () => {
-  return meetings
+module.exports.renderNewForm = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.groupid).populate('members')
+  const bestAddress = this.determineMeetingLocation(group.members)
+  console.log(bestAddress)
+  res.render('meetings/new', {group, bestAddress})
+}
+
+module.exports.createMeeting = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.groupid)
+  if(group == null){
+    req.flash('error', err.message)
+    res.redirect('/')
+  } 
+
+  const meeting = new MeetingSchema({
+    name: req.body.name,
+    description: req.body.description,
+    group: group._id,
+    location: {
+      
+    }
+  })
+  meeting.save()
+
+  req.flash('success', 'Created new meeting!')
+  res.redirect(`/groups/${req.params.groupid}`)
 }
 
 module.exports.determineMeetingLocation = (students) => {
