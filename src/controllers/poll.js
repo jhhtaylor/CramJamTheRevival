@@ -27,11 +27,18 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
+  console.log(votePoll)
   if (voted.length > (members.length / 2)) { // checking sorted arrays
-    req.flash('success', 'Majority voted ')
-    votePoll.active = false
-    await votePoll.save()
-    await this.updatePoll(votePoll._id, req)
+    // const yesVotes = voted.filter(function ([key, value]) {
+    //   return !value // the condition for filter. Change this as you need.
+    // })
+    if (votePoll.votes.yes > votePoll.votes.no) {
+      votePoll.active = false
+      await votePoll.save()
+      await this.updatePoll(votePoll._id, req)
+    } else if (votePoll.votes.no > votePoll.votes.yes) {
+
+    }
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
@@ -138,34 +145,39 @@ module.exports.createPoll = async (req, res) => {
 module.exports.updatePoll = async (pollId, req) => {
   const poll = await Poll.findById(pollId)
   const group = await GroupSchema.findById(poll.group)
-  switch (poll.action) {
-    case 'Add':
-      await groups.addGroupMember(group._id, poll.affected)
-        .then(done => {
-          req.flash('success', 'Request Successful')
-        }).catch(err => {
-          req.flash('error', err.message)
-        })
-      break
+  if (poll.votes.yes > poll.votes.no) {
+    switch (poll.action) {
+      case 'Add':
+        await groups.addGroupMember(group._id, poll.affected)
+          .then(done => {
+            req.flash('success', 'Request Successful')
+          }).catch(err => {
+            req.flash('error', err.message)
+          })
+        break
 
-    case 'Invite':
-      await groups.invite(group._id, poll.affected)
-        .then(done => {
-          req.flash('success', 'Invite Successful')
-        }).catch(err => {
-          req.flash('error', err.message)
-        })
-      break
+      case 'Invite':
+        await groups.invite(group._id, poll.affected)
+          .then(done => {
+            req.flash('success', 'Invite Successful')
+          }).catch(err => {
+            req.flash('error', err.message)
+          })
+        break
 
-    case 'Remove':
-      await groups.deleteMember(group._id, poll.affected)
-        .then(done => {
-          req.flash('success', 'Remove Successful')
-        }).catch(err => {
-          req.flash('error', err.message)
-        })
-      break
+      case 'Remove':
+        await groups.deleteMember(group._id, poll.affected)
+          .then(done => {
+            req.flash('success', 'Remove Successful')
+          }).catch(err => {
+            req.flash('error', err.message)
+          })
+        break
+    }
+    await GroupSchema.updateOne({ _id: group._id },
+      { $pull: { polls: pollId } })
+  } else if (poll.votes.no > poll.votes.yes) {
+    await GroupSchema.updateOne({ _id: group._id },
+      { $pull: { polls: pollId } })
   }
-  await GroupSchema.updateOne({ _id: group._id },
-    { $pull: { polls: pollId } })
 }
