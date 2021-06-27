@@ -12,21 +12,23 @@
                                         <div class="box-content-style">
                                     <h4>
                                     <%= groups[i].name %>
-                                </h4>
-                                <p>Group description goes here</p>
-                                <div class="header-btn">
-                                    <a href="/groups/<%=groups[i]._id%>" class="theme-btn text-decoration-none">View</a>
-                                </div>
+                                    </h4>
+                                    <%if(!groups[i].description){%>
+                                        <p class="text-truncate" style="max-width: 250px;">Group description goes here</p>
+                                    <%} else {%>
+                                        <p class="text-truncate" style="max-width: 250px;"><%= groups[i].description %></p>
+                                    <%}%>
+                                    <div class="header-btn">
+                                        <a href="/groups/<%=groups[i]._id%>" class="theme-btn text-decoration-none">View</a>
+                                    </div>
                                     
                                 <% }else{%>
-                                <div class="box-style box-style-empty">
-                                <div class="box-content-style-empty">
-                                <a href="\groups\new" class="text-decoration-none text-center">
-                                        <div class="box-icon-style-empty">
-                                            <i class="fas fa-plus text-decoration-none"></i>
-                                        </div>
-
-                                        
+                                    <div class="box-style box-style-empty">
+                                    <div class="box-content-style-empty">
+                                    <a href="\groups\new" class="text-decoration-none text-center">
+                                            <div class="box-icon-style-empty">
+                                                <i class="fas fa-plus text-decoration-none"></i>
+                                            </div>    
                                     </a>
                                 <% }%>
         

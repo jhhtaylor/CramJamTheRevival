@@ -1,10 +1,18 @@
 const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { GroupSchema } = require('../../../src/db/groups')
 const { MeetingSchema } = require('../../../src/db/meetings')
+const { Tag } = require('../../../src/db/tags')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals, checkArraysEqual } = require('../../../utils/testUtils/dbTestUtils')
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
+
+beforeEach(async () => {
+  await StudentProfile.deleteMany({})
+  await GroupSchema.deleteMany({})
+  await MeetingSchema.deleteMany({})
+  await Tag.deleteMany({})
+})
 
 describe('Profile test suite', () => {
   test('should save new profile to database', async () => {
@@ -209,5 +217,33 @@ describe('Meetings test suite', () => {
     checkNotEmpty(checkMeeting)
     checkStringEquals(checkMeeting.name, updatedName)
     checkArraysEqual(checkMeeting.location.coordinates, updateCoords)
+  })
+})
+
+describe('Tags test suite', () => {
+  test('should save tag to database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    const savedTag = await tag.save()
+    checkNotEmpty(savedTag)
+  })
+  test('should find tag in database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    await tag.save()
+    const foundTag = await Tag.findOne({ name: 'Test' })
+    checkNotEmpty(foundTag)
+  })
+  test('should update tag in database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    await tag.save()
+    await Tag.updateOne({ name: 'Test' }, { name: 'Retest' })
+    const tags = await Tag.find({})
+    expect(tags.length).toEqual(1)
+    expect(tags[0].name).toEqual('Retest')
   })
 })

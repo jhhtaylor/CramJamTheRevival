@@ -1,10 +1,3 @@
-document.getElementById('modal-button').addEventListener('click', function () {
-  document.querySelector('.bg-modal').style.display = 'flex'
-})
-
-document.querySelector('.close').addEventListener('click', function () {
-  document.querySelector('.bg-modal').style.display = 'none'
-})
 (function () {
   'use strict'
   const the_rest = document.querySelector('.all')
