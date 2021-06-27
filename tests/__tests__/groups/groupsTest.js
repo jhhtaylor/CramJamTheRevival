@@ -366,14 +366,11 @@ describe('Group controller functionality', () => {
   })
 
   test('A student can search for groups that exist to join', async (done) => {
-
-    const req = {
-      body: { name: testGroupName },
-      user: testStudent,
-      flash: function () { }
-    }
-    const res = { redirect(url) { return url } }
-    await groups.createGroup(req, res)
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
 
     const testSearch = 'test' // actual group name only has to contain part of what is searched
 
@@ -386,14 +383,11 @@ describe('Group controller functionality', () => {
   })
 
   test('A student cannot search for groups that do not exist join', async (done) => {
-
-    const req = {
-      body: { name: testGroupName },
-      user: testStudent,
-      flash: function () { }
-    }
-    const res = { redirect(url) { return url } }
-    await groups.createGroup(req, res)
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
 
     const testSearch = 'fake' // should not be in db
 
