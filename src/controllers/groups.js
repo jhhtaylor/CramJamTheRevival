@@ -14,8 +14,7 @@ module.exports.index = async (req, res) => {
 // temp function to view members to add to a group
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
-  // only display people who are not already in the group
-  const group = await GroupSchema.findById(groupId).populate('polls')
+  const group = await GroupSchema.findById(groupId).populate('polls') // only display people who are not already in the group
   const groupPolls = group.polls
   const groupPollsAffected = groupPolls.map(poll => poll.affected)
   const students = await StudentProfile.find({
@@ -33,23 +32,29 @@ module.exports.renderNewForm = async (req, res) => {
 }
 
 module.exports.createGroup = async (req, res) => {
+  // Create a new Group
   const group = new GroupSchema({
     name: req.body.name,
     description: req.body.description
   })
   await group.save()
+
+  // Add the entered tags
   req.body.group = group._id
   try {
     await this.editTags(req, res)
   } catch (err) {
     req.flash('error', err.message)
   }
+
+  // At the current user as the first memebr
   try {
     await this.addGroupMember(group._id, req.user._id, req)
   } catch (err) {
     req.flash('error', err.message)
     await this.deleteGroup(group._id)
   }
+
   req.flash('success', 'Created new group!')
   res.redirect(`/groups/${group._id}`)
 }
@@ -164,6 +169,8 @@ module.exports.editTags = async (req, res) => {
   }
 
   for (const tag of tags) {
+    // If the tag doesn't already exist, add it to the tag schem
+    // Otherwise add it to the group
     if (!allTags.some(t => t.name === tag)) {
       const newTag = new Tag({
         name: tag,
