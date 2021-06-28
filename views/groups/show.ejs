@@ -170,14 +170,13 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <% for (let poll of groupPolls.reverse()){%>
-                        <% if(poll.active === true){ %>
-                            <%- include('../partials/pollCard.ejs', {poll:poll}) %>
-                        <% }%>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <% for (let poll of groupPolls.reverse()){%>
+                    <% if(poll.active === true){ %>
+                        <%- include('../partials/pollCard.ejs', {poll:poll}) %>
                     <% }%>
-                </div>
+                <% }%>
             </div>
         </div>
 
