@@ -1,10 +1,18 @@
 const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { GroupSchema } = require('../../../src/db/groups')
 const { MeetingSchema } = require('../../../src/db/meetings')
+const { Tag } = require('../../../src/db/tags')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals, checkArraysEqual } = require('../../../utils/testUtils/dbTestUtils')
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
+
+beforeEach(async () => {
+  await StudentProfile.deleteMany({})
+  await GroupSchema.deleteMany({})
+  await MeetingSchema.deleteMany({})
+  await Tag.deleteMany({})
+})
 
 describe('Profile test suite', () => {
   test('should save new profile to database', async () => {
@@ -159,6 +167,13 @@ describe('Group test suite', () => {
 
 describe('Meetings test suite', () => {
   test('should save meeting to database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -166,7 +181,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const savedMeeting = await meeting.save()
     checkNotEmpty(savedMeeting)
@@ -174,6 +191,13 @@ describe('Meetings test suite', () => {
   })
 
   test('should find meeting in database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -181,7 +205,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const savedMeeting = await meeting.save()
     const checkMeeting = await MeetingSchema.findOne({ name: savedMeeting.name })
@@ -190,6 +216,13 @@ describe('Meetings test suite', () => {
   })
 
   test('should update meeting in the database', async () => {
+    const HH = Math.floor(Math.random() * 12)
+    const yyyy = 2021
+    const MM = Math.floor(Math.random() * 12)
+    const dd = Math.floor(Math.random() * 28)
+    const mm = Math.floor(Math.random() * 60)
+    const start = new Date(yyyy, MM, dd, HH, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -197,7 +230,9 @@ describe('Meetings test suite', () => {
     const meeting = new MeetingSchema({
       name: 'New Test Meeting',
       group: savedGroup._id,
-      location: { type: 'Point', coordinates: [28.0473, 26.2041] }
+      location: { type: 'Point', coordinates: [28.0473, 26.2041] },
+      start: start,
+      end: end
     })
     const updatedName = 'Updated Meeting Name'
     const updateCoords = [23.3645, 34.0575]
@@ -209,5 +244,33 @@ describe('Meetings test suite', () => {
     checkNotEmpty(checkMeeting)
     checkStringEquals(checkMeeting.name, updatedName)
     checkArraysEqual(checkMeeting.location.coordinates, updateCoords)
+  })
+})
+
+describe('Tags test suite', () => {
+  test('should save tag to database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    const savedTag = await tag.save()
+    checkNotEmpty(savedTag)
+  })
+  test('should find tag in database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    await tag.save()
+    const foundTag = await Tag.findOne({ name: 'Test' })
+    checkNotEmpty(foundTag)
+  })
+  test('should update tag in database', async () => {
+    const tag = new Tag({
+      name: 'Test'
+    })
+    await tag.save()
+    await Tag.updateOne({ name: 'Test' }, { name: 'Retest' })
+    const tags = await Tag.find({})
+    expect(tags.length).toEqual(1)
+    expect(tags[0].name).toEqual('Retest')
   })
 })

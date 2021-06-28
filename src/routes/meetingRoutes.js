@@ -3,20 +3,22 @@ const express = require('express')
 const meetings = require('../controllers/meetings')
 const router = express.Router()
 const { body } = require('express-validator')
+const catchAsync = require('../../utils/catchAsync')
+const { isLoggedIn } = require('../middleware/middleware')
 
-router.get('/', function (req, res) {
-  res.render('meetings/meetings', { meetings: meetings.list() })
-})
+router.route('/')
+  .get(isLoggedIn, catchAsync(meetings.index))
 
-// TODO: Refactor to make more restful and make use of the determineMeetingLocation function
-router.post('/', body('GroupName').escape().trim(), function (req, res) {
-  const newMeeting = {
-    GroupName: req.body.GroupName,
-    StartTime: req.body.StartTime,
-    EndTime: req.body.EndTime
-  }
-  meetings.add(newMeeting)
-  res.redirect('/meetings')
-})
+router.route('/:meetingid')
+  .get(isLoggedIn, catchAsync(meetings.show))
 
+
+router.route('/new/:groupid')
+  .get(isLoggedIn, meetings.renderNewForm)
+  .post(
+    isLoggedIn,
+    body('name').escape().trim(),
+    body('description').escape().trim(),
+    catchAsync(meetings.createMeeting)
+  )
 module.exports = router

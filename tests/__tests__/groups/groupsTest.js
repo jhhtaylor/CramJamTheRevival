@@ -1,6 +1,7 @@
 const groups = require('../../../src/controllers/groups')
 const { GroupSchema } = require('../../../src/db/groups')
 const { StudentProfile } = require('../../../src/db/studentProfiles')
+const { Tag } = require('../../../src/db/tags')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
 const { getGeoData } = require('../../../seeds/locationHelper')
 const { app } = require('../../../utils/testUtils/expressTestUtils')
@@ -18,6 +19,7 @@ afterAll(async () => { dbDisconnect() })
 beforeEach(async () => {
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
+  await Tag.deleteMany({})
 
   const data = getGeoData()
   const location = data.location
@@ -361,6 +363,104 @@ describe('Group controller functionality', () => {
     expect(group.members.length).toBe(0) // group should not be created
     expect(student.invites.length).toBe(1)
     expect(group.invites.length).toBe(1)
+
+    done()
+  })
+
+  test('A student can a new tags to a group', async (done) => {
+    const tagsInput = 'tag-one'
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      tags: []
+    })
+    const testGroup = await newGroup.save()
+
+    const req = {
+      body: {
+        group: testGroup._id,
+        tags: tagsInput
+      },
+      user: testStudent,
+      flash: function () { }
+    }
+    const res = { redirect(url) { return url } }
+
+    await groups.editTags(req, res)
+
+    const group = await GroupSchema.findOne({})
+    const tags = await Tag.find({})
+    expect(group.tags.length).toBe(1)
+    expect(tags.length).toBe(1)
+    expect(tags[0].name).toBe('tag-one')
+    expect(tags[0].groups[0]).toStrictEqual(group._id)
+    done()
+  })
+
+  test('A student can add an existing tag to a group', async (done) => {
+    const inputTag = 'tag-one'
+    const tag = new Tag({
+      name: inputTag
+    })
+    await tag.save()
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      tags: []
+    })
+    const testGroup = await newGroup.save()
+
+    const req = {
+      body: {
+        group: testGroup._id,
+        tags: inputTag
+      },
+      user: testStudent,
+      flash: function () { }
+    }
+    const res = { redirect(url) { return url } }
+
+    await groups.editTags(req, res)
+
+    const group = await GroupSchema.findOne({})
+    const tags = await Tag.find({})
+    expect(group.tags.length).toBe(1)
+    expect(tags.length).toBe(1) // a new tag should not be created
+    expect(tags[0].name).toBe('tag-one')
+    expect(tags[0].groups[0]).toStrictEqual(group._id)
+
+    done()
+  })
+
+  test('A student cannot add an existing tag to a group that already has that tag', async (done) => {
+    const inputTag = 'tag-one'
+    const tag = new Tag({
+      name: inputTag
+    })
+    await tag.save()
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      tags: [tag._id]
+    })
+    const testGroup = await newGroup.save()
+    tag.groups.push(testGroup._id)
+    await tag.save()
+    const req = {
+      body: {
+        group: testGroup._id,
+        tags: inputTag
+      },
+      user: testStudent,
+      flash: function () { }
+    }
+    const res = { redirect(url) { return url } }
+
+    await groups.editTags(req, res)
+
+    const group = await GroupSchema.findOne({})
+    const tags = await Tag.find({})
+    expect(group.tags.length).toBe(1)
+    expect(tags.length).toBe(1) // a new tag should not be created
+    expect(tags[0].name).toBe('tag-one')
+    expect(tags[0].groups[0]).toStrictEqual(group._id)
 
     done()
   })

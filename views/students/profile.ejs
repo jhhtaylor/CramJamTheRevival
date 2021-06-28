@@ -1,0 +1,42 @@
+<% layout('layouts/boilerplate') -%>
+                <%if (profile.id == signedInUser.id) { %>
+                    <div class="container">
+                        <h1><%= profile.username %></h1>
+                        <div class="row">
+                            <h3><%= profile.firstName %> <%= profile.lastName %></h3>
+                            <span>
+                              <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+                              <i class='far fa-envelope-open' style='font-size:18px'></i>
+                              <%= profile.email %>
+                            </span>
+                        </span>
+                        <span>
+                          <i class='fas fa-home' style='font-size:18px'></i>
+                          <%= profile.location %>
+                        </span>
+                        <span>
+                          <br>
+                          <br>
+                          <form action="/students/settings/<%=signedInUser._id%>" method="get">
+                              <button type="submit" class="btn btn-primary">Settings</button>
+                            </form>
+                        </span>
+                      </div>
+                  </div>
+              <% }else{%>
+                  <div class="container">
+                      <h1><%= profile.username %></h1>
+                      <div class="row">
+                          <h3><%= profile.firstName %> <%= profile.lastName %></h3>
+                          <span>
+                            <i class='far fa-envelope-open' style='font-size:18px'></i>
+                            <%= profile.email %>
+                                </span>
+                                <span>
+                                  <i class='fas fa-home' style='font-size:18px'></i>
+                                  <%= profile.location %>
+                                </span>
+                            </div>
+                        </div>
+                    <% }%>
+                
