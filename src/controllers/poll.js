@@ -27,7 +27,6 @@ module.exports.votePoll = async (req, res) => {
   members.sort()
   const voted = [...votePoll.voted]
   voted.sort()
-  console.log(votePoll)
   if (voted.length > (members.length / 2)) { // checking sorted arrays
     // const yesVotes = voted.filter(function ([key, value]) {
     //   return !value // the condition for filter. Change this as you need.
@@ -77,13 +76,14 @@ module.exports.hasRequested = async (groupId, memberId) => {
   return false
 }
 
-module.exports.newPoll = async (groupId, action, affected, members, owner, reason) => {
+module.exports.newPoll = async (groupId, action, affected, members, owner, pollster, reason) => {
   if (!reason) {
     reason = ''
   }
   const newPoll = new Poll({
     members,
     name: `New poll from: ${owner}`,
+    pollster: pollster,
     group: groupId,
     action,
     affected: affected,
@@ -96,6 +96,7 @@ module.exports.newPoll = async (groupId, action, affected, members, owner, reaso
 
   await GroupSchema.updateOne({ _id: groupId },
     { $push: { polls: newPoll._id } })
+  console.log(newPoll)
 }
 
 module.exports.createPoll = async (req, res) => {
@@ -126,20 +127,54 @@ module.exports.createPoll = async (req, res) => {
   // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
   const members = methods[action](isInGroup, isInvited, isInPoll, hasRequested, group.members, affected, req.user._id)
   if (members.error != null) {
-    console.log(members.error)
     req.flash('error', members.error)
     res.redirect('back')
     return
   }
 
   // Create new poll
-  await this.newPoll(groupId, action, affected, members.members, req.user.username, reason).then(done => {
+  await this.newPoll(groupId, action, affected, members.members, req.user.username, req.user._id, reason).then(done => {
     req.flash('success', 'Successfuly created new poll')
   }).catch(err => {
-    console.log(err)
     req.flash('error', err)
   })
   res.redirect(`/groups/${groupId}`)
+}
+
+module.exports.resetPoll = async (req, res) => {
+  const pollId = req.params.pollId
+  const poll = await Poll.findById(pollId)
+  if (String(poll.pollster) === String(req.user._id)) {
+    const membersVoted = await StudentProfile.find({ _id: { $in: poll.voted } })
+    for (const member of membersVoted) {
+      member.polls.push(poll._id)
+      poll.voted.pull(member._id)
+      await member.save()
+    }
+    poll.votes.yes = 0
+    poll.votes.no = 0
+    await poll.save()
+    req.flash('success', 'Poll reset')
+  } else {
+    req.flash('error', 'Only the owner of the poll may reset the poll.')
+  }
+  res.redirect('back')
+}
+
+module.exports.closePoll = async (req, res) => {
+  const pollId = req.params.pollId
+  const poll = await Poll.findById(pollId)
+  if (String(poll.pollster) === String(req.user._id)) {
+    const members = await StudentProfile.find({ _id: { $in: poll.members } })
+    for (const member of members) {
+      member.polls.pull(poll._id)
+      await member.save()
+    }
+    await Poll.deleteOne({ _id: poll._id })
+    res.redirect('back')
+  } else {
+    req.flash('error', 'Only the owner of the poll may close the poll.')
+  }
 }
 
 module.exports.updatePoll = async (pollId, req) => {

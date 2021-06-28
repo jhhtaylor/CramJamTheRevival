@@ -116,8 +116,10 @@
             </div>
             
             <div class="col-lg-6 col-md-12">
-                <% for (let poll of groupPolls){%>
-                   <%- include('../partials/pollCard.ejs', {poll:poll}) %>
+                <% for (let poll of groupPolls.reverse()){%>
+                    <% if(poll.members.includes(signedInUser._id)){%>
+                        <%- include('../partials/pollCard.ejs', {poll:poll}) %>
+                    <% }%>
                 <% }%>
             </div>
         </div>

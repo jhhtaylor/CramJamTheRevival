@@ -42,11 +42,12 @@ beforeEach(async () => {
     members: [student._id]
   })
   await group.save()
+  extraMember1 = { _id: Mongoose.Types.ObjectId() }
 })
 
 describe('Poll controller functionality', () => {
   test('Poll can increment Yes and No', async () => {
-    const newPoll = { votes: { yes: 0, no: 0 }, save: function () { } }
+    const newPoll = { votes: { yes: 0, no: 0 }, pollster: student._id, save: function () { } }
     await poll.vote(newPoll, 'yes')
     await poll.vote(newPoll, 'no')
     expect(newPoll.votes.yes).toBe(1)
@@ -57,6 +58,7 @@ describe('Poll controller functionality', () => {
     const newPoll = new Poll({
       members: [student._id],
       name: 'Testing Poll',
+      pollster: student._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -77,8 +79,9 @@ describe('Poll controller functionality', () => {
 
   test('Poll controller increases vote yes', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -99,8 +102,9 @@ describe('Poll controller functionality', () => {
 
   test('Poll controller increases vote no', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -121,8 +125,9 @@ describe('Poll controller functionality', () => {
 
   test('User is allowed into poll', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -148,6 +153,7 @@ describe('Poll controller functionality', () => {
     const newPoll = new Poll({
       members: [student._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -172,6 +178,7 @@ describe('Poll controller functionality', () => {
     const newPoll = new Poll({
       members: [student._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Remove',
       affected: student._id,
       votes: { yes: 0, no: 0 },
@@ -332,8 +339,9 @@ describe('Poll controller functionality', () => {
 
   test('User cannot create a poll that already exists', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
+      pollster: extraMember1._id,
       action: 'Add',
       affected: student._id,
       votes: { yes: 1, no: 0 },
@@ -368,9 +376,10 @@ describe('Poll controller functionality', () => {
     const updateStudent = await StudentProfile.findOne({})
     expect(updateStudent.groups.length).toEqual(1)
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
       action: 'Remove',
+      pollster: extraMember1._id,
       affected: student._id,
       votes: { yes: 1, no: 0 },
       voted: [],
@@ -392,9 +401,10 @@ describe('Poll controller functionality', () => {
 
   test('Add type poll updates correctly', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
       name: 'Testing Poll',
       action: 'Add',
+      pollster: extraMember1._id,
       affected: student._id,
       votes: { yes: 1, no: 0 },
       voted: [],
@@ -415,7 +425,8 @@ describe('Poll controller functionality', () => {
 
   test('Invite type poll updates correctly', async () => {
     const newPoll = new Poll({
-      members: [student._id],
+      members: [student._id, extraMember1._id],
+      pollster: extraMember1._id,
       name: 'Testing Poll',
       action: 'Invite',
       affected: student._id,
@@ -437,6 +448,127 @@ describe('Poll controller functionality', () => {
     expect(savedStudent.invites.length).toBe(1)
     expect(savedGroup.invites.length).toBe(1)
     expect(savedGroup.polls.length).toBe(0)
+  })
+
+  test('Reset poll correctly', async () => {
+    const newPoll = new Poll({
+      members: [student._id, extraMember1._id],
+      pollster: student._id,
+      name: 'Testing Poll',
+      action: 'Invite',
+      affected: extraMember1._id,
+      votes: { yes: 1, no: 0 },
+      voted: [student._id],
+      group: group._id
+    })
+    await newPoll.save()
+
+    const req = {
+      params: {
+        pollId: newPoll._id
+      },
+      user: student,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+
+    await poll.resetPoll(req, res)
+    const savedStudent = await StudentProfile.findById(student._id)
+    const savedPoll = await Poll.findById(newPoll._id)
+    expect(savedStudent.polls.length).toBe(1)
+    expect(savedPoll.members.length).toBe(2)
+    expect(savedPoll.voted.length).toBe(0)
+    expect(savedPoll.votes.yes).toBe(0)
+    expect(savedPoll.votes.no).toBe(0)
+  })
+
+  test('Only pollster may reset the poll', async () => {
+    const newPoll = new Poll({
+      members: [student._id, extraMember1._id],
+      pollster: student._id,
+      name: 'Testing Poll',
+      action: 'Invite',
+      affected: extraMember1._id,
+      votes: { yes: 1, no: 0 },
+      voted: [student._id],
+      group: group._id
+    })
+    await newPoll.save()
+    const req = {
+      params: {
+        pollId: newPoll._id
+      },
+      user: extraMember1._id,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+
+    await poll.resetPoll(req, res)
+    const savedStudent = await StudentProfile.findById(student._id)
+    const savedPoll = await Poll.findById(newPoll._id)
+    expect(savedStudent.polls.length).toBe(0)
+    expect(savedPoll.members.length).toBe(2)
+    expect(savedPoll.voted.length).toBe(1)
+    expect(savedPoll.votes.yes).toBe(1)
+    expect(savedPoll.votes.no).toBe(0)
+  })
+
+  test('Close poll correctly', async () => {
+    const newPoll = new Poll({
+      members: [student._id, extraMember1._id],
+      name: 'Testing Poll',
+      pollster: extraMember1._id,
+      action: 'Invite',
+      affected: student._id,
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: group._id
+    })
+    await newPoll.save()
+    student.polls.push(newPoll._id)
+    await student.save()
+    const req = {
+      params: {
+        pollId: newPoll._id
+      },
+      user: extraMember1,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+    await poll.closePoll(req, res)
+    const savedStudent = await StudentProfile.findById(student._id)
+    const savedPolls = await Poll.find({})
+    expect(savedStudent.polls.length).toBe(0)
+    expect(savedPolls.length).toBe(0)
+  })
+  test('Only pollster may close a poll', async () => {
+    const newPoll = new Poll({
+      members: [student._id, extraMember1._id],
+      name: 'Testing Poll',
+      pollster: student._id,
+      action: 'Invite',
+      affected: extraMember1._id,
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: group._id
+    })
+    await newPoll.save()
+    student.polls.push(newPoll._id)
+    await student.save()
+    const req = {
+      params: {
+        pollId: newPoll._id
+      },
+      user: extraMember1,
+      flash: function () {}
+    }
+    const res = { redirect: function () { } }
+
+    await poll.closePoll(req, res)
+    const savedStudent = await StudentProfile.findById(student._id)
+    const savedPolls = await Poll.find({})
+    expect(savedStudent.polls.length).toBe(1)
+    expect(savedPolls.length).toBe(1)
   })
 
   // test('Can create poll through route', async () => {
