@@ -1,4 +1,3 @@
-
 (function () {
   'use strict'
   const the_rest = document.querySelector('.all')

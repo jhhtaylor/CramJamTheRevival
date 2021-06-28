@@ -1,5 +1,6 @@
 const { StudentProfile } = require('../src/db/studentProfiles')
 const { LinkSchema } = require('../src/db/links')
+const { Tag } = require('../src/db/tags')
 const { GroupSchema } = require('../src/db/groups')
 const { MeetingSchema } = require('../src/db/meetings')
 const { Poll } = require('../src/db/poll')
@@ -10,7 +11,7 @@ const studentFirstNames = ['Dave', 'Steve', 'Will', 'Jess', 'Emily', 'Rebecca']
 const studentLastNames = ['Stevens', 'Williams', 'Denham', 'Tobias', 'Taylor', 'Bench']
 const groupNames = ['Dilly', 'Dally', 'Late', 'Submission', 'Jam', 'Group']
 const meetingNames = ['Study', 'Chat', 'Braai', 'Lunch', 'Coffee']
-const tags = ['Fun', 'Rocks', 'Math', 'Interactive']
+const tags = ['fun', 'electronics', 'math', 'interactive']
 const coords = [[23.3645, 34.0575], [28.0473, 26.2041]] // plett, joburg coords
 
 const linkNames = ['Study Notes', 'Study Tips', 'Introduction to Notes', 'Important Link', 'Please Read']
@@ -19,6 +20,7 @@ const linkUrls = ['https://en.wikipedia.org/wiki/Special:Random', 'https://en.wi
 
 generateStudents(studentFirstNames, studentLastNames, 10)
   .then(() => generateGroups(groupNames, 5))
+  .then(() => generateTags(tags))
   .then(() => generateMeetings(meetingNames))
   .then(() => generateLinks(linkNames, linkNotes, linkUrls, 5))
   .then(() => db.close())
@@ -83,8 +85,7 @@ async function generateGroups(groupNames, numGroups) {
     const newGroup = new GroupSchema({
       name: `${first} ${last} ${i}`,
       members: addedMembers,
-      invites: [],
-      tags: addedTags
+      invites: []
     })
     // Inserts a group into a mongodb collection
     const savedGroup = await newGroup.save()
@@ -96,8 +97,19 @@ async function generateGroups(groupNames, numGroups) {
 
   console.log('Inserted New Groups 💎')
 }
-
-async function generateMeetings(meetingNames) {
+async function generateTags (tags) {
+  await Tag.deleteMany({})
+  console.log('Dropped Tags Collection 🔮')
+  for (const tag of tags) {
+    const newTag = new Tag({
+      name: tag,
+      groups: []
+    })
+    await newTag.save()
+  }
+  console.log('Inserted New Tags 💎')
+}
+async function generateMeetings (meetingNames) {
   // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
   await MeetingSchema.deleteMany({})
   await LinkSchema.deleteMany({})
