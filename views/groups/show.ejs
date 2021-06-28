@@ -13,13 +13,10 @@
                                 <% if(group.tags.length>0) {%>
                                     <hr>
                                     <div class="col-lg-12">
-                                    <% for(const tag of group.tags){%>
-                                        
+                                        <% for(const tag of group.tags){%>
                                             <span class="show-tag"><%=tag.name%></span>
-                                        
-                                        
-                                    <%}%>
-                                </div>
+                                        <%}%>
+                                    </div>
                                 <%} %>
                         </div>
                     </div>
@@ -35,28 +32,24 @@
                                             class="rounded-circle">
                                     </div>
                                     <div class="col-lg-4 align-self-center">
-
                                         <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
-                                            <% if(group.members[i]._id.equals(signedInUser._id)) {%>
-                                                (you)
-                                                <%}%>
+                                        <% if(group.members[i]._id.equals(signedInUser._id)) {%>
+                                            (you)
+                                        <%}%>
 
-                                                    <% if(!group.members[i]._id.equals(signedInUser._id) &&
-                                                        signedInUser.groups.includes(group._id)) { %>
-                                                        <form class="d-inline removeForm"
-                                                            action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
-                                                            method="POST" method="POST" id="<%=group.members[i]._id%>">
-                                                            <button class="btn remove-btn"><i
-                                                                    class="fas fa-times"></i></button>
-                                                        </form>
-                                                        <% } %>
+                                        <% if(!group.members[i]._id.equals(signedInUser._id) &&signedInUser.groups.includes(group._id)) { %>
+                                            <form class="d-inline removeForm"
+                                                action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
+                                                method="POST" method="POST" id="<%=group.members[i]._id%>">
+                                                <button class="btn remove-btn"><i
+                                                        class="fas fa-times"></i></button>
+                                            </form>
+                                        <% } %>
                                     </div>
 
                                     <div class="col-lg-5 align-self-center text-end">
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
-                                            <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) &&
-                                                !raters.includes(signedInUser._id) &&
-                                                signedInUser.groups.includes(group._id)) { %>
+                                            <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) && !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
                                                 <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
                                                     class="">
                                                     <div class="rate">
@@ -82,11 +75,11 @@
                                                 <% }else if(group.members[i]._id.equals(signedInUser._id)){%>
                                                     <a id="modal-button" class="button">leave group</a>
 
-                                                    <%} %>
+                                                <%} %>
                                     </div>
                                 </div>
                                 <hr>
-                                <% } %>
+                            <% } %>
 
                         </div>
                     </div>
@@ -128,12 +121,9 @@
                                 <hr>
                                     <%   group.meetings.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : 0)) %>
                                         <% for (meeting of group.meetings) { %>
-                                            <%const
-                                                date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
-                                                <%const
-                                                    startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
-                                                    <%const
-                                                        endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
+                                            <%const date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
+                                                <%const startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
+                                                    <%const endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
                                                         <div class="row">
                                                             <div class="col-lg-10 text-start align-items-center">
                                                                 <h3>
@@ -180,16 +170,17 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-6 col-md-12">
-                    <% for (let poll of groupPolls){%>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <% for (let poll of groupPolls.reverse()){%>
+                    <% if(poll.active === true){ %>
                         <%- include('../partials/pollCard.ejs', {poll:poll}) %>
-                            <% }%>
-                </div>
+                    <% }%>
+                <% }%>
             </div>
         </div>
 
-
+</div>
 
         <%- include('../partials/modal', {action: 'leave group' , group:group, id:'leave'}) -%>
             <%- include('../partials/modal', {action: 'remove user' , reasons: KickReasons, id:'remove'}) -%>

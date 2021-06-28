@@ -1,4 +1,26 @@
 <div class="card px-5 py-2 mb-3">
+    <% if(String(poll.pollster) === String(signedInUser._id)) {%>
+    <div class="col-sm-1 offset-lg-11"style="width: 20px; height=7px;" >
+        <a href="#" class="d-block text-decoration-none" id="dropdownUser2"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-three-dots"></i>
+        </a>
+
+        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2" >
+            <li>
+                <form action="polls/<%=poll._id%>/reset" method="post">
+                    <button type = "submit" class="dropdown-item">Reset</button>
+                </form>
+            </li>
+            <li>
+                <form action="polls/<%=poll._id%>/close" method="post">
+                    <button type = "submit" class="dropdown-item">Close</button>
+                </form> 
+            </li>
+
+        </ul>
+    </div>
+    <%}%>
     <div class="row">
         <div class="col-lg-12">
             <h5 class="card-title text-center"> Vote to <%= poll.action %> @<%= poll.affected.username %> <% if(poll.action == 'Remove'){ %> from <%} else {%>to <%}%><%= poll.group.name %>
@@ -8,9 +30,11 @@
             <% } %>
         </div>
     </div>
+
     <hr>
     <div class="row">
         <% if(!poll.voted.includes(signedInUser._id) && signedInUser.groups.includes(poll.group._id)) { %>
+            <% if(poll.members.includes(signedInUser._id)){%>
             <form action="/polls/<%= poll._id %>/yes" method="POST" class="col-lg-6 text-center">
                 <button class="btn poll-yes"><i class="fas fa-check"></i></button>
             </form>
@@ -18,18 +42,31 @@
                 <button class="btn poll-no"><i class="fas fa-times"></i></button>
             </form>
             <% } else { %>
-                <div class="col-lg-4 text-center">
-                    <p>Yes: <%= poll.votes.yes %>
-                    </p>
+                <div class="text-center">
+                    <p>You are not included in this poll.</p>
                 </div>
-                <div class="col-lg-4 text-center">
-                    <p>No: <%= poll.votes.no %>
-                    </p>
-                </div>
-                <div class="col-lg-4 text-center">
-                    <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %>
-                    </p>
-                </div>
-                <% } %>
+            <% } %>
+        <% } else { %>
+            <div class="col-lg-4 text-center">
+                <p>Yes: <%= poll.votes.yes %>
+                </p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <p>No: <%= poll.votes.no %>
+                </p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <p>Total: <%= poll.votes.yes + poll.votes.no %>/<%= poll.members.length %>
+                </p>
+            </div>
+        <% } %>
+    </div>
+    <div class="row">
+        <div class="text-center">
+            <% if((poll.votes.yes === poll.votes.no && poll.votes.yes != 0) && poll.voted.includes(signedInUser._id)) { %>
+                <p> <i>Stalemate.</i> </p>
+                <p><small><% if(String(signedInUser._id) === String(poll.pollster)){%>Wait for more votes, reset or close the poll. <% }else{ %>Wait for more votes or for the poll owner to reset or close the poll.<% } %></small></p>
+            <% } %>
+        </div>
     </div>
 </div>

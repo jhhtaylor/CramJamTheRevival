@@ -2,6 +2,7 @@ const { GroupSchema } = require('../db/groups')
 const { StudentProfile } = require('../db/studentProfiles')
 const { Tag } = require('../db/tags')
 const { Poll, KickReasons } = require('../db/poll')
+const pollControl = require('./poll')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -15,8 +16,8 @@ module.exports.index = async (req, res) => {
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
   const group = await GroupSchema.findById(groupId).populate('polls') // only display people who are not already in the group
-  const groupPolls = group.polls
-  const groupPollsAffected = groupPolls.map(poll => poll.affected)
+  const activeGroupPolls = group.polls.filter(poll => poll.active === true)
+  const groupPollsAffected = activeGroupPolls.map(poll => poll.affected)
   const students = await StudentProfile.find({
     _id: { $nin: groupPollsAffected },
     groups: { $nin: [groupId] },
@@ -95,6 +96,7 @@ module.exports.deleteGroup = async (groupId) => {
 
 module.exports.deleteMember = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId)
+  await this.deleteMemberPolls(group, memberId)
   await StudentProfile.updateOne({ _id: memberId },
     { $pull: { groups: groupId } })
   if (group.members.length === 1) {
@@ -104,6 +106,16 @@ module.exports.deleteMember = async (groupId, memberId) => {
     await GroupSchema.updateOne({ _id: groupId },
       { $pull: { members: memberId } })
     return false
+  }
+}
+
+module.exports.deleteMemberPolls = async (group, memberId) => {
+  const polls = await Poll.find({ _id: { $in: group.polls } })
+  const member = await StudentProfile.findById(memberId)
+  for (const poll of polls) {
+    if (poll.members.includes(memberId) || poll.affected == memberId) {
+      await pollControl.removeFromPoll(poll, member)
+    }
   }
 }
 

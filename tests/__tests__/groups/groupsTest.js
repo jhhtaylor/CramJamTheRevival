@@ -2,6 +2,7 @@ const groups = require('../../../src/controllers/groups')
 const { GroupSchema } = require('../../../src/db/groups')
 const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { Tag } = require('../../../src/db/tags')
+const { Poll } = require('../../../src/db/poll')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals } = require('../../../utils/testUtils/dbTestUtils')
 const { getGeoData } = require('../../../seeds/locationHelper')
 const { app } = require('../../../utils/testUtils/expressTestUtils')
@@ -20,7 +21,7 @@ beforeEach(async () => {
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
   await Tag.deleteMany({})
-
+  await Poll.deleteMany({})
   const data = getGeoData()
   const location = data.location
   const geodata = data.geodata
@@ -495,7 +496,96 @@ describe('Group controller functionality', () => {
     const groupsRetrieved = await GroupSchema.find({ name: regex })
     const expectedGroup = await GroupSchema.find({})
     expect(groupsRetrieved).not.toEqual(expectedGroup)
+    done()
+  })
 
+  test('If a student is removed from a group, they should be removed from all the group polls', async (done) => {
+    const extraMembers = [Mongoose.Types.ObjectId(), Mongoose.Types.ObjectId(), Mongoose.Types.ObjectId()]
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: [testStudent._id, extraMembers[0], extraMembers[1], extraMembers[2]]
+    })
+    const testGroup = await newGroup.save()
+    const poll = new Poll({
+      members: [testStudent._id, extraMembers[0], extraMembers[1]],
+      name: 'Testing Poll',
+      pollster: extraMembers[0],
+      action: 'Invite',
+      affected: extraMembers[2],
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: testGroup._id
+    })
+    await poll.save()
+    testGroup.polls.push(poll._id)
+    await testGroup.save()
+    testStudent.polls.push(poll._id)
+    await testStudent.save()
+
+    const req = {
+      user: extraMembers[2],
+      params: {
+        id: testGroup._id,
+        member: testStudent._id,
+        flash: function () { }
+      }
+    }
+    const res = { redirect (url) { return url } }
+    await groups.deleteGroupMember(req, res)
+    const updatedGroup = await GroupSchema.findById(testGroup._id)
+    const updatedStudent = await StudentProfile.findOne({})
+    const updatedPoll = await Poll.findOne({})
+
+    expect(updatedGroup.members.length).toEqual(3)
+    expect(updatedGroup.polls.length).toEqual(1)
+    expect(updatedStudent.groups.length).toEqual(0)
+    expect(updatedStudent.polls.length).toBe(0)
+    expect(updatedPoll.members.length).toBe(2)
+    done()
+  })
+  test('If a student is removed from a group, their polls should be deleted', async (done) => {
+    const extraMembers = [Mongoose.Types.ObjectId(), Mongoose.Types.ObjectId(), Mongoose.Types.ObjectId()]
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: [testStudent._id, extraMembers[0], extraMembers[1], extraMembers[2]],
+      polls: []
+    })
+    const testGroup = await newGroup.save()
+    const poll = new Poll({
+      members: [testStudent._id, extraMembers[0], extraMembers[1]],
+      name: 'Testing Poll',
+      pollster: testStudent._id,
+      action: 'Invite',
+      affected: extraMembers[2],
+      votes: { yes: 1, no: 0 },
+      voted: [],
+      group: testGroup._id
+    })
+    await poll.save()
+    testGroup.polls.push(poll._id)
+    await testGroup.save()
+    testStudent.polls.push(poll._id)
+    testStudent.username = 'mokey'
+    await testStudent.save()
+
+    const req = {
+      user: extraMembers[2],
+      params: {
+        id: testGroup._id,
+        member: testStudent._id,
+        flash: function () { }
+      }
+    }
+    const res = { redirect (url) { return url } }
+    await groups.deleteGroupMember(req, res)
+    const updatedGroup = await GroupSchema.findById(testGroup._id)
+    const updatedStudent = await StudentProfile.findOne({})
+    const updatedPoll = await Poll.findOne({})
+
+    expect(updatedGroup.members.length).toEqual(3)
+    expect(updatedStudent.groups.length).toEqual(0)
+    expect(updatedStudent.polls.length).toBe(0)
+    expect(updatedPoll.active).toBe(false)
     done()
   })
 })
