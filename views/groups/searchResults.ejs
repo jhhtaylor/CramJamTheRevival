@@ -28,13 +28,21 @@
                                             </h4>
                                             <h6>members: <%= group.members.length %>
                                             </h6>
-                                            <p>Group description goes here</p>
-                                            <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
-                                                method="POST">
-                                                <button type="submit"
-                                                    class="header-btn theme-btn text-decoration-none">Send
-                                                    Request</button>
-                                            </form>
+                                            <%if(!group.description){%>
+                                                <p class="text-truncate" style="max-width: 250px;">Group description
+                                                    goes here
+                                                </p>
+                                                <%} else {%>
+                                                    <p class="text-truncate" style="max-width: 250px;">
+                                                        <%= group.description %>
+                                                    </p>
+                                                    <%}%>
+                                                        <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
+                                                            method="POST">
+                                                            <button type="submit"
+                                                                class="header-btn theme-btn text-decoration-none">Send
+                                                                Request</button>
+                                                        </form>
                                         </div>
                                     </div>
                                 </div>
