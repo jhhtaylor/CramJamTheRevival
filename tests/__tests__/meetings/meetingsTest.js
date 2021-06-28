@@ -55,11 +55,12 @@ beforeEach(async () => {
   testMeetingName = 'Test Meeting'
 
   testAddress = '43 Dundalk Avenue parkview johannesburg'
-  testDate = '2021-06-24'
+  testDate = '2100-06-24'
   testStart = '12:23'
   testEnd = '14:46'
-  start = new Date(2021, 5, 24, 12, 23, 0, 0) //month is 0 indexed
-  end = new Date(2021, 5, 24, 14, 46, 0, 0) //month is 0 indexed
+  now = new Date()
+  start = new Date(2100, 5, 24, 12, 23, 0, 0) //month is 0 indexed
+  end = new Date(2100, 5, 24, 14, 46, 0, 0) //month is 0 indexed
 
 })
 
