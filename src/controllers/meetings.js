@@ -27,7 +27,7 @@ module.exports.createMeeting = async (req, res) => {
   } 
   const start = new Date(`${req.body.date} ${req.body.startTime}`)
   const end = new Date(`${req.body.date} ${req.body.endTime}`)
-  if(end < start){
+  if(end < start || start < Date.now()){
     req.flash('error', "invalid meeting time")
     return res.redirect(`/meetings/new/${group._id}`)
     
