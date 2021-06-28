@@ -8,6 +8,14 @@
             <h1>
                 <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
             </h1>
+            <h3>
+                <% if(meeting.location.type == 'Point') {%>
+                    <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
+                <% const now = new Date() %>
+                <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
+                    <span class="badge rounded-pill bg-danger">Today</span>
+                <%} %>
+            </h3>
             <h6>
                 <strong>
                     <%= date%>
