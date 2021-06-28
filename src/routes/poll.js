@@ -9,6 +9,12 @@ const router = express.Router()
 router.route('/')
   .get(isLoggedIn, catchAsync(poll.showAllPolls))
 
+router.route('/:pollId/reset')
+  .post(catchAsync(poll.resetPoll))
+
+router.route('/:pollId/close')
+  .post(catchAsync(poll.closePoll))
+
 router.route('/:groupId/:action/:memberId')
   .post(catchAsync(poll.createPoll))
 

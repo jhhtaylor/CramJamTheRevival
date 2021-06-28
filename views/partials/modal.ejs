@@ -1,8 +1,9 @@
 <div class="bg-modal" id="<%= id %>">
 	<div class="modal-contents">
+        <div class="close">+</div>
 
             <% if(action == 'leave group'){ %>
-                <div class="close">+</div>
+                
                 <h3>Are you sure?</h3>
                 <hr>
                 <p>Are you sure you want to leave <b><%= group.name %></b>?</p>
@@ -21,6 +22,9 @@
                 </div>
             <% } %>
             <% if(action == 'remove user'){ %>
+                <h3>Removing user</h3>
+                <hr>
+                <p>Why should this user be removed from this group?</p>
                 <div class="dropdown" style="margin-bottom: 2em;">
                     <select class="form-select" aria-label="Kick Reason" id="kickReason">
                         <% let count = 0 %>
@@ -33,10 +37,10 @@
                   </div>
                 <div class='row justify-content-center' style="margin-top: 2em;">
                     <div class="col-lg-5 text-center">
-                        <button class="theme-btn text-decoration-none" type="button" id="kickBtn">Submit</button>
+                        <button id="cancel" class="theme-btn-light text-decoration-none">Cancel</button>
                     </div>
                     <div class="col-lg-5 text-center">
-                        <button id="cancel" class="theme-btn-light text-decoration-none">Cancel</button>
+                        <button class="theme-btn text-decoration-none" type="button" id="kickBtn">Submit</button>
                     </div>
                 </div>
             <% } %> 

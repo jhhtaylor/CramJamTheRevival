@@ -6,6 +6,7 @@ const kickReasons = ['Disrespectful behaviour', 'Non participatory', 'Consistent
 // Group Schema
 const pollSchema = new Schema({
   name: { type: String, required: true },
+  pollster: { type: Schema.Types.ObjectId, ref: 'StudentProfile', required: true },
   action: { type: String, enum: ['Remove', 'Add', 'Invite'], required: true },
   members: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
   voted: [{ type: Schema.Types.ObjectId }],
