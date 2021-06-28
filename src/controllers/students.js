@@ -86,6 +86,12 @@ module.exports.editSettings = async (req, res) => {
   res.render('settings/edit', { allStudents: students })
 }
 
+module.exports.getProfile = async (req, res) => {
+  const { id } = req.params
+  const profile = await StudentProfile.findById(id)
+  res.render('students/profile.ejs', { profile })
+}
+
 module.exports.updateProfile = async (req, res) => {
   const { id } = req.params
   const { email, username, location, isSearchable } = req.body
