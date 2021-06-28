@@ -50,6 +50,9 @@ router
     catchAsync(students.loginStudent)
   )
 
+router.route('/profile/:id')
+  .get(isLoggedIn, students.getProfile)
+
 router.route('/settings/:id')
   .get(isLoggedIn, students.getSettings)
 
