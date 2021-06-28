@@ -56,7 +56,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testGroupName)
@@ -99,7 +99,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup.members.length).toEqual(1)
@@ -123,7 +123,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -172,7 +172,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const response = { redirect (url) { return url } }
+    const response = { redirect(url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -212,7 +212,7 @@ describe('Group controller functionality', () => {
       user: testStudent._id,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -268,7 +268,7 @@ describe('Group controller functionality', () => {
       user: testStudent._id,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.declineInvite(req, res)
 
@@ -318,7 +318,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.createGroup(req, res)
 
@@ -354,7 +354,7 @@ describe('Group controller functionality', () => {
       },
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -384,7 +384,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -394,7 +394,6 @@ describe('Group controller functionality', () => {
     expect(tags.length).toBe(1)
     expect(tags[0].name).toBe('tag-one')
     expect(tags[0].groups[0]).toStrictEqual(group._id)
-
     done()
   })
 
@@ -418,7 +417,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -453,7 +452,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -464,6 +463,39 @@ describe('Group controller functionality', () => {
     expect(tags[0].name).toBe('tag-one')
     expect(tags[0].groups[0]).toStrictEqual(group._id)
 
+    done()
+  })
+
+  test('A student can search for groups that exist to join', async (done) => {
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
+
+    const testSearch = 'test' // actual group name only has to contain part of what is searched
+
+    const regex = new RegExp(groups.escapeRegex(testSearch), 'gi')
+    const groupsRetrieved = await GroupSchema.find({ name: regex })
+    const expectedGroup = await GroupSchema.find({})
+    expect(groupsRetrieved).toEqual(expectedGroup)
+
+    done()
+  })
+
+  test('A student cannot search for groups that do not exist join', async (done) => {
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
+
+    const testSearch = 'fake' // should not be in db
+
+    const regex = new RegExp(groups.escapeRegex(testSearch), 'gi')
+    const groupsRetrieved = await GroupSchema.find({ name: regex })
+    const expectedGroup = await GroupSchema.find({})
+    expect(groupsRetrieved).not.toEqual(expectedGroup)
     done()
   })
 

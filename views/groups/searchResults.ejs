@@ -1,0 +1,68 @@
+<% layout('layouts/boilerplate') -%>
+    <div class="container groups-section">
+        <div class="row">
+            <% if(signedInUser.groups.length < groupLimit) {%>
+                <h3>Groups Search Results For "<%= userSearched %>": </h3>
+                <% if(noMatch !==null) { %>
+                    <h3>
+                        <%= noMatch %>
+                    </h3>
+                    <p>You can only search for groups you are not a member of by name.</p>
+                    <form action="/groups/searchResults" method="GET" class="form-inline">
+                        <div class="row align-items-center">
+                            <div class="col-lg-10 col-md-6 col-sm-4">
+                                <input type="text" name="search" placeholder="Group Search..."
+                                    class="form-control"></input>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                <input type="submit" value="Search" class="theme-btn text-decoration-none">
+                            </div>
+                    </form>
+                    <% } %>
+                        <div class="row">
+                            <% for (let group of notUserGroups){%>
+                                <div class="col-lg-4 col-md-6 group-card">
+                                    <div class="box-style box-style-full">
+                                        <div class="box-content-style">
+                                            <h4>
+                                                <%= group.name %>
+                                            </h4>
+                                            <h6>members: <%= group.members.length %>
+                                            </h6>
+                                            <%if(!group.description){%>
+                                                <p class="text-truncate" style="max-width: 250px;">Group description
+                                                    goes here
+                                                </p>
+                                                <%} else {%>
+                                                    <p class="text-truncate" style="max-width: 250px;">
+                                                        <%= group.description %>
+                                                    </p>
+                                                    <%}%>
+                                                        <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
+                                                            method="POST">
+                                                            <button type="submit"
+                                                                class="header-btn theme-btn text-decoration-none">Send
+                                                                Request</button>
+                                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                        </div>
+                        <% } else { %>
+                            <div class="container">
+                                <div class="row" align='center'>
+                                    <h6> All groups slots are full! </h6>
+                                    <p> Delete or leave old groups to join new ones! </p>
+                                </div>
+                            </div>
+                            <% } %>
+        </div>
+        <form action="/groups/" method="GET" class="form-inline">
+            <div class="row align-items-center">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <input type="submit" value="Go Back" class="theme-btn text-decoration-none">
+                </div>
+            </div>
+        </form>
+    </div>

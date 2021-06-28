@@ -1,80 +1,125 @@
 <% layout('layouts/boilerplate') -%>
     <div class="container groups-section">
-        <div class="row">
-            <% if(groups.length> 0) {%>
-                <h1>Your Groups</h1>
-        
-                <%for (var i = 0; i < groupLimit; i++){%>
-                    <div class="col-lg-3 col-md-6">
-                        
-                                <%if (groups[i]) { %>
-                                    <div class="box-style box-style-full">
-                                        <div class="box-content-style">
-                                    <h4>
-                                    <%= groups[i].name %>
-                                    </h4>
-                                    <%if(!groups[i].description){%>
-                                        <p class="text-truncate" style="max-width: 250px;">Group description goes here</p>
-                                    <%} else {%>
-                                        <p class="text-truncate" style="max-width: 250px;"><%= groups[i].description %></p>
-                                    <%}%>
-                                    <div class="header-btn">
-                                        <a href="/groups/<%=groups[i]._id%>" class="theme-btn text-decoration-none">View</a>
-                                    </div>
-                                    
-                                <% }else{%>
-                                    <div class="box-style box-style-empty">
-                                    <div class="box-content-style-empty">
-                                    <a href="\groups\new" class="text-decoration-none text-center">
-                                            <div class="box-icon-style-empty">
-                                                <i class="fas fa-plus text-decoration-none"></i>
-                                            </div>    
-                                    </a>
-                                <% }%>
-        
-                            </div>
-                        </div>
-                    </div>
-                    <% }%>
-        </div>
-        <% }else{%>
-        <div class="container">
-            <div class="row">
-                <h3>Looks like you are not apart of any groups</h3>
-                <div class="header-btn mb-5 mt-3">
-                    <a href="/groups/new" class="theme-btn text-decoration-none">Create a group <i class="fas fa-plus text-decoration-none"></i></a>
-                </div>
-            </div>
-        </div>
-        <% } %>
         <% if(signedInUser.groups.length < groupLimit) {%>
-            <h3>Request to join one of the available groups below!</h3>
-            <div class="row">
-                <% for (let group of randomGroups){%>
-                    <div class="col-lg-4 col-md-6 group-card">
-                        <div class="box-style box-style-full">
-                            <div class="box-content-style">
-                                <h4>
-                                    <%= group.name %>
-                                </h4>
-                                <h6>members: <%= group.members.length %>
-                                </h6>
-                                <p>Group description goes here</p>
-                                <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>" method="POST">
-                                    <button type="submit" class="header-btn theme-btn text-decoration-none">Send
-                                        Request</button>
-                                </form>
-                            </div>
-                        </div>
+            <h3>Search for a group to join below!</h3>
+            <form action="/groups/searchResults" method="GET" class="form-inline">
+                <div class="row align-items-center">
+                    <div class="col-lg-10 col-md-6 col-sm-4">
+                        <input type="text" name="search" placeholder="Group Search..." class="form-control"></input>
                     </div>
-                    <% } %>
-            </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2">
+                        <input type="submit" value="Search" class="theme-btn text-decoration-none">
+                    </div>
+            </form>
             <% } else { %>
                 <div class="container">
                     <div class="row" align='center'>
                         <h6> All groups slots are full! </h6>
-                        <p> Delete or leave old groups to join new ones! </p>
+                        <p> Delete or leave old groups to search for new ones! </p>
                     </div>
                 </div>
                 <% } %>
-    </div>
+                    <div class="row">
+                        <% if(groups.length> 0) {%>
+                            <h1>Your Groups</h1>
+
+                            <%for (var i=0; i < groupLimit; i++){%>
+                                <div class="col-lg-3 col-md-6">
+
+                                    <%if (groups[i]) { %>
+                                        <div class="box-style box-style-full">
+                                            <div class="box-content-style">
+                                                <h4>
+                                                    <%= groups[i].name %>
+                                                </h4>
+                                                <%if(!groups[i].description){%>
+                                                    <p class="text-truncate" style="max-width: 250px;">Group description
+                                                        goes here
+                                                    </p>
+                                                    <%} else {%>
+                                                        <p class="text-truncate" style="max-width: 250px;">
+                                                            <%= groups[i].description %>
+                                                        </p>
+                                                        <%}%>
+                                                            <div class="header-btn">
+                                                                <a href="/groups/<%=groups[i]._id%>"
+                                                                    class="theme-btn text-decoration-none">View</a>
+                                                            </div>
+
+                                                            <% }else{%>
+                                                                <div class="box-style box-style-empty">
+                                                                    <div class="box-content-style-empty">
+                                                                        <a href="\groups\new"
+                                                                            class="text-decoration-none text-center">
+                                                                            <div class="box-icon-style-empty">
+                                                                                <i
+                                                                                    class="fas fa-plus text-decoration-none"></i>
+                                                                            </div>
+
+
+                                                                        </a>
+                                                                        <% }%>
+
+                                                                    </div>
+                                                                </div>
+                                            </div>
+                                            <% }%>
+                                        </div>
+                                        <% }else{%>
+                                            <div class="container">
+                                                <div class="row">
+                                                    <h3>Looks like you are not apart of any groups</h3>
+                                                    <div class="header-btn mb-5 mt-3">
+                                                        <a href="/groups/new"
+                                                            class="theme-btn text-decoration-none">Create a group
+                                                            <i class="fas fa-plus text-decoration-none"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% } %>
+
+                                                <% if(signedInUser.groups.length < groupLimit) {%>
+                                                    <h3>Request to join one of the available groups below!</h3>
+                                                    <div class="row">
+                                                        <% for (let group of randomGroups){%>
+                                                            <div class="col-lg-4 col-md-6 group-card">
+                                                                <div class="box-style box-style-full">
+                                                                    <div class="box-content-style">
+                                                                        <h4>
+                                                                            <%= group.name %>
+                                                                        </h4>
+                                                                        <h6>members: <%= group.members.length %>
+                                                                        </h6>
+                                                                        <%if(!group.description){%>
+                                                                            <p class="text-truncate"
+                                                                                style="max-width: 250px;">Group
+                                                                                description
+                                                                                goes here
+                                                                            </p>
+                                                                            <%} else {%>
+                                                                                <p class="text-truncate"
+                                                                                    style="max-width: 250px;">
+                                                                                    <%= group.description %>
+                                                                                </p>
+                                                                                <%}%>
+                                                                                    <form
+                                                                                        action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
+                                                                                        method="POST">
+                                                                                        <button type="submit"
+                                                                                            class="header-btn theme-btn text-decoration-none">Send
+                                                                                            Request</button>
+                                                                                    </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <div class="container">
+                                                            <div class="row" align='center'>
+                                                                <h6> All groups slots are full! </h6>
+                                                                <p> Delete or leave old groups to join new ones! </p>
+                                                            </div>
+                                                        </div>
+                                                        <% } %>
+                                </div>

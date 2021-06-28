@@ -19,6 +19,8 @@ router
     catchAsync(groups.createGroup)
   )
 
+router.route('/searchResults').get(isLoggedIn, catchAsync(groups.search))
+
 router
   .route('/:id')
   .get(isLoggedIn, catchAsync(groups.showGroup))
