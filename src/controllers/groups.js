@@ -16,8 +16,8 @@ module.exports.index = async (req, res) => {
 module.exports.explore = async (req, res) => {
   const groupId = req.params.id
   const group = await GroupSchema.findById(groupId).populate('polls') // only display people who are not already in the group
-  const groupPolls = group.polls
-  const groupPollsAffected = groupPolls.map(poll => poll.affected)
+  const activeGroupPolls = group.polls.filter(poll => poll.active === true)
+  const groupPollsAffected = activeGroupPolls.map(poll => poll.affected)
   const students = await StudentProfile.find({
     _id: { $nin: groupPollsAffected },
     groups: { $nin: [groupId] },

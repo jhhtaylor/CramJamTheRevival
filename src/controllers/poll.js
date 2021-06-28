@@ -48,7 +48,7 @@ module.exports.vote = async (poll, type) => {
 module.exports.pollExists = async (groupId, memberId, action) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if (poll.action == action && String(poll.affected) == String(memberId)) {
+    if (poll.action == action && String(poll.affected) == String(memberId) && poll.active === true) {
       return true
     }
   }
@@ -57,14 +57,14 @@ module.exports.pollExists = async (groupId, memberId, action) => {
 module.exports.isInPoll = async (groupId, memberId, action) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if ((poll.action === 'Invite' || poll.action === 'Add') && String(poll.affected) == String(memberId)) { return true }
+    if (((poll.action === 'Invite' || poll.action === 'Add') && String(poll.affected) == String(memberId)) && poll.active === true) { return true }
   }
   return false
 }
 module.exports.hasRequested = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if (poll.action === 'Add' && String(poll.affected) === String(memberId)) { return true }
+    if ((poll.action === 'Add' && String(poll.affected) === String(memberId)) && poll.active === true) { return true }
   }
   return false
 }
