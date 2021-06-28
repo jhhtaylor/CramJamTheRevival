@@ -61,7 +61,7 @@ module.exports.createGroup = async (req, res) => {
 }
 
 module.exports.showGroup = async (req, res) => {
-  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites', 'tags'])
+  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites', 'tags', 'meetings'])
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
   const allTags = await Tag.find({})

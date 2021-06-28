@@ -16,13 +16,11 @@
   }
 
   if ('geolocation' in navigator) {
-    console.log('available')
+  
     navigator.geolocation.watchPosition((position) => {
-		  console.log(position.coords.latitude)
-		  console.log(position.coords.longitude)
-		  console.log(position)
+
     })
 	  } else {
-    console.log('not available')
+    
 	  }
 })()

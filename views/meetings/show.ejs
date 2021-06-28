@@ -1,0 +1,74 @@
+<% layout('layouts/boilerplate') -%>
+<%const date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
+<%const startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
+<%const endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 card p-3 m-3">
+            <h1>
+                <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
+            </h1>
+            <h3>
+                <% if(meeting.location.type == 'Point') {%>
+                    <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
+                <% const now = new Date() %>
+                <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
+                    <span class="badge rounded-pill bg-danger">Today</span>
+                <%} %>
+            </h3>
+            <h6>
+                <strong>
+                    <%= date%>
+                </strong> From <strong>
+                    <%=startTime%>
+                </strong> to <strong>
+                    <%=endTime%>
+                </strong>
+            </h6>
+            <hr>
+            <h4>Description:</h4>
+            <p>
+                <%= meeting.description %>
+            </p>
+            <hr>
+            <% if(meeting.location.type == 'Point'){ %>
+            <div id="map"></div>
+            <div class="row">
+                <h5 id="address"></h5>
+            </div>
+            <% }else{%>
+                <h5>This is an online meeting</h5>
+            <%}%>
+        </div>
+    </div>
+</div>
+
+<script>
+            let loc = JSON.parse('<%- JSON.stringify(meeting.location)%>')
+            let coord = loc.coordinates
+            mapboxgl.accessToken = 'pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w';
+            let map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/navigation-day-v1',
+                center: coord,
+                zoom: 12,
+                dragPan: false,
+                touchZoomRotate: { around: 'center' },
+                scrollZoom: { around: 'center' }
+            });
+
+            // Create a default Marker and add it to the map.
+            let marker = new mapboxgl.Marker({ color: 'red' })
+                .setLngLat(coord)
+                .addTo(map);
+       
+
+            (async function (coord){
+                const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coord[0]},${coord[1]}.json?types=address&access_token=pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w`
+                const response = await fetch(apiUrl)
+                const data = await response.json()
+                
+                const addr = document.getElementById('address')
+                addr.innerHTML = data.features[0].place_name
+            })(coord)
+</script>

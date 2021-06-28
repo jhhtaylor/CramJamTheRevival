@@ -569,12 +569,12 @@ margin-bottom: 10px; }
     right:2px;
 }
 
-.rate-btn:hover, .poll-yes:hover, .poll-no:hover, .remove-btn:hover{
+.rate-btn:hover, .poll-yes:hover, .poll-no:hover, .remove-btn:hover, .meeting-view-btn:hover{
     background-color: rgb(236, 128, 95);
     color: white;
 }
 
-.poll-yes, .poll-no{
+.poll-yes, .poll-no, .meeting-view-btn{
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -584,6 +584,7 @@ margin-bottom: 10px; }
     -o-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
 }
+
 
 
 .poll-yes{
@@ -703,6 +704,18 @@ margin-bottom: 10px; }
     padding-left: 60px;
 }
 
+
+#map {  
+    top: 0; 
+    bottom: 0; 
+    height: 350px;
+    margin-bottom: 25px;
+}
+
+.mapboxgl-canvas-container {
+
+    height: 100vh;
+}
 /*TAGS*/
 
 :root {
