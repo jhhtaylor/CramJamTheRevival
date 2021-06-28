@@ -1,16 +1,64 @@
-// to be replaced with database access
-const meetings = [{
-  GroupName: 'Default meeting',
-  StartTime: '12:00',
-  EndTime: '1:00'
-}]
+const {MeetingSchema} = require('../db/meetings')
+const { GroupSchema } = require('../db/groups')
+const { getGeocode} = require('../../utils/geocodeAddress.js')
 
-module.exports.add = (newMeeting) => {
-  meetings.push(newMeeting)
+module.exports.index = async (req, res) => {
+  const userGroups = req.user.groups
+  const meetings = await MeetingSchema.find({ group: { $in: userGroups } }).populate(['group'])
+  res.render('meetings/index', { meetings })
 }
 
-module.exports.list = () => {
-  return meetings
+module.exports.show = async (req, res) => {
+  const meeting = await MeetingSchema.findById(req.params.meetingid).populate(['group'])
+  res.render('meetings/show', {meeting})
+}
+
+module.exports.renderNewForm = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.groupid).populate('members')
+  const bestAddress = this.determineMeetingLocation(group.members)
+  res.render('meetings/new', {group, bestAddress})
+}
+
+module.exports.createMeeting = async (req, res) => {
+  const group = await GroupSchema.findById(req.params.groupid)
+  if(group == null){
+    req.flash('error', "Group does not exist")
+    return res.redirect('/')
+  } 
+  const start = new Date(`${req.body.date} ${req.body.startTime}`)
+  const end = new Date(`${req.body.date} ${req.body.endTime}`)
+  if(end < start || start < Date.now()){
+    req.flash('error', "invalid meeting time")
+    return res.redirect(`/meetings/new/${group._id}`)
+    
+  }
+
+
+  const meeting = new MeetingSchema({
+    name: req.body.name,
+    description: req.body.description,
+    group: group._id,
+    attendees: group.members,
+    start: start,
+    end: end
+  })
+
+  if(req.body.address.length > 0){
+    const coords = await getGeocode(req.body.address)
+    if(coords == null){
+      req.flash('error', "invalid location")
+      return res.redirect(`/meetings/new/${group._id}`)
+      
+    }
+    meeting.location = {type: 'Point', coordinates: coords}
+  }else{
+    meeting.location = {type: 'Online', coordinates: []}
+  }
+  meeting.save()
+  await GroupSchema.findByIdAndUpdate(req.params.groupid, { $push: { meetings: meeting._id } })
+
+  req.flash('success', 'Created new meeting!')
+  return res.redirect('/groups')
 }
 
 module.exports.determineMeetingLocation = (students) => {

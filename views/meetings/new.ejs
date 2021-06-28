@@ -1,0 +1,156 @@
+<% layout('layouts/boilerplate') -%>
+    <section class="meeting-create ">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 card">
+                    <div class="row p-2">
+                        <h2>Create new meeting for <strong>
+                                <%= group.name %>
+                            </strong> </h2>
+                    </div>
+
+
+                    <form action="/meetings/new/<%= group._id%>" method="POST">
+                        <hr>
+                        <h4>Details</h4>
+                        <div class="row align-items-center mb-3">
+                            <div class="col-lg-12 mb-2">
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"
+                                    required>
+                            </div>
+                            <div class="col-lg-12">
+                                <textarea rows="4" name="description" id="descriptionArea" class="form-control"
+                                    placeholder="Description"></textarea>
+                            </div>
+                        </div>
+                        <hr>
+                        <h4>Pick a Date and Time</h4>
+                        <div class="row align-items-center mb-3">
+                            <div class="col-lg-6">
+                                <label class="form-label" for="datePicker">Date</label>
+                                <input type="date" class="form-control" id="datePicker" name="date" required>
+                                
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="form-label" for="startTime">Start Time</label>
+                                <input id="startTime" type="time" name="startTime" placeholder="Start Time"
+                                    class="form-control" required>
+                                
+                            </div>
+                            <div class="col-lg-3">
+                                <label class="form-label" for="endTime">End Time</label>
+                                <input id="endTime" type="time" name="endTime" placeholder="End Time"
+                                    class="form-control" required>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="form-check form-switch py-3">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="notOnline"
+                                data-bs-toggle="collapse" data-bs-target="#meetInPerson" aria-expanded="false"
+                                aria-controls="collapseExample" onchange="mapToggle(this)">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Meet In Person</label>
+                        </div>
+                        <div class="row">
+                            <div class="collapse" id="meetInPerson">
+                                <hr>
+                                <div id="map"></div>
+                                <div class="row align-items-center mb-3">
+                                    <div class="input-group col-lg-12">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-white px-4 border-md border-right-0">
+                                                <h4 class="fa fa-map-marker py-2 mb-1 text-muted"></h4>
+                                            </span>
+                                        </div>
+                                        <input id="address" type="text" name="address" placeholder="Address"
+                                            class="form-control bg-white border-left-0 border-md"
+                                            onfocusout="updateAddress(this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row text-end">
+                            <div class="col-lg-12 py-3">
+                                <button type="submit" class="header-btn theme-btn text-decoration-none">Create!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="mask col-lg-6 col-md-12">
+                    <img src="assets/student_meeting.jpg" alt="" class="img-fluid mb-2 d-none d-md-block">
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            const dp = document.getElementById('datePicker')
+            let today = new Date();
+
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            let yyyy = today.getFullYear();
+
+            date = yyyy + '-' + mm + '-' + dd
+            dp.value = date
+
+
+            const ts = document.getElementById('startTime')
+            const te = document.getElementById('endTime')
+            ts.value = String((today.getHours() + 2) % 24).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0')
+            te.value = String((today.getHours() + 4) % 24).padStart(2,'0') + ":" + String(today.getMinutes()).padStart(2,'0')
+
+
+
+            const bestAddress = JSON.parse('<%- JSON.stringify(bestAddress)%>')
+            let coord = bestAddress.geodata.coordinates
+            mapboxgl.accessToken = 'pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w';
+            let map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/navigation-day-v1',
+                center: coord,
+                zoom: 12,
+                dragPan: false,
+                touchZoomRotate: { around: 'center' },
+                scrollZoom: { around: 'center' }
+            });
+
+            // Create a default Marker and add it to the map.
+            let marker = new mapboxgl.Marker({ color: 'red' })
+                .setLngLat(coord)
+                .addTo(map);
+
+            let disable = true
+            let prevValue = null
+            function mapToggle(radio) {
+                disable = !disable
+                map.resize();
+                const addr = document.getElementById("address")
+                if(disable){
+                    addr.setAttribute("disabled", "")
+                    prevValue = addr.getAttribute("value")
+                    addr.removeAttribute("value")
+                }else{
+                    addr.removeAttribute("disabled")
+                    addr.setAttribute("value", prevValue || bestAddress.location)
+                }
+            }
+
+            async function updateAddress(textField) {
+                const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURI(textField.value)}$.json?access_token=pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w`
+                const response = await fetch(apiUrl)
+                const data = await response.json()
+                if (data.features.length > 0) {
+                    coords = [data.features[0].geometry.coordinates[0], data.features[0].geometry.coordinates[1]]
+                }
+                else {
+                    textField.value = bestAddress.location
+                    coords = bestAddress.geodata.coordinates
+                }
+                map.easeTo({ center: coords })
+                marker.setLngLat(coords).addTo(map)
+
+            }
+
+        </script>
+    </section>
