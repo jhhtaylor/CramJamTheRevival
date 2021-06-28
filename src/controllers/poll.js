@@ -28,16 +28,7 @@ module.exports.votePoll = async (req, res) => {
   const voted = [...votePoll.voted]
   voted.sort()
   if (voted.length > (members.length / 2)) { // checking sorted arrays
-    // const yesVotes = voted.filter(function ([key, value]) {
-    //   return !value // the condition for filter. Change this as you need.
-    // })
-    if (votePoll.votes.yes > votePoll.votes.no) {
-      votePoll.active = false
-      await votePoll.save()
-      await this.updatePoll(votePoll._id, req)
-    } else if (votePoll.votes.no > votePoll.votes.yes) {
-
-    }
+    await this.updatePoll(votePoll._id, req)
   }
   await StudentProfile.updateMany({ _id: { $in: members } },
     { $pull: { polls: votePoll._id } })
@@ -57,21 +48,23 @@ module.exports.vote = async (poll, type) => {
 module.exports.pollExists = async (groupId, memberId, action) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if (poll.action === action && poll.affected == memberId) { return true }
+    if (poll.action == action && String(poll.affected) == String(memberId)) {
+      return true
+    }
   }
   return false
 }
 module.exports.isInPoll = async (groupId, memberId, action) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if ((poll.action === 'Invite' || poll.action === 'Add') && poll.affected == memberId) { return true }
+    if ((poll.action === 'Invite' || poll.action === 'Add') && String(poll.affected) == String(memberId)) { return true }
   }
   return false
 }
 module.exports.hasRequested = async (groupId, memberId) => {
   const group = await GroupSchema.findById(groupId).populate('polls')
   for (const poll of group.polls) {
-    if (poll.action === 'Add' && poll.affected == memberId) { return true }
+    if (poll.action === 'Add' && String(poll.affected) === String(memberId)) { return true }
   }
   return false
 }
@@ -96,12 +89,10 @@ module.exports.newPoll = async (groupId, action, affected, members, owner, polls
 
   await GroupSchema.updateOne({ _id: groupId },
     { $push: { polls: newPoll._id } })
-  console.log(newPoll)
 }
 
 module.exports.createPoll = async (req, res) => {
   const { groupId, action, memberId } = req.params
-
   // Check if the poll already exists
   const pollExists = await this.pollExists(groupId, memberId, action)
   if (pollExists) {
@@ -122,7 +113,7 @@ module.exports.createPoll = async (req, res) => {
   const isInPoll = await this.isInPoll(groupId, affected)
   const hasRequested = await this.hasRequested(groupId, affected)
 
-  const { reason } = req.body
+  const reason = req.body.reason
 
   // Use methods defined in ./function.js based on action instruction to find who the members of the poll should be or to determine errors
   const members = methods[action](isInGroup, isInvited, isInPoll, hasRequested, group.members, affected, req.user._id)
@@ -165,15 +156,34 @@ module.exports.closePoll = async (req, res) => {
   const pollId = req.params.pollId
   const poll = await Poll.findById(pollId)
   if (String(poll.pollster) === String(req.user._id)) {
-    const members = await StudentProfile.find({ _id: { $in: poll.members } })
-    for (const member of members) {
-      member.polls.pull(poll._id)
-      await member.save()
-    }
-    await Poll.deleteOne({ _id: poll._id })
+    await close(poll)
     res.redirect('back')
   } else {
     req.flash('error', 'Only the owner of the poll may close the poll.')
+  }
+}
+
+const close = async (poll) => {
+  const members = await StudentProfile.find({ _id: { $in: poll.members } })
+  for (const member of members) {
+    member.polls.pull(poll._id)
+    await member.save()
+  }
+  poll.active = false
+  await poll.save()
+}
+
+module.exports.removeFromPoll = async (poll, member) => {
+  // If the person started the poll, close the poll
+  // Otherwise, remove the person from the members list and remove the poll from the person's poll list
+  if (String(poll.pollster) === String(member._id) || String(poll.affected) === String(member._id)) {
+    await close(poll)
+  } else {
+    member.polls.pull(poll._id)
+    await member.save()
+    poll.members.pull(member._id)
+    await poll.save()
+    await this.updatePoll
   }
 }
 
@@ -209,10 +219,8 @@ module.exports.updatePoll = async (pollId, req) => {
           })
         break
     }
-    await GroupSchema.updateOne({ _id: group._id },
-      { $pull: { polls: pollId } })
+    await close(poll)
   } else if (poll.votes.no > poll.votes.yes) {
-    await GroupSchema.updateOne({ _id: group._id },
-      { $pull: { polls: pollId } })
+    await close(poll)
   }
 }
