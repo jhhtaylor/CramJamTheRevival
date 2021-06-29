@@ -43,7 +43,8 @@ const studentProfileSchema = new Schema({
   ],
   isAdmin: { type: Boolean, default: false },
   settings: {
-    isSearchable: { type: Boolean, default: true }
+    isSearchable: { type: Boolean, default: true },
+    locationViewable: { type: Boolean, default: false }
   }
 })
 

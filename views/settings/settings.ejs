@@ -1,7 +1,12 @@
 <% layout('layouts/boilerplate') -%>
 
+
   <div class="container">
-    <h1>Settings:</h1>
+    <div class="col-md-7 col-lg-6 ml-auto offset-md-3">
+      <div class="card shadow">
+        <div class="card-body">
+      <h1 class="card-title">Settings:</h1>
+      <hr>
     <div class="row">
       <h3>Email</h3>
       <div class="col">
@@ -47,11 +52,27 @@
         </span>
       </div>
     </div>
-
-    <form action="/students/settings/<%=signedInUser._id%>/edit" method="get">
-      <button type="submit" class="btn btn-primary">Edit</button>
-    </form>
+    <div class="row">
+      <div class="col">
+        <h3>Location Viewable:</h3>
+        <span>
+          <%= signedInUser.settings.locationViewable %>
+        </span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <form action="/students/settings/<%=signedInUser._id%>/edit" method="get">
+        <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
+          <button type="submit" class="btn btn-primary btn-block py-2 mb-1 ">
+            <span class="font-weight-bold">Edit</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
+</div>
+</div>
+</div>
 
   <script>
     const student = <%- JSON.stringify(signedInUser) %> //note this has to look like <%- %> if saving please save without formatting

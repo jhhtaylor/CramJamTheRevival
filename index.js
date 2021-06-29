@@ -16,6 +16,7 @@ const surveyRouter = require('./src/routes/survey')
 const logRouter = require('./src/routes/activityLog')
 const { logActivity } = require('./src/middleware/middleware')
 const linkRouter = require('./src/routes/linkRoutes')
+const adminRouter = require('./src/routes/admin')
 
 const methods = require('./src/controllers/functions.js') // path to functions.js
 
@@ -72,6 +73,7 @@ app.use('/log', logRouter, express.static(publicDir))
 app.use('/notifications', notificationsRouter, express.static(publicDir))
 app.use('/survey', surveyRouter, express.static(publicDir))
 app.use('/links', linkRouter, express.static(publicDir))
+app.use('/admin', adminRouter, express.static(publicDir))
 
 app.listen(port)
 

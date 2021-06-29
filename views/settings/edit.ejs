@@ -1,12 +1,12 @@
 <% layout('layouts/boilerplate') -%>
 
-  <div class="col-md-5 pr-lg-5 mb-5 mb-md-0 align-items-center">
-  </div>
-
-  <h1>Edit Settings:</h1>
   <form action="/students/settings/<%= signedInUser._id %>/edit?_method=PUT" method="POST">
     <div class="container">
-      <div class="col-md-7 col-lg-6 ml-auto">
+      <div class="col-md-7 col-lg-6 ml-auto offset-md-3">
+        <div class="card shadow">
+          <div class="card-body">
+        <h1 class="card-title">Edit Settings:</h1>
+        
         <div class="row">
           <div class="col">
             <h3>Email</h3>
@@ -71,12 +71,30 @@
             </div>
           </div>
         </div>
-        <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
-          <button class="btn btn-primary btn-block py-2 mb-1 " type="submit" id="save">
-            <span class="font-weight-bold">Save</span>
-          </button>
+        <div class="row">
+          <div class="col">
+            <h3>Location Viewable:</h3>
+            <div class="input-group col-lg-6 mb-4">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="locationViewable" value="true" name="locationViewable" 
+                <% if(signedInUser.settings.locationViewable) { %>
+                <%= "checked" %>
+                  <% } %>
+                    >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="form-group col-lg-12 mx-auto mb-2 d-grid">
+            <button class="btn btn-primary btn-block py-2 mb-1" type="submit" id="save">
+              <span class="font-weight-bold">Save</span>
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </form>
 
