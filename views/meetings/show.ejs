@@ -31,6 +31,20 @@
                 <%= meeting.description %>
             </p>
             <hr>
+            <% if(meeting.location.type == 'Point') {%>
+                <h4>Allowed to attend: 
+                </h4>
+                <span>
+                    <%= covidSafe ? 'Yes' : 'No' %>
+                        <% if(!covidSafe) { %>
+                            <form action="/survey"><button class="btn btn-primary">Take Test</button></form>
+                        <% } %>
+                </span>
+                <% if(!covidSafe){%>
+                    <span>Reason: <%= covidMessage %></span>
+                <%} %>
+            <%} %>
+            <hr>
             <% if(meeting.location.type == 'Point'){ %>
             <div id="map"></div>
             <div class="row">
@@ -38,7 +52,7 @@
             </div>
             <% }else{%>
                 <h5>This is an online meeting</h5>
-            <%}%>
+            <%}%>            
         </div>
     </div>
 </div>

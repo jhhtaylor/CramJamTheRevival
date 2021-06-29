@@ -3,6 +3,7 @@ const { StudentProfile } = require('../db/studentProfiles')
 const { Tag } = require('../db/tags')
 const { Poll, KickReasons } = require('../db/poll')
 const pollControl = require('./poll')
+const { covidCheck } = require('./meetings')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -67,7 +68,8 @@ module.exports.showGroup = async (req, res) => {
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
   const allTags = await Tag.find({})
-  res.render('groups/show', { group, groupPolls, allTags, KickReasons })
+  const { covidSafe } = await covidCheck(req.user._id)
+  res.render('groups/show', { group, groupPolls, allTags, KickReasons, covidSafe })
 }
 
 module.exports.search = async (req, res) => {

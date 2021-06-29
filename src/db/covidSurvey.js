@@ -7,7 +7,7 @@ const covidSurvey = new Schema({
   symptoms: {
     fever: Boolean,
     dryCough: Boolean,
-    SoreThroat: Boolean,
+    soreThroat: Boolean,
     redEyes: Boolean,
     shortBreath: Boolean,
     bodyAches: Boolean,
@@ -19,7 +19,18 @@ const covidSurvey = new Schema({
   exposure: {
     test: Boolean,
     exposed: Boolean
-  }
+  },
+  testDate: { type: Date }
+})
+
+covidSurvey.virtual('covidSafe').get(function () {
+  return !this.symptoms.fever && !this.symptoms.soreThroat && !this.symptoms.redEyes && !this.symptoms.shortBreath && !this.symptoms.bodyAches && !this.symptoms.lossSmell && !this.symptoms.nausea && !this.symptoms.diarrhea && !this.symptoms.fatigue && !this.exposure.test && !this.symptoms.exposed
+})
+
+covidSurvey.virtual('currentTest').get(function () {
+  const now = new Date()
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return this.testDate > startOfToday
 })
 
 module.exports.CovidSurvey = mongoose.model('CovidSurvey', covidSurvey)

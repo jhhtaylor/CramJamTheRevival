@@ -1,38 +1,49 @@
-const {MeetingSchema} = require('../db/meetings')
+const { MeetingSchema } = require('../db/meetings')
 const { GroupSchema } = require('../db/groups')
-const { getGeocode} = require('../../utils/geocodeAddress.js')
+const { CovidSurvey } = require('../db/covidSurvey')
+const { getGeocode } = require('../../utils/geocodeAddress.js')
 
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
   const meetings = await MeetingSchema.find({ group: { $in: userGroups } }).populate(['group'])
-  res.render('meetings/index', { meetings })
+  const { covidSafe } = await this.covidCheck(req.user._id)
+  res.render('meetings/index', { meetings, covidSafe })
+}
+
+module.exports.covidCheck = async (userID) => {
+  const lastSurvey = await CovidSurvey.findOne({ student: userID }, {}, { sort: { testDate: -1 } })
+  const covidSafe = lastSurvey && lastSurvey.covidSafe && lastSurvey.currentTest
+  let covidMessage = 'Covid Safe, Test Taken Today'
+  if (!lastSurvey) covidMessage = 'No Test Taken'
+  else if (!lastSurvey.currentTest) covidMessage = 'No Test Taken For Today'
+  else if (!covidSafe) covidMessage = 'Your Survey Had Potential Covid Symptoms'
+  return { lastSurvey, covidSafe, covidMessage }
 }
 
 module.exports.show = async (req, res) => {
   const meeting = await MeetingSchema.findById(req.params.meetingid).populate(['group'])
-  res.render('meetings/show', {meeting})
+  const { lastSurvey, covidSafe, covidMessage } = await this.covidCheck(req.user._id)
+  res.render('meetings/show', { meeting, lastSurvey, covidSafe, covidMessage })
 }
 
 module.exports.renderNewForm = async (req, res) => {
   const group = await GroupSchema.findById(req.params.groupid).populate('members')
   const bestAddress = this.determineMeetingLocation(group.members)
-  res.render('meetings/new', {group, bestAddress})
+  res.render('meetings/new', { group, bestAddress })
 }
 
 module.exports.createMeeting = async (req, res) => {
   const group = await GroupSchema.findById(req.params.groupid)
-  if(group == null){
-    req.flash('error', "Group does not exist")
+  if (group == null) {
+    req.flash('error', 'Group does not exist')
     return res.redirect('/')
-  } 
+  }
   const start = new Date(`${req.body.date} ${req.body.startTime}`)
   const end = new Date(`${req.body.date} ${req.body.endTime}`)
-  if(end < start || start < Date.now()){
-    req.flash('error', "invalid meeting time")
+  if (end < start || start < Date.now()) {
+    req.flash('error', 'invalid meeting time')
     return res.redirect(`/meetings/new/${group._id}`)
-    
   }
-
 
   const meeting = new MeetingSchema({
     name: req.body.name,
@@ -43,16 +54,15 @@ module.exports.createMeeting = async (req, res) => {
     end: end
   })
 
-  if(req.body.address.length > 0){
+  if (req.body.address.length > 0) {
     const coords = await getGeocode(req.body.address)
-    if(coords == null){
-      req.flash('error', "invalid location")
+    if (coords == null) {
+      req.flash('error', 'invalid location')
       return res.redirect(`/meetings/new/${group._id}`)
-      
     }
-    meeting.location = {type: 'Point', coordinates: coords}
-  }else{
-    meeting.location = {type: 'Online', coordinates: []}
+    meeting.location = { type: 'Point', coordinates: coords }
+  } else {
+    meeting.location = { type: 'Online', coordinates: [] }
   }
   meeting.save()
   await GroupSchema.findByIdAndUpdate(req.params.groupid, { $push: { meetings: meeting._id } })
