@@ -43,7 +43,9 @@ module.exports.createGroup = async (req, res) => {
   // Add the entered tags
   req.body.group = group._id
   try {
-    await this.editTags(req, res)
+    if (req.body.tags) {
+      await this.editTags(req, res)
+    }
   } catch (err) {
     req.flash('error', err.message)
   }
