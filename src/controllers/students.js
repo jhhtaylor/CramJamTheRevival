@@ -94,15 +94,25 @@ module.exports.getProfile = async (req, res) => {
 
 module.exports.updateProfile = async (req, res) => {
   const { id } = req.params
-  const { email, username, location, isSearchable } = req.body
+  const { email, username, location, isSearchable, locationViewable } = req.body
   let searchable = true
+  let viewable = true
   if (!isSearchable) searchable = false
+  if (!locationViewable) viewable = false
   if (id != req.user._id) {
     req.flash('error', 'Can only view your own settings')
     res.redirect('/')
     return
   }
   // TODO: convert location into a geolocation as well
-  const student = await StudentProfile.findByIdAndUpdate(id, { $set: { email: email, username: username, location: location, settings: { isSearchable: searchable } } })
+  const student = await StudentProfile.findByIdAndUpdate(id, {
+    $set: {
+      email: email,
+      username: username,
+      location: location,
+      settings:
+    { isSearchable: searchable, locationViewable: viewable }
+    }
+  })
   res.redirect(`/students/settings/${id}`)
 }
