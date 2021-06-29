@@ -8,7 +8,7 @@ const pollControl = require('./poll')
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
   const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
-  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
+  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate(['members', 'polls'])
   res.render('groups/index', { groups, randomGroups })
 }
 
@@ -75,7 +75,7 @@ module.exports.search = async (req, res) => {
   if (req.query.search) { // get search results
     const regex = new RegExp(this.escapeRegex(req.query.search), 'gi') // 'gi' are flags, g - global, i - ignore case
     // user searched something
-    notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate('members')
+    notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate(['members', 'polls'])
     if (notUserGroups.length < 1) {
       noMatch = 'No groups match that query, please search again below.'
     }

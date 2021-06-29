@@ -1,0 +1,44 @@
+<div class="col-lg-4 col-md-6 group-card">
+    <div class="box-style box-style-full">
+        <div class="box-content-style">
+            <h4>
+                <%= group.name %>
+            </h4>
+            <h6>members: <%= group.members.length %>
+            </h6>
+            <%if(!group.description){%>
+                <p class="text-truncate"
+                    style="max-width: 250px;">No description
+                </p>
+                <%} else {%>
+                    <p class="text-truncate"
+                        style="max-width: 250px;">
+                        <%= group.description %>
+                    </p>
+            <%}%>
+            <% if(group.invites.includes(signedInUser._id)){%>
+                <hr>
+                <div class="row">
+                    <form action="/groups/<%= group._id %>/acceptInvite" method="POST" class="col-lg-6 text-center">
+                        <button class="btn poll-yes"><i class="fas fa-check"></i></button>
+                    </form>
+                    <form action="/groups/<%= group._id %>/declineInvite" method="POST" class="col-lg-6 text-center">
+                        <button class="btn poll-no"><i class="fas fa-times"></i></button>
+                    </form>
+                </div>
+            <%}else if (group.polls.filter(p=>p.active && p.action === 'Add' && String(p.affected)== String(signedInUser._id)).length > 0){%>
+                <hr>
+                <p><i>Request sent</i></p>
+                <%}else{%>
+
+                <form
+                    action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
+                    method="POST">
+                    <button type="submit"
+                        class="header-btn theme-btn text-decoration-none">Send
+                        Request</button>
+                </form>
+            <%}%>
+        </div>
+    </div>
+</div>
