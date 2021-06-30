@@ -29,17 +29,19 @@
                         <h3>Students with <strong>"<%= userSearched%>"</strong> in their name (<%= foundStudents.length%>)</h3>
                         <div class="row">
                             <% for (let student of foundStudents){%>
-                                <div class="col-lg-6 ">
+                                <div class="col-lg-4 ">
                                     <div class="d-flex flex-row m-3 p-3 card align-items-center">
                                         <div class="me-2">
-                                            <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50"
-                                                class="rounded-circle">
+                                            <%- include('partials/profilePicture', {student:student, width: 50, height: 50}) -%>
                                         </div>
-                                        <a href="\students\profile\<%=student._id%>" class="link-dark profile-link"><%= `${student.firstName} ${student.lastName} ` %>  <% if(student._id.equals(signedInUser._id)) {%>
-                                                (you)
-                                            <%}%> - 
-                                            <span class="text-muted">@<%=student.username %></span>
-                                        </a>
+                                        <div class="d-block">
+                                            <a href="\students\profile\<%=student._id%>" class="link-dark profile-link"><%= `${student.firstName} ${student.lastName} ` %>  <% if(student._id.equals(signedInUser._id)) {%>
+                                                    (you)
+                                                <%}%> 
+                                            
+                                            </a> <br>
+                                            <span class="text-muted" style="font-size: small;">@<%=student.username %></span>
+                                        </div>
                                     </div>
                                 </div>
                             <% } %>
