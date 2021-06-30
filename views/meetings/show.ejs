@@ -5,17 +5,12 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-7 card p-3 m-3">
-            <h1>
-                <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
+            <h1 style="padding-bottom: 0px;">
+                <%= meeting.name%>
             </h1>
-            <h3>
-                <% if(meeting.location.type == 'Point') {%>
-                    <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
-                <% const now = new Date() %>
-                <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
-                    <span class="badge rounded-pill bg-danger">Today</span>
-                <%} %>
-            </h3>
+            <h6>
+                Meeting with <strong><a href="/groups/<%=meeting.group._id%>" class="profile-link"><%= meeting.group.name%></a></strong>.
+            </h6>
             <h6>
                 <strong>
                     <%= date%>
@@ -25,60 +20,84 @@
                     <%=endTime%>
                 </strong>
             </h6>
+            <h4>
+                <% if(meeting.location.type == 'Point') {%>
+                    <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
+                <% const now = new Date() %>
+                <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
+                    <span class="badge rounded-pill bg-danger">Today</span>
+                <%} %>
+            </h4>
             <hr>
-            <h4>Description:</h4>
+            <h4>Description</h4>
             <p>
                 <%= meeting.description %>
             </p>
             <hr>
             <% if(inMeeting) { %> 
-            <% if(meeting.location.type == 'Point') {%>
-                <h4>Allowed to attend: 
-                </h4>
-                <div class="row">
-                    <div class="col">
-                        <span>
-                            <%= covidSafe ? 'Yes' : 'No' %>
-                        </span>
-                        <br>
-                <% if(!covidSafe){%>
-                <span>Reason: <%= covidMessage %></span>
+                <% if(meeting.location.type == 'Point') {%>
+                    <h4>Covid screening 
+                    </h4>
+                    <div class="row">
+                        <div class="col">
+                            <span>
+                                Covid Safe: <i><%= covidSafe ? 'Approved' : 'Not Approved' %></i>
+                            </span>
+                            <br>
+                    <% if(!covidSafe){%>
+                        <span><i style="color: red;"><%= covidMessage %></i></span>
+                        <form action="/survey"><button class="btn bg-primary small-btn">Take Test</button></form>
+                    <%} %>
+                        </div>
+                    </div>
+                    <hr>
                 <%} %>
-            <%} %>
-                </div>
-                <div class="col">
-                    <% if(!covidSafe) { %>
-                        <form action="/survey"><button class="btn btn-primary">Take Test</button></form>
-                    <% } %>
-                </div>
-            </div>
-            <hr>
-            <% if(meeting.location.type == 'Point'){ %>
-            <h4>Attendees:</h4>
-            <p>
-                <% for(let attendee of attendees) { %> 
-                    <%= attendee.username %> 
-                    <% if(!allowedToAttend.includes(attendee._id)) { %> 
-                        <span class="badge rounded-pill bg-danger">Not Allowed</span>
-                    <% } else { %> 
-                        <span class="badge rounded-pill bg-success">Allowed</span>
-                    <% } %> 
-                <%= ',' %>
-                <% } %> 
-            </p>
-            <div id="map"></div>
-            <div class="row">
-                <h5 id="address"></h5>
-            </div>
-            <% }else{%>
-                <h5>This is an online meeting</h5>
-            <%}%>     
+                
+         
+               
+                <h4>Location</h4>
+                <% if(meeting.location.type == 'Point'){ %>
+                    <div id="map"></div>
+                    <div class="row">
+                        <h5 id="address"></h5>
+                    </div>
+                <% }else{%>
+                    <h5>Online</h5>
+                <%}%>     
             <%} else {%>
                 <form action="/meetings/<%= meeting._id %>" method="POST">
-                    <button class="btn btn-primary">Attend</button>
+                    <button class="btn btn-primary small-btn">Attend</button>
                 </form>
-             <%}%>     
+             <%}%> 
+             <hr>
+             <h4>Attendees</h4>
+             
+                 <div class="row">
+                 <% for(let attendee of attendees) { %>
+                    <div class="col-lg-12">
+                        <div class="d-flex flex-row m-2 p-3 card align-items-center">
+                            <div class="me-2">
+                                <%- include('../partials/profilePicture', {student:attendee, width: 50, height: 50}) -%>
+                            </div>
+                            <div class="d-block">
+                                <a href="\students\profile\<%=attendee._id%>" class="link-dark profile-link"><%= `${attendee.firstName} ${attendee.lastName} ` %>  <% if(attendee._id.equals(signedInUser._id)) {%>
+                                        (you)
+                                    <%}%>
 
+                                </a>     
+                                <br>
+                                <span class="text-muted" style="font-size: small;">@<%=attendee.username %></span>
+                                <% if(!allowedToAttend.includes(attendee._id)) { %> 
+                                    <span class="badge rounded-pill bg-danger">Not Screened</span>
+                                <% } else { %> 
+                                    <span class="badge rounded-pill bg-success">Screened</span>
+                                <% } %>
+                            </div>
+                        
+                        </div>
+                    </div> 
+                 <% } %> 
+            </div>
         </div>
     </div>
 </div>

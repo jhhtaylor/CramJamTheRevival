@@ -2,13 +2,13 @@
     <div class="box-style box-style-full">
         <div class="box-content-style">
             <h4>
-                <%= group.name %>
+                <a href="/groups/<%=group._id%>" class="profile-link"><%= group.name %></a>
             </h4>
             <hr>
             <% if(group.tags.length>0) {%>
-                <div class="d-flex flex-row mb-2">
+                <div class="d-flex-wrap flex-row mb-2">
                     <% for(const tag of group.tags){%>
-                            <span class="show-tag">
+                            <span class="show-tag mb-1">
                                 <%=tag.name%>
                             </span>
                     <%}%>

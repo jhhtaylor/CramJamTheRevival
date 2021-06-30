@@ -30,6 +30,8 @@ h3{
    padding-bottom: 5px; 
 }
 
+
+
   
 
 .page{
@@ -97,6 +99,30 @@ h3{
 .header-btn .theme-btn {
     padding: 10px 30px; }
 
+.small-btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 8px 12px;
+    margin-top: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 5;
+    transition: all .1s ease-in-out;
+    border: none;
+    background-size: 200% auto;
+    overflow: hidden; 
+}
+
+
     .theme-btn {
         display: inline-block;
         font-weight: 400;
@@ -133,6 +159,7 @@ h3{
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
             box-shadow: none; }
+
 
 
 .dropdown-triangle{
@@ -823,7 +850,6 @@ overflow-y: auto;
 .show-tag {
     font-size: 85%;
     padding: 0.25em 0.75em;
-    margin: 0.1em 0.1em;
     display: inline-block;
     background-color: #2d3e4eff;
     transition: all 0.1s linear;
@@ -878,10 +904,12 @@ overflow-y: auto;
 }
 
 .profile-link{
+    color: #6A7C92;
     text-decoration: none;
     transition: all 0.1s linear;
 }
 
 .profile-link:hover{
+    color: #182224ff;
     text-decoration: underline;
 }

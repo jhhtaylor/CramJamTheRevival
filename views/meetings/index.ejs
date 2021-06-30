@@ -1,6 +1,12 @@
 <% layout('layouts/boilerplate') -%>
     <div class="container card ">
         <div class="row p-3 g-3">
+            <h1>All meetings</h1>
+            <hr>
+            <% if(meetings.length == 0) { %> 
+                <h3><i>No meetings</i></h3>
+            <%}%>
+          
             <% meetings.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : 0)) %>
             <% for(meeting of meetings) {%>
                 <%const
@@ -11,24 +17,14 @@
                             endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
                             <div class="col-lg-4">
                                 <div class="card m-2">
-                                <div class="row">
-                                    <div class="col-lg-10 text-center align-items-center border-end">
-                                        <h3>
-                                            <%= meeting.name%> @ <a href="/groups/<%=meeting.group._id%>" class="text-decoration-none"><%= meeting.group.name%></a>
-                                        </h3>
-                                        <h5>
-                                            <% if(meeting.location.type == 'Point') {%>
-                                                <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
-                                            <% const now = new Date() %>
-                                            <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
-                                                <span class="badge rounded-pill bg-danger">Today</span>
-                                            <%} %>
-                                            <% if(meeting.location.type == 'Point' && !covidSafe) { %>
-                                                <span class="badge rounded-pill bg-warning">Cannot Attend</span>
-                                            <%} else if(meeting.location.type == 'Point' && covidSafe){ %>
-                                                <span class="badge rounded-pill bg-info">Can Attend</span>
-                                            <%} %>
-                                        </h5>
+                                <div class="row p-3">
+                                    <div class="col-lg-10 text-start align-items-start border-end">
+                                        <h1 style="padding-bottom: 0px;">
+                                            <%= meeting.name%>
+                                        </h1>
+                                        <h6>
+                                            Meeting with <strong><a href="/groups/<%=meeting.group._id%>" class="profile-link"><%= meeting.group.name%></a></strong>.
+                                        </h6>
                                         <h6>
                                             <strong>
                                                 <%= date%>
@@ -38,7 +34,14 @@
                                                 <%=endTime%>
                                             </strong>
                                         </h6>
-                                        
+                                        <h4>
+                                            <% if(meeting.location.type == 'Point') {%>
+                                                <span class="badge rounded-pill bg-primary">In Person</span><% }else{ %> <span class="badge rounded-pill bg-info">Online</span> <% }%>
+                                            <% const now = new Date() %>
+                                            <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
+                                                <span class="badge rounded-pill bg-warning">Today</span>
+                                            <%} %>
+                                        </h4>
                                     </div>
                                     <div class="col-lg-2 align-self-center text-start">
                                         <a class="btn meeting-view-btn align-items-center"
@@ -51,7 +54,7 @@
                                 <hr>
                                 <div class="row text-center py-3">
                                     <div class="header-btn">
-                                        <a href="/groups" class="theme-btn text-decoration-none">Goto Groups</a>
+                                        <a href="/groups" class="theme-btn text-decoration-none">Go to Groups</a>
                                     </div>
                                 </div>
         </div>
