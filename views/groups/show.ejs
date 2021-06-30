@@ -28,8 +28,7 @@
                             <% for (var i=0; i < group.members.length; i++) { %>
                                 <div class="row">
                                     <div class="col-lg-2 " align='center'>
-                                        <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50"
-                                            class="rounded-circle">
+                                        <%- include('../partials/profilePicture', {student:group.members[i], width: 50, height: 50}) -%>
                                     </div>
                                     <div class="col-lg-4 align-self-center">
                                         <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
@@ -90,9 +89,8 @@
                                 <hr>
                                 <% for (var i=0; i < group.invites.length; i++) { %>
                                     <div class="row">
-                                        <div class="col-lg-2 " align='center'>
-                                            <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50"
-                                                class="rounded-circle">
+                                        <div class="col-lg-2" align='center'>
+                                            <%- include('../partials/profilePicture', {student:group.invites[i], width: 50, height: 50}) -%>
                                         </div>
                                         <div class="col-lg-4 pad-top-10">
                                             @<%= `${group.invites[i].username}` %>

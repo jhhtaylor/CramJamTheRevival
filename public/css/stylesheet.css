@@ -136,7 +136,19 @@ h3{
 
 
 .dropdown-triangle{
-    color: #fff
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+}
+.dropdown-triangle:hover{
+    color: #777;
+}
+.profile-logo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .navbar {
     width: 100%;
@@ -451,7 +463,6 @@ margin-bottom: 10px; }
     /* this needs to be bigger than footer height*/
 }
 
-/*Notifications*/
 .footer {
     margin-top: auto; 
     align-content: center;
@@ -480,8 +491,8 @@ margin-bottom: 10px; }
 /*Notifications*/
 .notification {
     position: relative;
-    bottom: 60px;
-    right: 10%;
+    bottom: 20px;
+    right: 25px;
 }
 
 .notification-link, .notification{
@@ -840,3 +851,13 @@ overflow-y: auto;
 #dropdownUser2:hover{
     color: #333;
 }
+
+.circle {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #433B62;
+    background-color: #E2DEED
+}
+

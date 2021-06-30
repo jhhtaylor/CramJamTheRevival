@@ -25,10 +25,11 @@
           <% if(signedInUser) { %>
 
             <li class="nav-item">
-              <div class="dropdown text-end  <% if(signedInUser.invites.length > 0) {%> profile <%} %>">
-                <a href="#" class="d-block text-decoration-none dropdown-toggle dropdown-triangle" id="dropdownUser1"
+              <div class="dropdown text-end profile-logo">
+                <a href="#" class="d-flex text-decoration-none" id="dropdownUser1"
                   data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="/assets/default_pp.jpg" alt="mdo" width="50" height="50" class="rounded-circle">
+                  <%- include('profilePicture', {student:signedInUser, width: 50, height: 50}) -%>
+                  <span class=" dropdown-toggle dropdown-triangle"></span>
                 </a>
 
                 <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
@@ -52,11 +53,11 @@
                     </li>
                     <li><a class="dropdown-item" href="/students/logout">Sign out</a></li>
                 </ul>
-                <% if(numNotifications> 0) {%>
+                <% if(numNotifications > 0) {%>
                   <span class="badge notification">
                     <%= numNotifications %>
                   </span>
-                  <% } %>
+                <% } %>
               </div>
             </li>
             <% } else { %>
