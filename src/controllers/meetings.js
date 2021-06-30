@@ -89,7 +89,7 @@ module.exports.createMeeting = async (req, res) => {
   await GroupSchema.findByIdAndUpdate(req.params.groupid, { $push: { meetings: meeting._id } })
 
   req.flash('success', 'Created new meeting!')
-  return res.redirect('/groups')
+  return res.redirect(`/meetings/${meeting._id}`)
 }
 
 module.exports.determineMeetingLocation = (students) => {

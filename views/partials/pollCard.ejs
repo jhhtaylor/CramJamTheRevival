@@ -1,36 +1,37 @@
-<div class="card px-5 py-2 mb-3">
-    <% if(String(poll.pollster) === String(signedInUser._id)) {%>
-    <div class="col-sm-1 offset-lg-11"style="width: 20px; height=7px;" >
-        <a href="#" class="d-block text-decoration-none" id="dropdownUser2"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-three-dots"></i>
-        </a>
-
-        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2" >
-            <li>
-                <form action="polls/<%=poll._id%>/reset" method="post">
-                    <button type = "submit" class="dropdown-item">Reset</button>
-                </form>
-            </li>
-            <li>
-                <form action="polls/<%=poll._id%>/close" method="post">
-                    <button type = "submit" class="dropdown-item">Close</button>
-                </form> 
-            </li>
-
-        </ul>
-    </div>
-    <%}%>
-    <div class="row">
-        <div class="col-lg-12">
-            <h5 class="card-title text-center"> Vote to <%= poll.action %> @<%= poll.affected.username %> <% if(poll.action == 'Remove'){ %> from <%} else {%>to <%}%><%= poll.group.name %>
+<div class="card px-3 py-2 mb-3">
+    <div class="row mt-3">
+        <div class="d-flex justify-content-center">
+            <h5 class="card-title"> Vote to <%= poll.action %> @<%= poll.affected.username %> <% if(poll.action == 'Remove'){ %> from <%} else {%>to <%}%><%= poll.group.name %>
             </h5>
+            <% if(String(poll.pollster) === String(signedInUser._id)) {%>
+            <div class="dropdown">
+                
+                <a href="#" class="text-decoration-none" id="dropdownUser2"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <h5 class="px-3"><i class="fas fa-ellipsis-v"></i></h5>
+                </a>
+        
+                <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser2" >
+                    <li>
+                        <form action="polls/<%=poll._id%>/reset" method="post">
+                            <button type = "submit" class="dropdown-item">Reset</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="polls/<%=poll._id%>/close" method="post">
+                            <button type = "submit" class="dropdown-item">Close</button>
+                        </form> 
+                    </li>
+        
+                </ul>
+            </div>
+            <%}%>
+
             <% if(poll.reason && poll.reason != '') { %>
             <h6 class="card-subtitle mb-2 text-muted text-center">Reason: <%= poll.reason %></h6>
             <% } %>
         </div>
     </div>
-
     <hr>
     <div class="row">
         <% if(!poll.voted.includes(signedInUser._id) && signedInUser.groups.includes(poll.group._id)) { %>

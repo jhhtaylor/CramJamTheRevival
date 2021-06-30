@@ -5,19 +5,19 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 card mb-3 py-3">
-                                <h3><%= group.name %></h3>
-                                <% if(group.description) {%>
-                                    <hr>
-                                    <p class="text-truncate"><%=group.description%></p>
-                                <%} %>
-                                <% if(group.tags.length>0) {%>
-                                    <hr>
-                                    <div class="col-lg-12">
-                                        <% for(const tag of group.tags){%>
-                                            <span class="show-tag"><%=tag.name%></span>
-                                        <%}%>
-                                    </div>
-                                <%} %>
+                            <h3><%= group.name %></h3>
+                            <% if(group.description) {%>
+                                <hr>
+                                <p class="text-truncate"><%=group.description%></p>
+                            <%} %>
+                            <% if(group.tags.length>0) {%>
+                                <hr>
+                                <div class="col-lg-12">
+                                    <% for(const tag of group.tags){%>
+                                        <span class="show-tag"><%=tag.name%></span>
+                                    <%}%>
+                                </div>
+                            <%} %>
                         </div>
                     </div>
 
@@ -35,7 +35,6 @@
                                         <% if(group.members[i]._id.equals(signedInUser._id)) {%>
                                             (you)
                                         <%}%>
-
                                         <% if(!group.members[i]._id.equals(signedInUser._id) &&signedInUser.groups.includes(group._id)) { %>
                                             <form class="d-inline removeForm"
                                                 action="/polls/<%=group._id%>/Remove/<%=group.members[i]._id%>"
@@ -48,40 +47,39 @@
 
                                     <div class="col-lg-5 align-self-center text-end">
                                         <% const raters=(group.members[i].rating.map(e=> e.rater)) %>
-                                            <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) && !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
-                                                <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
-                                                    class="">
-                                                    <div class="rate">
-                                                        <input type="radio" id="star5_<%= i%>" name="rating"
-                                                            value="5" />
-                                                        <label for="star5_<%= i%>">5 stars</label>
-                                                        <input type="radio" id="star4_<%= i%>" name="rating"
-                                                            value="4" />
-                                                        <label for="star4_<%= i%>">4 stars</label>
-                                                        <input type="radio" id="star3_<%= i%>" name="rating"
-                                                            value="3" />
-                                                        <label for="star3_<%= i%>">3 stars</label>
-                                                        <input type="radio" id="star2_<%= i%>" name="rating"
-                                                            value="2" />
-                                                        <label for="star2_<%= i%>">2 stars</label>
-                                                        <input type="radio" id="star1_<%= i%>" name="rating"
-                                                            value="1" />
-                                                        <label for="star1_<%= i%>">1 star</label>
-                                                    </div>
-                                                    <button class="d-inline btn rate-btn align-items-center"><i
-                                                            class="fas fa-check"></i></button>
-                                                </form>
-                                                <% }else if(group.members[i]._id.equals(signedInUser._id)){%>
-                                                    <a id="modal-button" class="button">leave group</a>
-
-                                                <%} %>
+                                        <% if(signedInUser && !group.members[i]._id.equals(signedInUser._id) && !raters.includes(signedInUser._id) && signedInUser.groups.includes(group._id)) { %>
+                                            <form action="/students/vote/<%=group.members[i]._id%>/" method="POST"
+                                                class="">
+                                                <div class="rate">
+                                                    <input type="radio" id="star5_<%= i%>" name="rating"
+                                                        value="5" />
+                                                    <label for="star5_<%= i%>">5 stars</label>
+                                                    <input type="radio" id="star4_<%= i%>" name="rating"
+                                                        value="4" />
+                                                    <label for="star4_<%= i%>">4 stars</label>
+                                                    <input type="radio" id="star3_<%= i%>" name="rating"
+                                                        value="3" />
+                                                    <label for="star3_<%= i%>">3 stars</label>
+                                                    <input type="radio" id="star2_<%= i%>" name="rating"
+                                                        value="2" />
+                                                    <label for="star2_<%= i%>">2 stars</label>
+                                                    <input type="radio" id="star1_<%= i%>" name="rating"
+                                                        value="1" />
+                                                    <label for="star1_<%= i%>">1 star</label>
+                                                </div>
+                                                <button class="d-inline btn rate-btn align-items-center"><i
+                                                        class="fas fa-check"></i></button>
+                                            </form>
+                                        <% }else if(group.members[i]._id.equals(signedInUser._id)){%>
+                                            <a id="modal-button" class="button">leave group</a>
+                                        <%} %>
                                     </div>
                                 </div>
                                 <hr>
                             <% } %>
-
                         </div>
                     </div>
+                    <% if(signedInUser.groups.includes(group._id)) {%>
                     <div class="row mb-4 mt-3">
                         <div class="col-lg-12 card py-3">
                             <% if (group.invites.length> 0 && signedInUser.groups.includes(group._id)) {%>
@@ -109,7 +107,7 @@
                                                             members
                                                         </a>
                                                     </div>
-                                                    <% }%>
+                                                <% }%>
                         </div>
                     </div>
                     <div class="row mb-4 mt-3">
@@ -117,7 +115,7 @@
                             <% if (group.meetings.length> 0 && signedInUser.groups.includes(group._id)) {%>
                                 <h5>Planned Meetings</h5>
                                 <hr>
-                                    <%   group.meetings.sort((a, b) => a.start < b.start ? -1 : (a.start > b.start ? 1 : 0)) %>
+                                    <% group.meetings.sort((a, b) => (a.start < b.start ? -1 : (a.start > b.start ? 1 : 0))) %>
                                         <% for (meeting of group.meetings) { %>
                                             <%const date=meeting.start.getFullYear()+'/'+String(meeting.start.getMonth()+1).padStart(2,'0')+'/'+String(meeting.start.getDate()).padStart(2,'0')%>
                                                 <%const startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
@@ -138,15 +136,15 @@
                                                                 </h6>
                                                                 <h5>
                                                                     <% if(meeting.location.type == 'Point') {%>
-                                                                        <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
+                                                                        <span class="badge rounded-pill bg-primary">In Person</span><% }else{ %> <span class="badge rounded-pill bg-info">Online</span> <% }%>
                                                                     <% const now = new Date() %>
                                                                     <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
-                                                                        <span class="badge rounded-pill bg-danger">Today</span>
+                                                                        <span class="badge rounded-pill bg-warning">Today</span>
                                                                     <%} %>
                                                                     <% if(meeting.location.type == 'Point' && !covidSafe) { %>
-                                                                        <span class="badge rounded-pill bg-warning">Cannot Attend</span>
+                                                                        <span class="badge rounded-pill bg-danger">Covid Risk</span>
                                                                     <%} else if(meeting.location.type == 'Point' && covidSafe){ %>
-                                                                        <span class="badge rounded-pill bg-info">Can Attend</span>
+                                                                        <span class="badge rounded-pill bg-success">Screened</span>
                                                                     <%} %>
                                                                 </h5>
                                                             </div>
@@ -174,16 +172,19 @@
                         </div>
                     </div>
                 </div>
+           
+            <%}%>
             </div>
-            <div class="col-lg-6 col-md-12">
-                <% for (let poll of groupPolls.reverse()){%>
-                    <% if(poll.active === true){ %>
-                        <%- include('../partials/pollCard.ejs', {poll:poll}) %>
-                    <% }%>
-                <% }%>
-            </div>
+            
         </div>
-
+        <div class="col-lg-6 col-md-12">
+            <% for (let poll of groupPolls.reverse()){%>
+                <% if(poll.active === true && (group.members.includes(signedInUser._id) || String(poll.affected._id) == String(signedInUser._id))){ %>
+                    <%- include('../partials/pollCard.ejs', {poll:poll}) %>
+                <% }%>
+            <% }%>
+        </div>
+        
 </div>
 
         <%- include('../partials/modal', {action: 'leave group' , group:group, id:'leave'}) -%>

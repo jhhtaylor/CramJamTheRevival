@@ -62,7 +62,7 @@ module.exports.rateStudent = async (req, res) => {
   const raterID = req.user._id
   const studentRating = { rated: parseInt(rating), rater: raterID }
   await StudentProfile.findByIdAndUpdate(id, { $push: { rating: studentRating } })
-  res.redirect('/groups')
+  res.redirect('back')
 }
 
 module.exports.getSettings = async (req, res) => {
