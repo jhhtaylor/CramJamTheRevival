@@ -2,6 +2,7 @@ const { MeetingSchema } = require('../db/meetings')
 const { GroupSchema } = require('../db/groups')
 const { CovidSurvey } = require('../db/covidSurvey')
 const { getGeocode } = require('../../utils/geocodeAddress.js')
+const { StudentProfile } = require('../db/studentProfiles')
 
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
@@ -20,10 +21,30 @@ module.exports.covidCheck = async (userID) => {
   return { lastSurvey, covidSafe, covidMessage }
 }
 
+module.exports.listAllowedToAttend = async (userIDs) => {
+  const allowedUsers = []
+  for (const user of userIDs) {
+    const { lastSurvey, covidSafe, covidMessage } = await this.covidCheck(user)
+    if (covidSafe) allowedUsers.push(user._id)
+  }
+  return allowedUsers
+}
+
 module.exports.show = async (req, res) => {
-  const meeting = await MeetingSchema.findById(req.params.meetingid).populate(['group'])
+  const meeting = await MeetingSchema.findById(req.params.meetingid).populate(['group']).populate('attendees')
+  const userIDs = meeting.attendees.map(e => { return e._id })
+  const attendees = meeting.attendees
+  const inMeeting = userIDs.includes(req.user._id)
+  const allowedToAttend = await this.listAllowedToAttend(attendees)
   const { lastSurvey, covidSafe, covidMessage } = await this.covidCheck(req.user._id)
-  res.render('meetings/show', { meeting, lastSurvey, covidSafe, covidMessage })
+  res.render('meetings/show', { meeting, lastSurvey, covidSafe, covidMessage, attendees, allowedToAttend, inMeeting })
+}
+
+module.exports.addToMeeting = async (req, res) => {
+  const meeting = await MeetingSchema.findById(req.params.meetingid)
+  meeting.attendees.push(req.user._id)
+  await meeting.save()
+  res.redirect(`/meetings/${req.params.meetingid}`)
 }
 
 module.exports.renderNewForm = async (req, res) => {
@@ -49,7 +70,7 @@ module.exports.createMeeting = async (req, res) => {
     name: req.body.name,
     description: req.body.description,
     group: group._id,
-    attendees: group.members,
+    attendees: [req.user._id],
     start: start,
     end: end
   })

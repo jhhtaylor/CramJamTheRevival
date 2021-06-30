@@ -11,7 +11,7 @@ router.route('/')
 
 router.route('/:meetingid')
   .get(isLoggedIn, catchAsync(meetings.show))
-
+  .post(isLoggedIn, catchAsync(meetings.addToMeeting))
 
 router.route('/new/:groupid')
   .get(isLoggedIn, meetings.renderNewForm)
