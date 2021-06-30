@@ -823,7 +823,6 @@ overflow-y: auto;
 .show-tag {
     font-size: 85%;
     padding: 0.25em 0.75em;
-    margin: 0.1em 0.1em;
     display: inline-block;
     background-color: #2d3e4eff;
     transition: all 0.1s linear;

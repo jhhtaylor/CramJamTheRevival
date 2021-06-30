@@ -123,21 +123,9 @@
                                                 <%const startTime=String(meeting.start.getHours()).padStart(2,'0')+':'+String(meeting.start.getMinutes()).padStart(2,'0')%>
                                                     <%const endTime=String(meeting.end.getHours()).padStart(2,'0')+':'+String(meeting.end.getMinutes()).padStart(2,'0')%>
                                                         <div class="row">
-                                                            <div class="col-lg-10 text-start align-items-center">
+                                                            <div class="col-lg-10 text-start align-items-center border-end">
                                                                 <h3>
                                                                     <%= meeting.name%>
-                                                                    <% if(meeting.location.type == 'Point') {%>
-                                                                        <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
-                                                                    <% const now = new Date() %>
-                                                                
-                                                                    <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
-                                                                        <span class="badge rounded-pill bg-danger">Today</span>
-                                                                    <%} %>
-                                                                    <% if(meeting.location.type == 'Point' && !covidSafe) { %>
-                                                                        <span class="badge rounded-pill bg-warning">Cannot Attend</span>
-                                                                    <%} else if(meeting.location.type == 'Point' && covidSafe){ %>
-                                                                        <span class="badge rounded-pill bg-info">Can Attend</span>
-                                                                    <%} %>
                                                                 </h3>
                                                                 <h6>
                                                                     <strong>
@@ -148,6 +136,19 @@
                                                                         <%=endTime%>
                                                                     </strong>
                                                                 </h6>
+                                                                <h5>
+                                                                    <% if(meeting.location.type == 'Point') {%>
+                                                                        <span class="badge rounded-pill bg-success">In Person</span><% }else{ %> <span class="badge rounded-pill bg-primary">Online</span> <% }%>
+                                                                    <% const now = new Date() %>
+                                                                    <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
+                                                                        <span class="badge rounded-pill bg-danger">Today</span>
+                                                                    <%} %>
+                                                                    <% if(meeting.location.type == 'Point' && !covidSafe) { %>
+                                                                        <span class="badge rounded-pill bg-warning">Cannot Attend</span>
+                                                                    <%} else if(meeting.location.type == 'Point' && covidSafe){ %>
+                                                                        <span class="badge rounded-pill bg-info">Can Attend</span>
+                                                                    <%} %>
+                                                                </h5>
                                                             </div>
                                                             <div class="col-lg-2 align-self-center text-center">
                                                                 <a class="btn meeting-view-btn align-items-center"

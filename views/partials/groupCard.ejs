@@ -6,9 +6,9 @@
             </h4>
             <hr>
             <% if(group.tags.length>0) {%>
-                <div class="d-flex flex-row mb-2">
+                <div class="d-flex-wrap flex-row mb-2">
                     <% for(const tag of group.tags){%>
-                            <span class="show-tag">
+                            <span class="show-tag mb-1">
                                 <%=tag.name%>
                             </span>
                     <%}%>
