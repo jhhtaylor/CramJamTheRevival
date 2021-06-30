@@ -8,8 +8,8 @@ const { covidCheck } = require('./meetings')
 
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
-  const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
-  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate(['members', 'polls'])
+  const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate(['members', 'tags'])
+  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate(['members', 'polls', 'tags'])
   res.render('groups/index', { groups, randomGroups })
 }
 
@@ -73,21 +73,16 @@ module.exports.showGroup = async (req, res) => {
 }
 
 module.exports.search = async (req, res) => {
-  let noMatch = null
   const userGroups = req.user.groups
   let notUserGroups
+  let foundUserGroups
   if (req.query.search) { // get search results
     const regex = new RegExp(this.escapeRegex(req.query.search), 'gi') // 'gi' are flags, g - global, i - ignore case
     // user searched something
     notUserGroups = await GroupSchema.find({ name: regex, _id: { $nin: userGroups } }).populate(['members', 'polls'])
-    if (notUserGroups.length < 1) {
-      noMatch = 'No groups match that query, please search again below.'
-    }
-  } else { // get all notUserGroups from DB
-    // user did not search something
-    notUserGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate('members')
+    foundUserGroups = await GroupSchema.find({ name: regex, _id: { $in: userGroups } })
   }
-  res.render('groups/searchResults', { notUserGroups: notUserGroups, noMatch: noMatch, userSearched: req.query.search })
+  res.render('groups/searchResults', { notUserGroups: notUserGroups, foundUserGroups, userSearched: req.query.search })
 }
 
 module.exports.deleteGroup = async (groupId) => {

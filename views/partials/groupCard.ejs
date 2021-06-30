@@ -4,35 +4,51 @@
             <h4>
                 <%= group.name %>
             </h4>
+            <hr>
+            <% if(group.tags.length>0) {%>
+                <div class="d-flex flex-row mb-2">
+                    <% for(const tag of group.tags){%>
+                            <span class="show-tag">
+                                <%=tag.name%>
+                            </span>
+                    <%}%>
+                </div>
+            <%} %>
             <h6>members: <%= group.members.length %>
             </h6>
             <%if(!group.description){%>
-                <p class="text-truncate"
-                    style="max-width: 250px;">No description
+                <p class="text-truncate" style="max-width: 250px;">No description
                 </p>
-                <%} else {%>
-                    <p class="text-truncate"
-                        style="max-width: 250px;">
-                        <%= group.description %>
-                    </p>
+            <%} else {%>
+                <p class="text-truncate" style="max-width: 250px;">
+                    <%= group.description %>
+                </p>
             <%}%>
             <% if(group.invites.includes(signedInUser._id)){%>
                 <hr>
                 <div class="row">
-                    <form action="/groups/<%= group._id %>/acceptInvite" method="POST" class="col-lg-6 text-center">
+                    <form action="/groups/<%= group._id %>/acceptInvite" method="POST"
+                        class="col-lg-6 text-center">
                         <button class="btn poll-yes"><i class="fas fa-check"></i></button>
                     </form>
-                    <form action="/groups/<%= group._id %>/declineInvite" method="POST" class="col-lg-6 text-center">
+                    <form action="/groups/<%= group._id %>/declineInvite" method="POST"
+                        class="col-lg-6 text-center">
                         <button class="btn poll-no"><i class="fas fa-times"></i></button>
                     </form>
                 </div>
-            <%}else if (group.polls.filter(p=>p.active && p.action === 'Add' && String(p.affected)== String(signedInUser._id)).length > 0){%>
+            <%}else if (group.polls.filter(p=>p.active && p.action === 'Add' && String(p.affected) == String(signedInUser._id)).length > 0){%>
                 <hr>
                 <p><i>Request sent</i></p>
-                <%}else{%>
-
-                <form
-                    action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
+            <%}else if (group.polls.filter(p=>p.active && p.action === 'Invite' && String(p.affected) == String(signedInUser._id)).length > 0){%>
+                <hr>
+                <p><i>You are already under consideration to join this group</i></p>
+            <%}else if (group.members.map(m=>m._id||m).includes(signedInUser._id)){%>
+                <div class="header-btn">
+                    <a href="/groups/<%=group._id%>"
+                        class="theme-btn text-decoration-none">View</a>
+                </div>
+            <%}else{%>
+                <form action="/polls/<%=group._id%>/Add/<%=signedInUser._id%>"
                     method="POST">
                     <button type="submit"
                         class="header-btn theme-btn text-decoration-none">Send

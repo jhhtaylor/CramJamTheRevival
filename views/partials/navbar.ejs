@@ -21,7 +21,12 @@
           </li>
 
         </ul>
-        <ul class="navbar-nav ms-auto">
+
+        <form action="\search" method="GET" class="d-flex ms-auto">
+          <input class="form-control" type="search" placeholder="Search" name="search" aria-label="Search">
+          <button class="btn py-2 text-center align-items-center search-button me-4" type="submit" value="Search"><i class="bi bi-search search-icon"></i></button>
+        </form>
+        <ul class="navbar-nav">
           <% if(signedInUser) { %>
 
             <li class="nav-item">
