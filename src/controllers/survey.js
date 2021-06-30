@@ -5,7 +5,8 @@ module.exports.takeSurvey = async (req, res) => {
   const newSurvey = new CovidSurvey({
     student: req.user._id,
     symptoms,
-    exposure
+    exposure,
+    testDate: new Date()
   })
   await newSurvey.save()
   req.flash('success', 'Covid Survey Taken')

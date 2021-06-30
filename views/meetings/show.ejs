@@ -31,14 +31,54 @@
                 <%= meeting.description %>
             </p>
             <hr>
+            <% if(inMeeting) { %> 
+            <% if(meeting.location.type == 'Point') {%>
+                <h4>Allowed to attend: 
+                </h4>
+                <div class="row">
+                    <div class="col">
+                        <span>
+                            <%= covidSafe ? 'Yes' : 'No' %>
+                        </span>
+                        <br>
+                <% if(!covidSafe){%>
+                <span>Reason: <%= covidMessage %></span>
+                <%} %>
+            <%} %>
+                </div>
+                <div class="col">
+                    <% if(!covidSafe) { %>
+                        <form action="/survey"><button class="btn btn-primary">Take Test</button></form>
+                    <% } %>
+                </div>
+            </div>
+            <hr>
             <% if(meeting.location.type == 'Point'){ %>
+            <h4>Attendees:</h4>
+            <p>
+                <% for(let attendee of attendees) { %> 
+                    <%= attendee.username %> 
+                    <% if(!allowedToAttend.includes(attendee._id)) { %> 
+                        <span class="badge rounded-pill bg-danger">Not Allowed</span>
+                    <% } else { %> 
+                        <span class="badge rounded-pill bg-success">Allowed</span>
+                    <% } %> 
+                <%= ',' %>
+                <% } %> 
+            </p>
             <div id="map"></div>
             <div class="row">
                 <h5 id="address"></h5>
             </div>
             <% }else{%>
                 <h5>This is an online meeting</h5>
-            <%}%>
+            <%}%>     
+            <%} else {%>
+                <form action="/meetings/<%= meeting._id %>" method="POST">
+                    <button class="btn btn-primary">Attend</button>
+                </form>
+             <%}%>     
+
         </div>
     </div>
 </div>

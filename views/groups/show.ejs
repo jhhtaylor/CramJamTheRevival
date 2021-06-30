@@ -133,6 +133,11 @@
                                                                     <% if(meeting.start.getFullYear() == now.getFullYear() && meeting.start.getMonth() == now.getMonth() && meeting.start.getDate() == now.getDate()) { %>
                                                                         <span class="badge rounded-pill bg-danger">Today</span>
                                                                     <%} %>
+                                                                    <% if(meeting.location.type == 'Point' && !covidSafe) { %>
+                                                                        <span class="badge rounded-pill bg-warning">Cannot Attend</span>
+                                                                    <%} else if(meeting.location.type == 'Point' && covidSafe){ %>
+                                                                        <span class="badge rounded-pill bg-info">Can Attend</span>
+                                                                    <%} %>
                                                                 </h3>
                                                                 <h6>
                                                                     <strong>

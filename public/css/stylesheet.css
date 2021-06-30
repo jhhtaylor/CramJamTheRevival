@@ -861,3 +861,27 @@ overflow-y: auto;
     background-color: #E2DEED
 }
 
+.search-icon{
+    position:relative;
+    bottom:4px;
+}
+
+.search-button{
+    background-color: #444;
+    color: #BBB;
+    transition: all 0.1s linear;
+}
+
+.search-button:hover{
+    background-color: #333;
+    color: white;
+}
+
+.profile-link{
+    text-decoration: none;
+    transition: all 0.1s linear;
+}
+
+.profile-link:hover{
+    text-decoration: underline;
+}
