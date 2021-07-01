@@ -2,49 +2,64 @@
                 <%if (profile.id == signedInUser.id) { %>
                     <div class="container">
                         <h1><%= profile.username %></h1>
-                        <div class="row">
-                            <h3><%= profile.firstName %> <%= profile.lastName %></h3>
+                          <div class="container card p-3">
                             <span>
-                              <script src='https://kit.fontawesome.com/a076d05399.js'></script>
-                              <i class='far fa-envelope-open' style='font-size:18px'></i>
-                              <%= profile.email %>
+                              <i class="fas fa-signature"> </i>
+                              <%= profile.firstName %> <%= profile.lastName %>
                             </span>
-                        </span>
-                        <span>
-                          <i class='fas fa-home' style='font-size:18px'></i>
-                          <%= profile.location %>
-                        </span>
-                        <span>
-                          <i class='fas fa-star-half-alt' style='font-size:18px'></i>
-                          <%= profile.averageRating %>
-                        </span>
-                        <span>
-                          <i class='fas fa-user-friends' style='font-size:18px'></i>
-                          <%for (var i=0; i < profile.groups.length; i++){%>
-                            <span class="show-group mb-1">
-                              <%= profile.groups[i].name %>
-                            </span>
-                            <% }%>
-                        </span>
-
-                        <span>
-                          <i class='fas fa-tags' style='font-size:18px'></i>
-                          <%for (var i=0; i < tags.length; i++){%>
-                            <% if(i < 10) { %>
-                              <span class="show-tag mb-1">
-                                <%= tags[i].name %>
+                          </div>
+                          <div class="container card p-3">
+                              <span>
+                                <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+                                <i class='far fa-envelope-open' style='font-size:18px'></i>
+                                <%= profile.email %>
                               </span>
-                          <%}%>
-                          <% }%>
-                        </span>
+                          </div>
+                          <div class="container card p-3">
+                            <span>
+                              <i class='fas fa-home' style='font-size:18px'></i>
+                              <%= profile.location %>
+                            </span>
+                          </div>
+                          <div class="container card p-3">
+                            <span>
+                              <i class='fas fa-star-half-alt' style='font-size:18px'></i>
+                              <%= profile.averageRating %>
+                            </span>
+                          </div>
+                          <div class="container card p-3">
+                            <span>
+                              <i class='fas fa-user-friends' style='font-size:18px'></i>
+                              <%for (var i=0; i < profile.groups.length; i++){%>
+                                <span class="show-group mb-1">
+                                  <%= profile.groups[i].name %>
+                                </span>
+                                <% }%>
+                            </span>
+                          </div>
 
-                        <span>
-                          <br>
-                          <br>
-                          <form action="/students/settings/<%=signedInUser._id%>" method="get">
-                              <button type="submit" class="btn btn-primary">Settings</button>
-                            </form>
-                        </span>
+                          <div class="container card p-3">
+                            <span>
+                              <i class='fas fa-tags' style='font-size:18px'></i>
+                              <%for (var i=0; i < tags.length; i++){%>
+                                <% if(i < 10) { %>
+                                  <span class="show-tag mb-1">
+                                    <%= tags[i].name %>
+                                  </span>
+                              <%}%>
+                              <% }%>
+                            </span>
+                          </div>
+
+                          <div class="row">
+                            <span>
+                              <br>
+                              <br>
+                              <form action="/students/settings/<%=signedInUser._id%>" method="get">
+                                  <button type="submit" class="btn btn-primary">Settings</button>
+                                </form>
+                            </span>
+                          </div>
                       </div>
                   </div>
               <% }else{%>
