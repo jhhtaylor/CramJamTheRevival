@@ -65,19 +65,68 @@
 
                   </div>
               <% }else{%>
-                  <div class="container">
-                      <h1><%= profile.username %></h1>
-                      <div class="row">
-                          <h3><%= profile.firstName %> <%= profile.lastName %></h3>
-                          <span>
-                            <i class='far fa-envelope-open' style='font-size:18px'></i>
-                            <%= profile.email %>
+                <div class="container card p-3">                       
+                  <h1><%= profile.username %></h1>
+                    <div>
+                      <span>
+                        <i class="fas fa-signature"> </i>
+                        <%= profile.firstName %> <%= profile.lastName %>
+                      </span>
+                    </div>
+                  <hr>
+                    <div>
+                      <span>
+                        <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+                        <i class='far fa-envelope-open' style='font-size:18px'></i>
+                        <%= profile.email %>
+                      </span>
+                    </div>
+                    <%if (signedInUser.settings.locationViewable) { %>
+                      <div>
+                        <span>
+                            <i class='fas fa-home' style='font-size:18px'></i>
+                             <%= profile.location %>
+                        </span>
+                      </div>
+                    <% }else{%>
+                      <div>
+                        <span>
+                            <i class='fas fa-home' style='font-size:18px'></i>
+                            Address information set as private
+                        </span>
+                      </div>
+                    <% }%>
+                  </hr>
+                          
+                  <hr>
+                    <div>
+                      <h5>
+                        <i class='fas fa-user-friends' style='font-size:18px'></i>
+                        <%for (var i=0; i < profile.groups.length; i++){%>
+                            <span>
+                              <%= profile.groups[i].name %>
+                            </span>
+                        <% }%>
+                      </h5>
+                    </div>
+                    <div>
+                      <span>
+                          <i class='fas fa-tags' style='font-size:18px'></i>
+                            <%for (var i=0; i < tags.length; i++){%>
+                              <% if(i < 10) { %>
+                                <span class="show-tag mb-1">
+                                  <%= tags[i].name %>
                                 </span>
-                                <span>
-                                  <i class='fas fa-home' style='font-size:18px'></i>
-                                  <%= profile.location %>
-                                </span>
-                            </div>
-                        </div>
+                              <%}%>
+                            <% }%>
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        <i class='fas fa-star-half-alt' style='font-size:18px'></i>
+                        <%= profile.averageRating %>
+                      </span>
+                    </div>
+                  </div>
                     <% }%>
                 
