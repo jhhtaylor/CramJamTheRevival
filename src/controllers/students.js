@@ -1,4 +1,5 @@
 const { StudentProfile } = require('../db/studentProfiles')
+const { Tag } = require('../db/tags')
 const geocodeAddress = require('../../utils/geocodeAddress')
 
 const students = [{
@@ -88,8 +89,10 @@ module.exports.editSettings = async (req, res) => {
 
 module.exports.getProfile = async (req, res) => {
   const { id } = req.params
-  const profile = await StudentProfile.findById(id)
-  res.render('students/profile.ejs', { profile })
+  const profile = await StudentProfile.findById(id).populate('groups')
+  const tags = await Tag.find({id: { $in: profile.groups.map(group => group.tag) } })
+  console.log(tags)
+  res.render('students/profile.ejs', { profile: profile, tags: tags })
 }
 
 module.exports.updateProfile = async (req, res) => {
