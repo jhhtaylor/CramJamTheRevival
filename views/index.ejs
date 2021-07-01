@@ -13,7 +13,11 @@
                         <h4 class="header"> Profile</h4>
                         <p>Set up your profile make group work easy!</p>
                         <div class="header-btn">
-                            <a href="/students/profile/<%=signedInUser._id%>" class="theme-btn text-decoration-none">Go to</a>
+                            <%if (signedInUser) { %>
+                                <a href="/students/profile/<%=signedInUser._id%>" class="theme-btn text-decoration-none">Go to</a>
+                            <% }else{%>
+                                <a href="/students/login" class="theme-btn text-decoration-none">Go to</a>
+                            <% }%>
                         </div>
                     </div>
                 </div>
