@@ -858,17 +858,6 @@ overflow-y: auto;
     
 }
 
-.show-group {
-    font-size: 85%;
-    padding: 0.25em 0.75em;
-    display: inline-block;
-    background-color: rgb(236, 128, 95);
-    transition: all 0.1s linear;
-    border-radius: 5px;
-    color: white;
-    
-}
-
 .show-tag :hover{
     background-color: rgb(236, 128, 95);
     color: white;
