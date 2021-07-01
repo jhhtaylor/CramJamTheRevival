@@ -90,8 +90,9 @@ module.exports.editSettings = async (req, res) => {
 module.exports.getProfile = async (req, res) => {
   const { id } = req.params
   const profile = await StudentProfile.findById(id).populate('groups')
-  const allTags = await Tag.find({})
-  res.render('students/profile.ejs', { profile })
+  const tags = await Tag.find({id: { $in: profile.groups.map(group => group.tag) } })
+  console.log(tags)
+  res.render('students/profile.ejs', { profile: profile, tags: tags })
 }
 
 module.exports.updateProfile = async (req, res) => {

@@ -26,13 +26,16 @@
                             </span>
                             <% }%>
                         </span>
+
                         <span>
                           <i class='fas fa-tags' style='font-size:18px'></i>
-                          <%for (var i=0; i < profile.groups.length; i++){%>
-                            <span class="show-tag mb-1">
-                              <%= profile.groups[i].tags[0] %>
-                            </span>
-                            <% }%>
+                          <%for (var i=0; i < tags.length; i++){%>
+                            <% if(i < 10) { %>
+                              <span class="show-tag mb-1">
+                                <%= tags[i].name %>
+                              </span>
+                          <%}%>
+                          <% }%>
                         </span>
 
                         <span>
