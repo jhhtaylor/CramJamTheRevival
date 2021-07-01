@@ -1,15 +1,13 @@
 <% layout('layouts/boilerplate') -%>
-                <%if (profile.id == signedInUser.id) { %>
-                  <div class="container card p-3">
-                    <hr>                        
-                      <h1><%= profile.username %></h1>
-                      <div>
-                        <span>
-                          <i class="fas fa-signature"> </i>
-                          <%= profile.firstName %> <%= profile.lastName %>
-                        </span>
-                      </div>
-                  </hr>
+              <%if (profile.id == signedInUser.id) { %>
+                <div class="container card p-3">                       
+                  <h1><%= profile.username %></h1>
+                    <div>
+                      <span>
+                        <i class="fas fa-signature"> </i>
+                        <%= profile.firstName %> <%= profile.lastName %>
+                      </span>
+                    </div>
                   <hr>
                     <div>
                       <span>
