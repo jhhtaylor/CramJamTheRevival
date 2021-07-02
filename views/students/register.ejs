@@ -18,8 +18,14 @@
                   <i class="fa fa-user py-2 mb-1 text-muted"></i>
                 </span>
               </div>
-              <input id="userName" type="text" name="username" placeholder="Username"
-                class="form-control bg-white border-left-0 border-md" required>
+              <input id="userName" 
+                     type="text" 
+                     name="username" 
+                     placeholder="Username"
+                     pattern="[A-Za-z0-9]+"
+                     title="Usernames may only contain digits, uppercase and lowercase letters."
+                     class="form-control bg-white border-left-0 border-md" 
+                     required>
                 <div class="valid-feedback">    
                   Valid Username    
                 </div>
@@ -92,8 +98,13 @@
                   <i class="fa fa-lock py-2 mb-1 text-muted"></i>
                 </span>
               </div>
-              <input id="password" type="password" name="password" placeholder="Password"
-                class="form-control bg-white border-left-0 border-md" required>
+              <input 
+                id="password" 
+                type="password" 
+                name="password" 
+                placeholder="Password" 
+                class="form-control bg-white border-left-0 border-md" 
+                required>
                 <div class="invalid-feedback">    
                   Please Provide a Password    
                 </div>

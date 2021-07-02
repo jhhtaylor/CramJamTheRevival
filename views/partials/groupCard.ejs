@@ -1,12 +1,12 @@
-<div class="col-lg-4 col-md-6 group-card">
-    <div class="box-style box-style-full">
+<div class="col-lg-4 col-md-6 group-card d-flex" stlye="max-width: 500px; min-width: 500px">
+    <div class="box-style box-style-full flex-fill">
         <div class="box-content-style">
-            <h4>
-                <a href="/groups/<%=group._id%>" class="profile-link"><%= group.name %></a>
-            </h4>
+                <h4 class="text-truncate" style="max-width: 300px;">
+                    <a href="/groups/<%=group._id%>" class="profile-link"><%= group.name %></a>
+                </h4>
             <hr>
             <% if(group.tags.length>0) {%>
-                <div class="d-flex-wrap flex-row mb-2">
+                <div class="flex-row mb-2">
                     <% for(const tag of group.tags){%>
                             <span class="show-tag mb-1">
                                 <%=tag.name%>

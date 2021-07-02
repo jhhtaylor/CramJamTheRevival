@@ -15,8 +15,16 @@
                         <h4>Details</h4>
                         <div class="row align-items-center mb-3">
                             <div class="col-lg-12 mb-2">
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"
-                                    maxlength = "30" required>
+                                <input 
+                                type="text" 
+                                name="name" 
+                                id="name" 
+                                class="form-control" 
+                                placeholder="Name"
+                                pattern="([a-zA-Z0-9 ]*$)" 
+                                title="Should contain only letters, spaces and numbers. e.g. Meeting 2"
+                                maxlength = "30" 
+                                required>
                             </div>
                             <div class="col-lg-12">
                                 <textarea rows="4" name="description" id="descriptionArea" class="form-control"
