@@ -56,7 +56,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.createGroup(req, res)
     const expectedGroup = await GroupSchema.findOne({})
     expect(expectedGroup.name).toEqual(testGroupName)
@@ -99,7 +99,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup.members.length).toEqual(1)
@@ -123,7 +123,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     expect(updatedGroup).toEqual(null)
@@ -172,7 +172,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const response = { redirect(url) { return url } }
+    const response = { redirect (url) { return url } }
     await groups.inviteGroupMember(request, response)
 
     const expectedGroup = await GroupSchema.findOne({})
@@ -212,7 +212,7 @@ describe('Group controller functionality', () => {
       user: testStudent._id,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -268,7 +268,7 @@ describe('Group controller functionality', () => {
       user: testStudent._id,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.declineInvite(req, res)
 
@@ -318,7 +318,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.createGroup(req, res)
 
@@ -354,7 +354,7 @@ describe('Group controller functionality', () => {
       },
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.acceptInvite(req, res)
 
@@ -384,7 +384,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -417,7 +417,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -452,7 +452,7 @@ describe('Group controller functionality', () => {
       user: testStudent,
       flash: function () { }
     }
-    const res = { redirect(url) { return url } }
+    const res = { redirect (url) { return url } }
 
     await groups.editTags(req, res)
 
@@ -586,6 +586,82 @@ describe('Group controller functionality', () => {
     expect(updatedStudent.groups.length).toEqual(0)
     expect(updatedStudent.polls.length).toBe(0)
     expect(updatedPoll.active).toBe(false)
+    done()
+  })
+
+  test('should not be able to get recommended groups if user has no groups', async (done) => {
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: [],
+      invites: [testStudent._id]
+    })
+    const testGroup = await newGroup.save()
+    const relevantGroups = await groups.getRecommendedGroups(testStudent._id, 10)
+    expect(relevantGroups).toBe(null)
+    done()
+  })
+
+  test('should be able to get recommended groups if user has groups', async (done) => {
+    const inputTag = 'tag-one'
+    const tag = new Tag({
+      name: inputTag
+    })
+    await tag.save()
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: [testStudent._id],
+      tags: [tag._id]
+    })
+    const testGroup = await newGroup.save()
+    tag.groups.push(testGroup._id)
+    testStudent.groups.push(testGroup._id)
+    testStudent.save()
+    await tag.save()
+    const anotherGroup = new GroupSchema({
+      name: 'Another Test Group',
+      tags: [tag._id]
+    })
+    const anotherTestGroup = await anotherGroup.save()
+    tag.groups.push(anotherTestGroup._id)
+    await tag.save()
+    const relevantGroups = await groups.getRecommendedGroups(testStudent._id, 10)
+    expect(relevantGroups.length).toBe(1)
+    done()
+  })
+
+  test('should be able to get multiple recommended groups if user has groups', async (done) => {
+    const inputTag = 'tag-one'
+    const tag = new Tag({
+      name: inputTag
+    })
+    await tag.save()
+    const tag2 = new Tag({
+      name: 'test'
+    })
+    await tag2.save()
+    const newGroup = new GroupSchema({
+      name: 'New Test Group',
+      members: [testStudent._id],
+      tags: [tag._id, tag2._id]
+    })
+    const testGroup = await newGroup.save()
+    tag.groups.push(testGroup._id)
+    testStudent.groups.push(testGroup._id)
+    testStudent.save()
+    await tag.save()
+    const anotherGroup = new GroupSchema({
+      name: 'Another Test Group',
+      tags: [tag._id]
+    })
+    const anotherTestGroup = await anotherGroup.save()
+    const anotherGroup2 = new GroupSchema({
+      name: 'Another Test Group',
+      tags: [tag._id]
+    })
+    const anotherTestGroup2 = await anotherGroup2.save()
+    await tag.save()
+    const relevantGroups = await groups.getRecommendedGroups(testStudent._id, 10)
+    expect(relevantGroups.length).toBe(2)
     done()
   })
 })

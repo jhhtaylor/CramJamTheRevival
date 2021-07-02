@@ -14,13 +14,4 @@
       the_rest.style.padding = ''
     }
   }
-
-  if ('geolocation' in navigator) {
-  
-    navigator.geolocation.watchPosition((position) => {
-
-    })
-	  } else {
-    
-	  }
 })()

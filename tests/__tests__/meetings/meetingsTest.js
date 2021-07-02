@@ -59,6 +59,9 @@ beforeEach(async () => {
     invites: []
   })
   await testGroup.save()
+  testStudent.groups.push(testGroup._id)
+  await testStudent.save()
+
   testMeetingName = 'Test Meeting'
 
   testAddress = '43 Dundalk Avenue parkview johannesburg'
@@ -278,4 +281,89 @@ describe('Meeting controller functionality', () => {
     expect(checkMeeting.attendees.includes(id))
     done()
   })
+
+  test('A user can arrive home safe', async (done) => {
+    
+    const now = new Date()
+    let start = now 
+    let end = now 
+    start.setHours(now.getHours()-1)
+    end.setHours(now.getHours()+1)
+
+    let testMeeting = new MeetingSchema({
+      name: 'Test meeting',
+      group: testGroup._id,
+      attendees: [testStudent._id],
+      location:{
+        type: 'Point',
+        coords: [0,0]
+      },
+      start: start,
+      end: end,
+      homeStudents: []
+    })
+    await testMeeting.save()
+    testGroup.meetings.push(testMeeting._id)
+    await testGroup.save()
+    
+
+    const req = {
+      params: {
+        meetingid: testMeeting._id,
+        userid: testStudent._id
+      },
+      flash: function () { }
+    }
+
+    const res = {}
+    await meetings.arrivedHome(req, res)
+    
+    const result = await MeetingSchema.findById(testMeeting._id)
+
+    expect(result.homeStudents[0]._id).toEqual(testStudent._id)
+    done()
+  })
+
+  test('A the best coordinate can be found from a list of students', async (done) => {
+    
+    
+    const students = [{
+      location: 'A',
+      geodata: {
+        type: 'Point',
+        coordinates: [1,1]
+      }
+    },{
+      location: 'B',
+      geodata: {
+        type: 'Point',
+        coordinates: [1,-1]
+      }
+    },{
+      location: 'C',
+      geodata: {
+        type: 'Point',
+        coordinates: [-1,-1]
+      }
+    },{
+      location: 'D',
+      geodata: {
+        type: 'Point',
+        coordinates: [-1,1]
+      }
+    }, {
+      location: 'E',
+      geodata: {
+        type: 'Point',
+        coordinates: [0,0]
+      }
+    }]
+    
+    const result = meetings.determineMeetingLocation(students)
+    expect(result.location).toEqual('E')
+    expect(result.geodata.coordinates).toEqual([0,0])
+    done()
+  })
+
+  
 })

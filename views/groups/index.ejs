@@ -36,9 +36,9 @@
                                             <% } %>
 
                                                 <% if(signedInUser.groups.length < groupLimit) {%>
-                                                    <h3>Request to join one of the available groups below!</h3>
+                                                    <h3>Request to join one of the recommended groups below!</h3>
                                                     <div class="row">
-                                                        <% for (let group of randomGroups){%>
+                                                        <% for (let group of relevantGroups){%>
                                                             <%- include('../partials/groupCard.ejs', {group:group}) %>
                                                         <% } %>
                                                     </div>

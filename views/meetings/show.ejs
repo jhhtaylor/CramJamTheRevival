@@ -60,6 +60,9 @@
                     <div id="map"></div>
                     <div class="row">
                         <h5 id="address"></h5>
+                        <% if(!meeting.homeStudents.includes(signedInUser._id)) {%>
+                            <a id="track-button" class="btn btn-success small-btn" onclick="return tracker.call(this)">Enable tracker</a>
+                        <%}%>
                     </div>
                 <% }else{%>
                     <h5>Online</h5>
@@ -83,7 +86,6 @@
                                 <a href="\students\profile\<%=attendee._id%>" class="link-dark profile-link"><%= `${attendee.firstName} ${attendee.lastName} ` %>  <% if(attendee._id.equals(signedInUser._id)) {%>
                                         (you)
                                     <%}%>
-
                                 </a>     
                                 <br>
                                 <span class="text-muted" style="font-size: small;">@<%=attendee.username %></span>
@@ -93,7 +95,6 @@
                                     <span class="badge rounded-pill bg-success">Screened</span>
                                 <% } %>
                             </div>
-                        
                         </div>
                     </div> 
                  <% } %> 
@@ -103,7 +104,10 @@
 </div>
 
 <script>
+            let houses = JSON.parse('<%- JSON.stringify(meeting.attendees)%>').filter(a=>a.settings.locationViewable).map(a=>a.geodata.coordinates)
+            let signedInUser = JSON.parse('<%- JSON.stringify(signedInUser)%>')
             let loc = JSON.parse('<%- JSON.stringify(meeting.location)%>')
+            let meeting = JSON.parse('<%- JSON.stringify(meeting)%>')
             let coord = loc.coordinates
             mapboxgl.accessToken = 'pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w';
             let map = new mapboxgl.Map({
@@ -116,12 +120,23 @@
                 scrollZoom: { around: 'center' }
             });
 
-            // Create a default Marker and add it to the map.
+    
+
+            
+            for(house of houses){
+                let m = new mapboxgl.Marker()
+                    .setLngLat(house)
+                    .addTo(map);
+                m.getElement().classList.add("house-marker")
+                m.getElement().innerHTML='<i class="fa fa-home house-icon"></i>'
+            }
+
+                    // Create a default Marker and add it to the map.
             let marker = new mapboxgl.Marker({ color: 'red' })
                 .setLngLat(coord)
                 .addTo(map);
+            
        
-
             (async function (coord){
                 const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coord[0]},${coord[1]}.json?types=address&access_token=pk.eyJ1Ijoiam9zaHVhdG9iaWFzIiwiYSI6ImNrbnRkM3ByZTAxdHgycHBzM3FkcGswZmMifQ.JyQyybatt9P0tqxlS7xU3w`
                 const response = await fetch(apiUrl)
@@ -130,4 +145,79 @@
                 const addr = document.getElementById('address')
                 addr.innerHTML = data.features[0].place_name
             })(coord)
+
+            let tracking = false;
+            let trackButton = document.getElementById('track-button')
+            if(!navigator.geolocation){
+                trackButton.classList.add("disabled")
+                trackButton.classList.add("text-muted")
+            }
+          
+            function deg2rad(deg){
+                return deg*Math.PI/180
+            }
+
+            function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {  
+                $earth_radius = 6371;
+
+                $dLat = deg2rad($latitude2 - $latitude1);  
+                $dLon = deg2rad($longitude2 - $longitude1);  
+
+                $a = Math.sin($dLat/2) * Math.sin($dLat/2) + Math.cos(deg2rad($latitude1)) * Math.cos(deg2rad($latitude2)) * Math.sin($dLon/2) * Math.sin($dLon/2);  
+                $c = 2 * Math.asin(Math.sqrt($a));  
+                $d = $earth_radius * $c;  
+
+                return $d;  
+            }
+            let trackerMarker = new mapboxgl.Marker({color: 'blue'})
+            trackerMarker.getElement().classList.add('tracker-marker')
+            trackerMarker.getElement().innerHTML = ''
+
+            async function tracker(){
+                let self = this
+                if(this.clicked) return false
+                
+                this.clicked = true
+                trackButton.disabled = true
+                tracking = !tracking
+                let id 
+                let p
+                if(tracking){
+                    
+                    trackerMarker.getElement().style.visibility = "visible"
+                    trackButton.classList.remove('btn-success')
+                    trackButton.classList.add('btn-danger')
+                    trackButton.innerText = "Disable Tracker"
+                    id = navigator.geolocation.watchPosition((position) => {
+                        let distance = getDistance(position.coords.latitude, position.coords.longitude, signedInUser.geodata.coordinates[1],signedInUser.geodata.coordinates[0])
+                        p = [position.coords.longitude, position.coords.latitude]
+                        map.easeTo({center: p})
+                        trackerMarker
+                            .setLngLat([position.coords.longitude, position.coords.latitude])
+                            .addTo(map)
+                        
+                        if(distance < position.coords.accuracy/1000){
+                            var xhr = new XMLHttpRequest();
+                            xhr.open("POST", `/meetings/arrivedHome/${meeting._id}/${signedInUser._id}`, true);
+                            xhr.setRequestHeader('Content-Type', 'application/json');
+                            xhr.send('');
+                        }
+                    })
+                    if(p) map.easeTo({center: p})
+                }else{
+                    trackButton.classList.add('btn-success')
+                    trackButton.classList.remove('btn-danger')
+                    trackButton.innerText = "Enable Tracker"
+                    map.easeTo({ center: coord })
+                    trackerMarker.getElement().style.visibility = "hidden"
+                    navigator.geolocation.clearWatch(id)
+                }
+                trackButton.removeAttribute('disabled')    
+                this.clicked = false
+                return true;
+
+       
+            }
+
+          
 </script>

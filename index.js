@@ -23,6 +23,7 @@ const methods = require('./src/controllers/functions.js') // path to functions.j
 const db = require('./src/db')
 const { settings } = require('./utils/sessionSettings')
 const { StudentProfile } = require('./src/db/studentProfiles')
+const { GroupSchema } = require('./src/db/groups')
 
 const app = express()
 const ejsMate = require('ejs-mate')
@@ -32,7 +33,6 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalPassport = require('passport-local')
 const mongoSanitize = require('express-mongo-sanitize')
-const { GroupSchema } = require('./src/db/groups')
 
 const publicDir = path.join(__dirname, 'public')
 const GROUP_LIMIT = 10
@@ -55,11 +55,31 @@ passport.deserializeUser(StudentProfile.deserializeUser()) // function added by 
 
 const port = process.env.PORT || 3000
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
   res.locals.signedInUser = req.user
   res.locals.groupLimit = GROUP_LIMIT
+  let safeUsers = 0
+  if(req.user){
+    const groups = await GroupSchema.find({ _id: { $in: req.user.groups } }).populate({ 
+        path: 'meetings' 
+    })
+    for (let group of groups) {
+      for (let meeting of group.meetings) {
+        const now = Date.now()
+        const lim = meeting.end
+        lim.setHours(meeting.end.getHours() + 1)
+        if (meeting.start <= now && now < lim) {
+          safeUsers+=meeting.homeStudents.length
+          if(meeting.homeStudents.includes(req.user._id)) safeUsers--
+        }
+      }
+    }
+    
+    res.locals.numNotifications = req.user.invites.length + req.user.polls.length + safeUsers
+  }
+  
   next()
 })
 app.all('*', logActivity)

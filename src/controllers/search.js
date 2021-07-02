@@ -15,7 +15,7 @@ module.exports.search = async (req, res) => {
         tags = tags.map(t=>t._id)
         const groupsWithTags = await GroupSchema.find({tags:{$in: tags}}).populate(['tags'])
         let total =  foundGroups.length + foundStudents.length + groupsWithTags.length
-        return res.render('searchResults', { foundGroups, groupsWithTags: groupsWithTags, foundStudents, userSearched: req.query.search, total: total })
+        return res.render('searchResults', {foundGroups: foundGroups, groupsWithTags: groupsWithTags, foundStudents: foundStudents, userSearched: req.query.search, total: total })
     }
     return res.redirect('back')
 
