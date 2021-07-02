@@ -25,7 +25,6 @@ module.exports.explore = async (req, res) => {
     invites: { $nin: [groupId] },
     'settings.isSearchable': true
   })
-  console.log(students)
   res.render('groups/explore', { students: students, group: group })
 }
 
