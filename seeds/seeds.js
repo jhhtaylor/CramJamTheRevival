@@ -28,7 +28,7 @@ generateStudents(studentFirstNames, studentLastNames, 10)
     console.error('Error:', err)
   })
 
-async function generateStudents (firstNames, lastNames, numStudents) {
+async function generateStudents(firstNames, lastNames, numStudents) {
   // Deletes all the current data in there to start fresh
   await StudentProfile.deleteMany({})
   console.log('Dropped Students Collection 🔮')
@@ -62,7 +62,7 @@ async function generateStudents (firstNames, lastNames, numStudents) {
   console.log('Inserted New Students 💎')
 }
 
-async function generateGroups (groupNames, numGroups) {
+async function generateGroups(groupNames, numGroups) {
   const people = await StudentProfile.find({}) // finds all profiles in the database
 
   // Deletes all the current data in there to start fresh
@@ -97,7 +97,7 @@ async function generateGroups (groupNames, numGroups) {
 
   console.log('Inserted New Groups 💎')
 }
-async function generateTags (tags) {
+async function generateTags(tags) {
   await Tag.deleteMany({})
   console.log('Dropped Tags Collection 🔮')
   for (const tag of tags) {
@@ -109,7 +109,7 @@ async function generateTags (tags) {
   }
   console.log('Inserted New Tags 💎')
 }
-async function generateMeetings (meetingNames) {
+async function generateMeetings(meetingNames) {
   // Deletes all the current data in there to start fresh this ensures the collections exists before dropping it, otherwise an error occurs
   await MeetingSchema.deleteMany({})
   await LinkSchema.deleteMany({})
@@ -148,7 +148,7 @@ async function generateMeetings (meetingNames) {
   console.log('Inserted New Meetings 💎')
 }
 
-async function generateLinks (linkNames, linkNotes, linkUrls, numLinks) {
+async function generateLinks(linkNames, linkNotes, linkUrls, numLinks) {
   // Deletes all the current data in there to start fresh
   await LinkSchema.deleteMany({})
   console.log('Dropped Links Collection 🔮')
@@ -173,6 +173,9 @@ async function generateLinks (linkNames, linkNotes, linkUrls, numLinks) {
     })
 
     insertLinks.push(newLink)
+
+    // add link to groupSchema
+    await GroupSchema.findByIdAndUpdate(group._id, { $push: { links: newLink._id } })
   }
 
   // Inserts many links into a mongodb collection
