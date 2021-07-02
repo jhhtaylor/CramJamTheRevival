@@ -22,7 +22,6 @@ module.exports.index = async (req, res) => {
       }] 
   })
   let meetings = []
-  let safeUsers = 0
   for (let group of groups) {
     for (let meeting of group.meetings) {
       const now = Date.now()
@@ -30,12 +29,9 @@ module.exports.index = async (req, res) => {
       lim.setHours(meeting.end.getHours() + 1)
       if (meeting.start <= now && now < lim) {
         meetings.push(meeting)
-        safeUsers+=meeting.homeStudents.length
-        if(meeting.homeStudents.map(s=>s._id).includes(req.user._id))
-          safeUsers--
       }
     }
   }
 
-  res.render('notifications', { groupInvites, userPolls: polls, meetingsInProgress: meetings,safeUsers })
+  return res.render('notifications', { groupInvites, userPolls: polls, meetingsInProgress: meetings })
 }
