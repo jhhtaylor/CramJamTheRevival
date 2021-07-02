@@ -17,6 +17,7 @@ afterAll(async () => { dbDisconnect() })
 beforeEach(async () => {
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
+  await LinkSchema.deleteMany({})
 
   const data = getGeoData()
   const location = data.location
@@ -44,7 +45,6 @@ describe('Link controller functionality', () => {
   })
 
   test('A link can be added to the database', async () => {
-
     const newGroup = new GroupSchema({
       name: testGroupName,
       members: testStudent._id
@@ -73,11 +73,40 @@ describe('Link controller functionality', () => {
     expect(expectedLink.group._id).toEqual(testGroup._id)
   })
 
+  test('A user can add a link', async () => {
+    const testName = 'New Test Link'
+    const testNote = 'New Test Note'
+    const testUrl = 'https://www.google.com/'
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
+    const req = {
+      body: {
+        name: testName,
+        note: testNote,
+        url: testUrl,
+        selectedGroup: testGroup._id
+      },
+      user: testStudent,
+      flash: function () { }
+    }
+
+    const res = { redirect(url) { return url } }
+    await links.createLink(req, res)
+    const expectedLink = await LinkSchema.findOne({})
+    expect(expectedLink.name).toEqual(testName)
+    expect(expectedLink.note).toEqual(testNote)
+    expect(expectedLink.url).toEqual(testUrl)
+    expect(expectedLink.user._id).toEqual(testStudent._id)
+    expect(expectedLink.group._id).toEqual(testGroup._id)
+  })
+
   test('URLs are checked for validity', async () => {
-    testValidUrl = 'https://www.google.com/'
-    testInvalidUrl = 'fake'
+    const testValidUrl = 'https://www.google.com/'
+    const testInvalidUrl = 'fake'
     expect(links.isValidHttpUrl(testValidUrl)).toBe(true)
     expect(links.isValidHttpUrl(testInvalidUrl)).toBe(false)
   })
-
 })
