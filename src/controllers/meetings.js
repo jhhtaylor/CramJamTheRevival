@@ -103,6 +103,8 @@ module.exports.arrivedHome = async (req, res)=>{
   await meeting.save()
 }
 
+
+
 module.exports.determineMeetingLocation = (students) => {
   // collect all the location data from the students involved in the meeting
   const locations = students.map((obj) => {
@@ -112,13 +114,34 @@ module.exports.determineMeetingLocation = (students) => {
 
   // Calculate which of the students registered addresses is the most central
   // Does not offer other meeting locations yet
+  function deg2rad(deg){
+    return deg*Math.PI/180
+  }
+
+  function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {  
+      $earth_radius = 6371;
+
+      $dLat = deg2rad($latitude2 - $latitude1);  
+      $dLon = deg2rad($longitude2 - $longitude1);  
+
+      $a = Math.sin($dLat/2) * Math.sin($dLat/2) + Math.cos(deg2rad($latitude1)) * Math.cos(deg2rad($latitude2)) * Math.sin($dLon/2) * Math.sin($dLon/2);  
+      $c = 2 * Math.asin(Math.sqrt($a));  
+      $d = $earth_radius * $c;  
+
+      return $d;  
+  }
+
   let distanceSum = 0
   let minDistanceSum = Infinity
   let pointID = 0
   for (let i = 0; i < locations.length; i++) {
     distanceSum = 0
     for (let j = 0; j < locations.length; j++) {
-      distanceSum += Math.sqrt(Math.pow(locations[i].geodata[i] - locations[j].geodata[i], 2) + Math.pow(locations[i].geodata[j] - locations[j].geodata[j], 2))
+      distanceSum += getDistance(
+        locations[i].geodata.coordinates[0], 
+        locations[i].geodata.coordinates[1], 
+        locations[j].geodata.coordinates[0], 
+        locations[j].geodata.coordinates[1])
     }
     if (distanceSum <= minDistanceSum && distanceSum !== 0) {
       minDistanceSum = distanceSum
