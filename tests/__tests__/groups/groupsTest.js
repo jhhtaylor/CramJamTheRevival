@@ -601,7 +601,7 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('should be able to get recommended groups', async (done) => {
+  test('should be able to get recommended groups if user has groups', async (done) => {
     const inputTag = 'tag-one'
     const tag = new Tag({
       name: inputTag
@@ -629,7 +629,7 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('should be able to get more than one recommended groups', async (done) => {
+  test('should be able to get multiple recommended groups if user has groups', async (done) => {
     const inputTag = 'tag-one'
     const tag = new Tag({
       name: inputTag
