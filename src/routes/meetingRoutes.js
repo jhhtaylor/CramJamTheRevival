@@ -21,4 +21,8 @@ router.route('/new/:groupid')
     body('description').escape().trim(),
     catchAsync(meetings.createMeeting)
   )
+
+  router.route('/arrivedHome/:meetingid/:userid')
+    .post(isLoggedIn, catchAsync(meetings.arrivedHome))
+  
 module.exports = router

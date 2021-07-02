@@ -42,7 +42,6 @@
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <% const numNotifications=signedInUser.invites.length + signedInUser.polls.length%>
                     <li><a class="dropdown-item" href="/notifications">Notifications <% if(numNotifications>0) {%>
                           <span class="badge notification-link">
                             <%= numNotifications %>

@@ -1,11 +1,40 @@
 <% layout('layouts/boilerplate') -%>
-    <div class="container">
+    <div class="container card">
+        
         <div class="row">
             <div class="col-lg-6 col-sm-12">
-                <h3>Notifications</h3>
+                <h1>Notifications</h1>
             </div>
             <hr>
         </div>
+        <% if(meetingsInProgress.length > 0) { %>     
+            <% for(meeting of meetingsInProgress) { %>
+                <% if(meeting.homeStudents.length >0) {%>
+                <div class="row">
+                    <h3>Students of meeting <strong><a class="profile-link" href="/meetings/<%=meeting._id%>"><%= meeting.name %></a></strong> from group <strong><a class="profile-link" href="/groups/<%=meeting.group._id%>"><%= meeting.group.name %></a></strong> are home safe</h3>
+                    <% for(let attendee of meeting.homeStudents) { %>
+                        <div class="col-lg-6">
+                            <div class="d-flex flex-row px-3 py-3 card align-items-center">
+                                <div class="me-2">
+                                    <%- include('partials/profilePicture', {student:attendee, width: 50, height: 50}) -%>
+                                </div>
+                                <div class="d-block">
+                                    <a href="\students\profile\<%=attendee._id%>" class="link-dark profile-link"><%= `${attendee.firstName} ${attendee.lastName} ` %>  <% if(attendee._id.equals(signedInUser._id)) {%>
+                                            (you)
+                                        <%}%>
+                                    </a>     
+                                    <br>
+                                    <span class="text-muted" style="font-size: small;">@<%=attendee.username %></span>
+                                </div>
+                            </div>
+                        </div> 
+                    <% } %> 
+                <%}%> 
+                </div>    
+            <%}%>
+            <hr>
+        <%}%>
+
         <div class="row">
             <div class="col-lg-6 col-sm-12">
                 <% if (signedInUser.invites[0]===undefined){%>

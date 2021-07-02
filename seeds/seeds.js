@@ -139,7 +139,8 @@ async function generateMeetings (meetingNames) {
       attendees: addedMembers,
       location: { type: 'Point', cooridinates: coord },
       start: start,
-      end: end
+      end: end,
+      homeStudents: []
     })
     const savedMeeting = await newMeeting.save() // saves meeting
     await GroupSchema.findByIdAndUpdate(group._id, { $push: { meetings: savedMeeting._id } }) // adds meeting to this group
