@@ -589,7 +589,7 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('should not be able to get recommended groups', async (done) => {
+  test('should not be able to get recommended groups if user has no groups', async (done) => {
     const newGroup = new GroupSchema({
       name: 'New Test Group',
       members: [],
