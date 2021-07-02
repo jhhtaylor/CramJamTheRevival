@@ -23,7 +23,7 @@ module.exports.explore = async (req, res) => {
     _id: { $nin: groupPollsAffected },
     groups: { $nin: [groupId] },
     invites: { $nin: [groupId] },
-    settings: { isSearchable: true }
+    'settings.isSearchable': true
   })
   res.render('groups/explore', { students: students, group: group })
 }
