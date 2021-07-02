@@ -2,6 +2,7 @@ const { StudentProfile } = require('../../../src/db/studentProfiles')
 const { GroupSchema } = require('../../../src/db/groups')
 const { MeetingSchema } = require('../../../src/db/meetings')
 const { Tag } = require('../../../src/db/tags')
+const { LinkSchema } = require('../../../src/db/links')
 const { dbConnect, dbDisconnect, checkNotEmpty, checkStringEquals, checkArraysEqual } = require('../../../utils/testUtils/dbTestUtils')
 
 beforeAll(async () => { dbConnect() })
@@ -12,6 +13,7 @@ beforeEach(async () => {
   await GroupSchema.deleteMany({})
   await MeetingSchema.deleteMany({})
   await Tag.deleteMany({})
+  await LinkSchema.deleteMany({})
 })
 
 describe('Profile test suite', () => {
@@ -173,7 +175,7 @@ describe('Meetings test suite', () => {
     const dd = Math.floor(Math.random() * 28)
     const mm = Math.floor(Math.random() * 60)
     const start = new Date(yyyy, MM, dd, HH, mm, 0)
-    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH + 2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -197,7 +199,7 @@ describe('Meetings test suite', () => {
     const dd = Math.floor(Math.random() * 28)
     const mm = Math.floor(Math.random() * 60)
     const start = new Date(yyyy, MM, dd, HH, mm, 0)
-    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH + 2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -222,7 +224,7 @@ describe('Meetings test suite', () => {
     const dd = Math.floor(Math.random() * 28)
     const mm = Math.floor(Math.random() * 60)
     const start = new Date(yyyy, MM, dd, HH, mm, 0)
-    const end = new Date(yyyy, MM, dd, HH+2, mm, 0)
+    const end = new Date(yyyy, MM, dd, HH + 2, mm, 0)
     const group = new GroupSchema({
       name: 'Test Group'
     })
@@ -273,4 +275,54 @@ describe('Tags test suite', () => {
     expect(tags.length).toEqual(1)
     expect(tags[0].name).toEqual('Retest')
   })
+})
+
+test('A link can be added to the database', async () => {
+  const location = 'Wits'
+  const coordinates = [28.0305, -26.1929] // longitude latitude for wits
+  // hardcoded geolocation data which will become part of the form at some point
+  const geodata = {
+    type: 'Point',
+    coordinates
+  }
+
+  const testStudent = new StudentProfile({
+    email: 'test.member@test.com',
+    firstName: 'Member',
+    lastName: 'Test',
+    password: '',
+    groups: [],
+    location,
+    geodata
+  })
+  await testStudent.save()
+
+  const testGroupName = 'Test Group'
+
+  const newGroup = new GroupSchema({
+    name: testGroupName,
+    members: testStudent._id
+  })
+  const testGroup = await newGroup.save()
+
+  const testLinkName = 'New Test Link'
+  const testLinkNote = 'New Test Note'
+  const testLinkUrl = 'https://www.google.com/'
+
+  const newLink = new LinkSchema({
+    name: testLinkName,
+    note: testLinkNote,
+    url: testLinkUrl,
+    user: testStudent,
+    group: testGroup
+  })
+  const testLink = await newLink.save()
+
+  const expectedLink = await LinkSchema.findOne({})
+
+  expect(expectedLink.name).toEqual(testLinkName)
+  expect(expectedLink.note).toEqual(testLinkNote)
+  expect(expectedLink.url).toEqual(testLinkUrl)
+  expect(expectedLink.user._id).toEqual(testStudent._id)
+  expect(expectedLink.group._id).toEqual(testGroup._id)
 })

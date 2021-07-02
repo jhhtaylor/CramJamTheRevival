@@ -44,35 +44,6 @@ describe('Link controller functionality', () => {
     done()
   })
 
-  test('A link can be added to the database', async () => {
-    const newGroup = new GroupSchema({
-      name: testGroupName,
-      members: testStudent._id
-    })
-    const testGroup = await newGroup.save()
-
-    const testLinkName = 'New Test Link'
-    const testLinkNote = 'New Test Note'
-    const testLinkUrl = 'https://www.google.com/'
-
-    const newLink = new LinkSchema({
-      name: testLinkName,
-      note: testLinkNote,
-      url: testLinkUrl,
-      user: testStudent,
-      group: testGroup
-    })
-    const testLink = await newLink.save()
-
-    const expectedLink = await LinkSchema.findOne({})
-
-    expect(expectedLink.name).toEqual(testLinkName)
-    expect(expectedLink.note).toEqual(testLinkNote)
-    expect(expectedLink.url).toEqual(testLinkUrl)
-    expect(expectedLink.user._id).toEqual(testStudent._id)
-    expect(expectedLink.group._id).toEqual(testGroup._id)
-  })
-
   test('A user can add a link', async () => {
     const testName = 'New Test Link'
     const testNote = 'New Test Note'
