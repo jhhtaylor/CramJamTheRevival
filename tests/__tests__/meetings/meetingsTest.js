@@ -59,6 +59,9 @@ beforeEach(async () => {
     invites: []
   })
   await testGroup.save()
+  testStudent.groups.push(testGroup._id)
+  await testStudent.save()
+
   testMeetingName = 'Test Meeting'
 
   testAddress = '43 Dundalk Avenue parkview johannesburg'
