@@ -64,12 +64,13 @@ module.exports.createGroup = async (req, res) => {
 }
 
 module.exports.showGroup = async (req, res) => {
-  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites', 'tags', 'meetings'])
+  const group = await GroupSchema.findById(req.params.id).populate(['members', 'invites', 'tags', 'meetings', 'links'])
   const polls = group.polls
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
   const allTags = await Tag.find({})
   const { covidSafe } = await covidCheck(req.user._id)
-  res.render('groups/show', { group, groupPolls, allTags, KickReasons, covidSafe })
+  const links = group.links
+  res.render('groups/show', { group, groupPolls, allTags, KickReasons, covidSafe, links })
 }
 
 module.exports.search = async (req, res) => {
