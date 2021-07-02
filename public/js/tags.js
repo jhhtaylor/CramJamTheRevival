@@ -8,6 +8,8 @@
   const hiddenInput = document.createElement('input')
   hiddenInput.setAttribute('type', 'hidden')
   hiddenInput.setAttribute('name', el.getAttribute('data-name'))
+  let count = 0
+  const tagCount = document.getElementById('tag-counter')
 
   // Create an input for user to enter new tags
   const mainInput = document.createElement('input')
@@ -56,7 +58,7 @@
   // Adding tags to the list
   function addTag (text) {
     // If the tag doesn't already exist, add the tag
-    if (!tags.some(tag => tag.text === text)) {
+    if (!tags.some(tag => tag.text === text) && tags.length < 10) {
       const tag = {
         text: text,
         element: document.createElement('span')
@@ -75,7 +77,7 @@
       tags.push(tag)
 
       el.insertBefore(tag.element, mainInput)
-
+      count += 1
       refreshTags()
     }
   }
@@ -85,6 +87,7 @@
     const tag = tags[index]
     tags.splice(index, 1)
     el.removeChild(tag.element)
+    count -= 1
     refreshTags()
   }
 
@@ -94,6 +97,8 @@
     tags.forEach(function (t) {
       tagsEntered.push(t.text)
     })
+    console.log(count)
+    tagCount.innerHTML = String(count)
     hiddenInput.value = tagsEntered.join(',')
   }
 
