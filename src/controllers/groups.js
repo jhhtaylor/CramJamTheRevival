@@ -8,9 +8,65 @@ const { covidCheck } = require('./meetings')
 
 module.exports.index = async (req, res) => {
   const userGroups = req.user.groups
+  const maxGroupsToShow = 9
   const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate(['members', 'tags'])
-  const randomGroups = await GroupSchema.find({ _id: { $nin: userGroups } }).populate(['members', 'polls', 'tags'])
-  res.render('groups/index', { groups, randomGroups })
+  let relevantGroups = await this.getRecommendedGroups(req.user._id, maxGroupsToShow)
+  if (!relevantGroups || relevantGroups.length === 0) {
+    relevantGroups = await GroupSchema.find({}).populate(['members', 'polls', 'tags'])
+    if (relevantGroups.length > maxGroupsToShow) relevantGroups = relevantGroups.slice(0, maxGroupsToShow)
+  }
+  res.render('groups/index', { groups, relevantGroups })
+}
+
+module.exports.getRecommendedGroups = async (userid, maxGroupsToShow) => {
+  const tags = {} // all the tags for a person
+  const user = await StudentProfile.findById(userid).populate('groups') // get the user in full
+  if (!user.groups || user.groups.length === 0) return null //  if the users groups has no groups recommend anything
+  for (const group of user.groups) {
+    for (const tag of group.tags) {
+      if (`${tag._id}` in tags) tags[`${tag._id}`] += 1 // increment tag occorrence
+      else tags[`${tag._id}`] = 1 // if the first occurence, set occurrence to 1
+    }
+  }
+  // remapping to be an array for easier access
+  const items = Object.keys(tags).map(function (key) {
+    return [key, tags[key]]
+  })
+
+  if (!items || items.length === 0) return null // if the users groups has no tags recommend anything
+
+  let relevantGroups = [] // all the relevant groups
+  // loop through tags
+  for (const tag of items) {
+    // get all groups with these tags
+    const docs = await GroupSchema.find({ tags: { $in: tag[0] }, members: { $nin: user._id } }).populate(['members', 'polls', 'tags'])
+    for (const doc of docs) {
+      const check = relevantGroups.some(e => { return String(e._id) == String(doc._id) })
+      if (!check) relevantGroups.push(doc) // if the docs doesnt exist add it
+    }
+  }
+  // function to get the number of same tags between groups weighted by tag occurrence
+  const numberOfSameTags = (item1, item2) => {
+    let num = 0
+    for (const i of item1) {
+      let sameVal
+      if (item2.some(e => {
+        const check = String(e[0]) == String(i._id)
+        if (check) sameVal = e
+        return check
+      })) {
+        num += 1 * sameVal[1] // weighting it by the number of occurrences of that tag
+      }
+    }
+    return num
+  }
+  // sort by tag relevance
+  relevantGroups.sort(function (first, second) {
+    return numberOfSameTags(second.tags, items) - numberOfSameTags(first.tags, items)
+  })
+  // return max number ammout
+  if (relevantGroups.length > maxGroupsToShow) relevantGroups = relevantGroups.slice(0, maxGroupsToShow)
+  return relevantGroups
 }
 
 // temp function to view members to add to a group
