@@ -125,7 +125,7 @@
             
             for(house of houses){
                 let m = new mapboxgl.Marker()
-                    .setLngLat(coord)
+                    .setLngLat(house)
                     .addTo(map);
                 m.getElement().classList.add("house-marker")
                 m.getElement().innerHTML='<i class="fa fa-home house-icon"></i>'

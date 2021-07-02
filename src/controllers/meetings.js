@@ -97,7 +97,6 @@ module.exports.arrivedHome = async (req, res)=>{
   const now = Date.now()
   const lim = meeting.end
   lim.setHours(meeting.end.getHours()+1)
-  console.log(meeting.homeStudents)
   if(meeting.start <= now && now < lim && !meeting.homeStudents.includes(req.params.userid)){
     meeting.homeStudents.push(req.params.userid)
   }
