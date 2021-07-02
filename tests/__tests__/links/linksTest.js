@@ -10,13 +10,14 @@ const supertest = require('supertest')
 const request = supertest.agent(app)
 
 let testStudent
-let testGroup
+let testGroupName
 
 beforeAll(async () => { dbConnect() })
 afterAll(async () => { dbDisconnect() })
 beforeEach(async () => {
   await StudentProfile.deleteMany({})
   await GroupSchema.deleteMany({})
+  await LinkSchema.deleteMany({})
 
   const data = getGeoData()
   const location = data.location
@@ -33,11 +34,7 @@ beforeEach(async () => {
   })
   await testStudent.save()
 
-  testGroup = new GroupSchema({
-    name: 'New Test Group',
-    members: testStudent._id
-  })
-  await testGroup.save()
+  testGroupName = 'Test Group'
 })
 
 describe('Link controller functionality', () => {
@@ -47,19 +44,24 @@ describe('Link controller functionality', () => {
     done()
   })
 
-  test('A link can be added to the database', async () => {
+  test('A user can add a link', async () => {
     const testName = 'New Test Link'
     const testNote = 'New Test Note'
     const testUrl = 'https://www.google.com/'
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
     const req = {
       body: {
         name: testName,
         note: testNote,
-        url: testUrl // ,
-        // user: testStudent._id,
-        // group: testGroup._id
-      }
-
+        url: testUrl,
+        selectedGroup: testGroup._id
+      },
+      user: testStudent,
+      flash: function () { }
     }
 
     const res = { redirect(url) { return url } }
@@ -68,10 +70,14 @@ describe('Link controller functionality', () => {
     expect(expectedLink.name).toEqual(testName)
     expect(expectedLink.note).toEqual(testNote)
     expect(expectedLink.url).toEqual(testUrl)
-    // Cannot test these as need to be logged in :(
-    // console.log(expectedLink)
-    // expect(expectedLink.user._id).toEqual(testStudent._id)
-    // Cannot test as require user input (selectedGroup)
-    // expect(expectedLink.group._id).toEqual(testGroup._id)
+    expect(expectedLink.user._id).toEqual(testStudent._id)
+    expect(expectedLink.group._id).toEqual(testGroup._id)
+  })
+
+  test('URLs are checked for validity', async () => {
+    const testValidUrl = 'https://www.google.com/'
+    const testInvalidUrl = 'fake'
+    expect(links.isValidHttpUrl(testValidUrl)).toBe(true)
+    expect(links.isValidHttpUrl(testInvalidUrl)).toBe(false)
   })
 })

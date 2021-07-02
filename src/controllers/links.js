@@ -47,7 +47,7 @@ module.exports.createLink = async (req, res) => {
     url = 'https://' + url
   }
   // Next: Should re-prompt user to enter link again
-  if (!isValidHttpUrl(url)) {
+  if (!this.isValidHttpUrl(url)) {
     url = '/links' // take user back to links page if link url is not valid
     req.flash('error', 'You have just added an invalid link') // inform the user of their mistake
   }
@@ -63,8 +63,7 @@ module.exports.createLink = async (req, res) => {
   res.redirect('/links')
 }
 
-// should I put this function in it's own file? In utils/linkUtils.js?
-function isValidHttpUrl(string) {
+module.exports.isValidHttpUrl = function (string) {
   let url
 
   try {
