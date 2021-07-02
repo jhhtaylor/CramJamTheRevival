@@ -483,7 +483,7 @@ describe('Group controller functionality', () => {
     done()
   })
 
-  test('A student cannot search for groups that do not exist join', async (done) => {
+  test('A student cannot search for groups that do not exist', async (done) => {
     const newGroup = new GroupSchema({
       name: testGroupName,
       members: testStudent._id
@@ -530,7 +530,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     const updatedStudent = await StudentProfile.findOne({})
@@ -576,7 +576,7 @@ describe('Group controller functionality', () => {
         flash: function () { }
       }
     }
-    const res = { redirect (url) { return url } }
+    const res = { redirect(url) { return url } }
     await groups.deleteGroupMember(req, res)
     const updatedGroup = await GroupSchema.findById(testGroup._id)
     const updatedStudent = await StudentProfile.findOne({})
