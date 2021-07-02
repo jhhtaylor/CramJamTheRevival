@@ -60,6 +60,10 @@ module.exports.createLink = async (req, res) => {
     group: req.body.selectedGroup
   })
   await link.save()
+
+  // add link to groupSchema - a bit confusing because the selectedGroup is actualy the _id of that group
+  await GroupSchema.findByIdAndUpdate(req.body.selectedGroup, { $push: { links: link._id } })
+
   res.redirect('/links')
 }
 
