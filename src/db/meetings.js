@@ -25,7 +25,8 @@ const meetingSchema = new Schema({
   end: {
     type: Date,
     required: true
-  }
+  },
+  homeStudents: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
 })
 
 module.exports.MeetingSchema = mongoose.model('Meeting', meetingSchema)

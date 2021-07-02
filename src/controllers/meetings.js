@@ -92,6 +92,18 @@ module.exports.createMeeting = async (req, res) => {
   return res.redirect(`/meetings/${meeting._id}`)
 }
 
+module.exports.arrivedHome = async (req, res)=>{
+  const meeting = await MeetingSchema.findById(req.params.meetingid)
+  const now = Date.now()
+  const lim = meeting.end
+  lim.setHours(meeting.end.getHours()+1)
+  console.log(meeting.homeStudents)
+  if(meeting.start <= now && now < lim && !meeting.homeStudents.includes(req.params.userid)){
+    meeting.homeStudents.push(req.params.userid)
+  }
+  await meeting.save()
+}
+
 module.exports.determineMeetingLocation = (students) => {
   // collect all the location data from the students involved in the meeting
   const locations = students.map((obj) => {
