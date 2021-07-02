@@ -64,7 +64,7 @@ describe('Link controller functionality', () => {
     })
     const testLink = await newLink.save()
 
-    const expectedLink = await LinkSchema.findOne({}).populate('members')
+    const expectedLink = await LinkSchema.findOne({})
 
     expect(expectedLink.name).toEqual(testLinkName)
     expect(expectedLink.note).toEqual(testLinkNote)
@@ -72,4 +72,12 @@ describe('Link controller functionality', () => {
     expect(expectedLink.user._id).toEqual(testStudent._id)
     expect(expectedLink.group._id).toEqual(testGroup._id)
   })
+
+  test('URLs are checked for validity', async () => {
+    testValidUrl = 'https://www.google.com/'
+    testInvalidUrl = 'fake'
+    expect(links.isValidHttpUrl(testValidUrl)).toBe(true)
+    expect(links.isValidHttpUrl(testInvalidUrl)).toBe(false)
+  })
+
 })
