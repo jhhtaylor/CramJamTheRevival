@@ -10,6 +10,7 @@
   hiddenInput.setAttribute('name', el.getAttribute('data-name'))
   let count = 0
   const tagCount = document.getElementById('tag-counter')
+  const tagCountHolder = document.getElementById('tag-counter-holder')
 
   // Create an input for user to enter new tags
   const mainInput = document.createElement('input')
@@ -98,6 +99,11 @@
       tagsEntered.push(t.text)
     })
     console.log(count)
+    if (count == 10) {
+      tagCountHolder.style = 'color: red;'
+    } else {
+      tagCountHolder.style = 'color: #6A7C92;'
+    }
     tagCount.innerHTML = String(count)
     hiddenInput.value = tagsEntered.join(',')
   }
