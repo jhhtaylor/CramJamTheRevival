@@ -32,7 +32,7 @@ module.exports.renderNewForm = async (req, res) => {
   // is the user in any groups?
   if (userGroups.length > 0) {
     const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
-    res.render('links/new.ejs', { groups })
+    res.render('links/new.ejs', { groups: groups })
   } else {
     req.flash('error', 'You are not in any groups! Join a group to post a link!') // inform the user of their mistake
     res.redirect('/links')
