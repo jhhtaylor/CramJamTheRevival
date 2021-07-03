@@ -24,7 +24,7 @@ module.exports.index = async (req, res) => {
       })
   }))
 
-  res.render('links/index', { links: links })
+  res.render('links/index', { links: links, showNewLink: true })
 }
 
 module.exports.renderNewForm = async (req, res) => {
@@ -32,7 +32,7 @@ module.exports.renderNewForm = async (req, res) => {
   // is the user in any groups?
   if (userGroups.length > 0) {
     const groups = await GroupSchema.find({ _id: { $in: userGroups } }).populate('members')
-    res.render('links/new.ejs', { groups })
+    res.render('links/new.ejs', { groups: groups })
   } else {
     req.flash('error', 'You are not in any groups! Join a group to post a link!') // inform the user of their mistake
     res.redirect('/links')
@@ -60,6 +60,10 @@ module.exports.createLink = async (req, res) => {
     group: req.body.selectedGroup
   })
   await link.save()
+
+  // add link to groupSchema - a bit confusing because the selectedGroup is actualy the _id of that group
+  await GroupSchema.findByIdAndUpdate(req.body.selectedGroup, { $push: { links: link._id } })
+
   res.redirect('/links')
 }
 
