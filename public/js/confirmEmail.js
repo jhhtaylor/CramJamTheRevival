@@ -14,15 +14,29 @@ const email = document.querySelector('#email')
 username.addEventListener('change', validUsername)
 email.addEventListener('change', validEmail)
 
-function validUsername (e) {
+function validUsername(e) {
   validateField(username, allUsernames)
 }
 
-function validEmail (e) {
+function validEmail(e) {
   validateField(email, allEmails)
+  const checkRegEx = validateEmailRegEx(email.value)
+  register.disabled = !checkRegEx
+  if (checkRegEx) {
+    email.classList.remove('is-invalid')
+    email.classList.add('is-valid')
+  } else {
+    email.classList.add('is-invalid')
+    email.classList.remove('is-valid')
+  }
 }
 
-function validateField (field, validateArr) {
+function validateEmailRegEx(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+function validateField(field, validateArr) {
   const val = field.value
   const isUnique = validateArr.every((e) => {
     return e !== val
