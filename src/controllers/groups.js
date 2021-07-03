@@ -4,6 +4,10 @@ const { Tag } = require('../db/tags')
 const { Poll, KickReasons } = require('../db/poll')
 const pollControl = require('./poll')
 const { covidCheck } = require('./meetings')
+const { LinkSchema } = require('../db/links')
+// const { LinkController } = require('./links')
+const fetch = require('node-fetch')
+const cheerio = require('cheerio')
 // Public
 
 module.exports.index = async (req, res) => {
@@ -125,7 +129,25 @@ module.exports.showGroup = async (req, res) => {
   const groupPolls = await Poll.find({ _id: { $in: polls } }).populate(['affected', 'group'])
   const allTags = await Tag.find({})
   const { covidSafe } = await covidCheck(req.user._id)
-  const links = group.links
+  // Add links to groups page - I know I am violating DRY here, but don't have time
+  const links = await LinkSchema.find({ _id: { $in: group.links } }).populate(['user', 'group']) // find all links in this current group
+  await Promise.all(links.map(async link => {
+    await fetch(link.url)
+      .then(res => res.text())
+      .then(data => {
+        const $ = cheerio.load(data)
+        const title = $('meta[property="og:title"]').attr('content') || $('title').text() || $('meta[name="title"]').attr('content')
+        const description = $('meta[property="og:description"]').attr('content') || $('meta[name="description"]').attr('content')
+        const url = $('meta[property="og:url"]').attr('content')
+        const site_name = $('meta[property="og:site_name"]').attr('content')
+        const image = $('meta[property="og:image"]').attr('content') || $('meta[property="og:image:url"]').attr('content')
+        link.link_data = { title: title, description: description, url: url, site_name: site_name, image: image }
+      })
+      .catch(rej => {
+        console.log(rej)
+        link.link_data = {}
+      })
+  }))
   res.render('groups/show', { group, groupPolls, allTags, KickReasons, covidSafe, links })
 }
 

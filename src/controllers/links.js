@@ -24,7 +24,7 @@ module.exports.index = async (req, res) => {
       })
   }))
 
-  res.render('links/index', { links: links })
+  res.render('links/index', { links: links, showNewLink: true })
 }
 
 module.exports.renderNewForm = async (req, res) => {
