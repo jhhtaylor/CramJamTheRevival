@@ -80,4 +80,68 @@ describe('Link controller functionality', () => {
     expect(links.isValidHttpUrl(testValidUrl)).toBe(true)
     expect(links.isValidHttpUrl(testInvalidUrl)).toBe(false)
   })
+  // just checks if returned correct first link
+  test('A user can view the main links page', async () => {
+    const testName = 'New Test Link'
+    const testNote = 'New Test Note'
+    const testUrl = 'https://www.google.com/'
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
+
+    const testLinkName = 'New Test Link'
+    const testLinkNote = 'New Test Note'
+    const testLinkUrl = 'https://www.google.com/'
+
+    const newLink = new LinkSchema({
+      name: testLinkName,
+      note: testLinkNote,
+      url: testLinkUrl,
+      user: testStudent,
+      group: testGroup
+    })
+    const testLink = await newLink.save()
+
+    const req = {
+      body: {
+      }
+    }
+    let out
+    const res = {
+      text: function (url) { return url },
+      render: function (url, obj) {
+        out = obj
+      }
+    }
+    await links.index(req, res)
+
+    const outLinks = out.links
+
+    expect(outLinks[0]._id).toEqual(testLink._id)
+  })
+  // just checks if rendering correct page
+  test('A user can view the \'create a new link\' page', async () => {
+    const testName = 'New Test Link'
+    const testNote = 'New Test Note'
+    const testUrl = 'https://www.google.com/'
+    const newGroup = new GroupSchema({
+      name: testGroupName,
+      members: testStudent._id
+    })
+    const testGroup = await newGroup.save()
+
+    const req = {
+      user: testStudent,
+      groups: testGroup,
+      flash: function () { }
+    }
+    const res = {
+      redirect: function (url) { return url },
+      render: function (str) { checkStringEquals(str, 'links/new.ejs') },
+      flash: function () { }
+    }
+    await links.renderNewForm(req, res)
+  })
 })

@@ -4,7 +4,7 @@ const { Schema } = mongoose
 // Group Schema
 const groupSchema = new Schema({
   name: { type: String, required: true },
-  links: { type: String },
+  links: [{ type: Schema.Types.ObjectId, ref: 'Link' }],
   members: [{ type: Schema.Types.ObjectId, ref: 'StudentProfile' }],
   meetings: [{ type: Schema.Types.ObjectId, ref: 'Meeting' }],
   tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],

@@ -89,8 +89,14 @@ module.exports.editSettings = async (req, res) => {
 
 module.exports.getProfile = async (req, res) => {
   const { id } = req.params
-  const profile = await StudentProfile.findById(id).populate('groups')
-  const tags = await Tag.find({id: { $in: profile.groups.map(group => group.tag) } })
+  const profile = await StudentProfile.findById(id).populate({path: 'groups',populate: {path: 'tags'}})
+  let tags = new Set()
+  for(let group of profile.groups){
+    for(let tag of group.tags){
+      tags.add(tag)
+    }
+  }
+  tags = [...tags]
   console.log(tags)
   res.render('students/profile.ejs', { profile: profile, tags: tags })
 }

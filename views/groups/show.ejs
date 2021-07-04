@@ -31,7 +31,7 @@
                                         <%- include('../partials/profilePicture', {student:group.members[i], width: 50, height: 50}) -%>
                                     </div>
                                     <div class="col-lg-4 align-self-center">
-                                        <%= `${group.members[i].firstName} ${group.members[i].lastName} ` %>
+                                        <a href="\students\profile\<%=group.members[i]._id%>" class="profile-link"><%= `${group.members[i].firstName} ${group.members[i].lastName} ` %></a>
                                         <% if(group.members[i]._id.equals(signedInUser._id)) {%>
                                             (you)
                                         <%}%>
@@ -52,7 +52,7 @@
                                                 class="">
                                                 <div class="rate">
                                                     <input type="radio" id="star5_<%= i%>" name="rating"
-                                                        value="5" />
+                                                        value="5" required/>
                                                     <label for="star5_<%= i%>">5 stars</label>
                                                     <input type="radio" id="star4_<%= i%>" name="rating"
                                                         value="4" />
@@ -185,6 +185,11 @@
             <% }%>
         </div>
     </div>
+
+        <div class="container">
+            <%- include('../links/index.ejs', {links:links, showNewLink:false}) %>
+        </div>
+        
 </div>
 
         <%- include('../partials/modal', {action: 'leave group' , group:group, id:'leave'}) -%>
