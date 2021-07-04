@@ -176,14 +176,15 @@
             <%}%>
             </div>
             
-        </div>
+        
         <div class="col-lg-6 col-md-12">
             <% for (let poll of groupPolls.reverse()){%>
-                <% if(poll.active === true && (group.members.includes(signedInUser._id) || String(poll.affected._id) == String(signedInUser._id))){ %>
+                <% if(poll.active === true && (poll.members.includes(signedInUser._id) || String(poll.affected._id) == String(signedInUser._id))){ %>
                     <%- include('../partials/pollCard.ejs', {poll:poll}) %>
                 <% }%>
             <% }%>
         </div>
+    </div>
 
         <div class="container">
             <%- include('../links/index.ejs', {links:links, showNewLink:false}) %>
