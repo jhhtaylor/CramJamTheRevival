@@ -20,7 +20,7 @@
   </a>
 </p>
 
-<h2> Demonstration Video Link </h2>
+<h2> Demonstration video link </h2>
 <div align="center">
   <a href="https://www.youtube.com/watch?v=sZl6HSJPjWM">
     <img src="https://user-images.githubusercontent.com/29454433/213449625-72e61a6a-8b46-40c8-a324-e4922182a149.png"
@@ -59,7 +59,7 @@ git clone https://github.com/witseie-elen4010/2021-001-project.git
 ``` bash
 node index
 ```
-<h3>Accessing Admin</h3>
+<h3>Accessing admin</h3>
 To access the logs as an admin user, you must first login to the admin account using the details: 
 
 ```
@@ -79,7 +79,7 @@ If you drop any of the collections, you might encounter errors. Additionally, if
 
 The connection string for the MongoDB using MongoCompass is: `mongodb+srv://Admin:CramJam@cluster0.idoq1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`.
 
-<h2> Known Issues </h2>
+<h2> Known issues </h2>
 <ul>
   <li> GPS tracking is unable to access the users GPS location while on the Azure hosted site. However, this feature does work on the local version as demonstrated in the  video.</li>
   <li>The application has not yet been made responsive. It works best on a 1080x720 screen or higher and does not render dynamically to different page sizes.</li>
