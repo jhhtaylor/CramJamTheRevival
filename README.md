@@ -20,6 +20,14 @@
   </a>
 </p>
 
+<h2> CramJam Demonstration Video </h2>
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=sZl6HSJPjWM">
+    <img src="https://user-images.githubusercontent.com/29454433/213449625-72e61a6a-8b46-40c8-a324-e4922182a149.png"
+         style="width:50%;" alt="CramJam Demonstration Video">
+  </a>
+</div>
+
 <h2> About the project </h2>
 <p>The CramJam project is a web application for organising and sharing study groups to allow students to connect with other students. It is already hard to meet people to form study groups at larger classes and the Covid-19 pandemic has made it worse. CramJam solves this problem.</p>
 
