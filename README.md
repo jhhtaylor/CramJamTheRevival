@@ -20,7 +20,7 @@
   </a>
 </p>
 
-<h2> CramJam Demonstration Video </h2>
+<h2> Demonstration Video Link </h2>
 <div align="center">
   <a href="https://www.youtube.com/watch?v=sZl6HSJPjWM">
     <img src="https://user-images.githubusercontent.com/29454433/213449625-72e61a6a-8b46-40c8-a324-e4922182a149.png"
